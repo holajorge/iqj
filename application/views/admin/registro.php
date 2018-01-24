@@ -11,7 +11,7 @@
 						</div>		
 						<div class="col-sm-4 col-md-4">
 								<label for="horas">HORAS</label>
-		                        <input type="number" name="horas" id="horas" class="form-control " tabindex="2">
+		                        <input type="text" name="horas" id="horas" class="form-control " tabindex="2">
 						</div>	
 						<div class="col-sm-4 col-md-4">
 								<label for="nss">NSS</label>

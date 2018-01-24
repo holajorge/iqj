@@ -9,7 +9,8 @@ class Deduciones_model extends CI_Model {
   public function getAll(){
    	 	
    	 	$this->db->select('*');      
-      $this->db->from('cat_deducciones');      
+      $this->db->from('cat_deducciones');
+      $this->db->order_by('id_deduccion', 'DESC');      
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return $query->result();
@@ -22,6 +23,7 @@ class Deduciones_model extends CI_Model {
       $this->db->select('*');      
       $this->db->from('cat_deducciones');
       $this->db->where('status',1);
+      $this->db->order_by('id_deduccion', 'DESC');
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return $query->result();

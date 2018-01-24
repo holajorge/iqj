@@ -55,7 +55,6 @@ function mostrar_per_quinquenal_edit(id_nomina){
 // ***********************************************************************************
 function lista_percepciones_edit(){
       var data=verificarConceptosExistentes("id_tab_per");
-      console.log(data);
     $.ajax({
         url: baseURL + "Percepciones_ctrl/lista_percepciones",
         type: "POST",
@@ -94,6 +93,8 @@ function lista_percepciones_edit(){
                     //SE LLAMA A LA FUNCIÓN QUE CALCULA UTOMÁTICAMENTE LAS DEDUCCIONES
                     calc_deducciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
                     calc_total_percepciones();
+                    //SE ORDENA LA TABLA DE FORMA ASCENDENTE
+                    ordenarTablas("id_tab_per");
             }
         } 
     });
@@ -252,6 +253,8 @@ function lista_deducciones_edit(){
                     calc_deducciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
                     //SE LLAMA A LA FUNCIÓN QUE CALCULA UTOMÁTICAMENTE LAS APORTACIONES
                     calc_aportaciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
+                    //SE ORDENA LA TABLA DE FORMA ASCENDENTE
+                    ordenarTablas("id_tab_ded");
             }
         } 
     });
@@ -328,6 +331,8 @@ function lista_aportaciones_edit(){
                     	}
                     }
                      calc_aportaciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
+                     //SE ORDENA LA TABLA DE FORMA ASCENDENTE
+                    ordenarTablas("id_tab_apor");
             }
         } 
     });
@@ -556,7 +561,6 @@ function guardar_datos_nomina(){
 //GUADRAR NÓMINA EN BASE DE DATOS
 //************************************************************************************
 function guardar_nom_en_db(id_nomina,id_empleado,data_percepciones,data_deducciones,data_aportaciones){
-	console.log("guardando...");
 	var id_nomina_editando = document.getElementById("id_nomina_editando").value;
     $.ajax({
         url: baseURL + "Nomina_controller/editar_detalle_nomina",
@@ -616,5 +620,42 @@ function get_data_tabla(nombre, tabla, id_input){
     }
     data.push({"camposvacios":camposVacios, "camposVaciosFaltantes":camposVaciosFaltantes});
     return data;
-    //console.log(data);
+}
+
+// ***********************************************************************************
+//INICIALIZAR TABLAS CON EL PIUGIN TABLE SORT PARA QUE SE ACOMODEN EN FORMA ASCENDENTE
+// ***********************************************************************************
+function ordenarTablas(nameTable){
+      var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById(nameTable);
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 2; i < (rows.length - 2); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
 }

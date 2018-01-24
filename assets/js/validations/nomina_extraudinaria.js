@@ -74,6 +74,7 @@ function insetaExtaordinaria(){
                 if (obj.resultado === true) {
                     $('#formExtraCreate')[0].reset();
                     var html = "";
+                        html += "<option selected disabled hidden>Seleccione Concepto</option>";
                     var tam = obj.extraordinarios.length;                    
                     var x = 1; 
                     for (l in obj.extraordinarios) {
@@ -286,4 +287,29 @@ function edit_extraordinaria(){
 
 function printDetalleExtraudinaria(id_empleado, id_concepto_extraordinario){
     window.open(baseURL + "Nomina_controller/pdf_por_empleadoExtraordinario?id_emp="+ id_empleado +"&id_nom="+id_concepto_extraordinario);
+}
+//****************************************************************************************************************
+//SE VALIDA QUE NO SE DUPLIQUEN LOS EMPLEADOS EN LA MISMA NÓMNIA EXTRAORDINARIA
+//****************************************************************************************************************
+function validarNoDuplicidad(idNomExtraordinaria){
+    var id_empleado = document.getElementById("idEditar").value;
+    $.ajax({
+        type: "POST",
+        url:baseURL + "Nomina_controller/validarEmpEnNominaEx",
+        data: {id_empleado: id_empleado,
+                id_nom_ex: idNomExtraordinaria},
+        success: function(respuesta) {
+            var obj = JSON.parse(respuesta);
+            if (obj.resultado === true) {
+                swal({
+                    html:true,
+                    title: "",
+                    text: "<strong> EL EMPLEADO YA SE HA DADO DE ALTA EN ESTA NÓMINA </strong>",
+                    type: "warning"
+                });
+                $('#dia').get(0).selectedIndex = 0;                   
+            }
+        } 
+    });
+
 }
