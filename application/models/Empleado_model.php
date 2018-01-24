@@ -69,6 +69,24 @@ class Empleado_model extends CI_Model {
         return $arrDatos;
       }
    }
+   public function existRFC($rfc){
+    
+      $query= $this->db->query("select nombre from cat_empleados where rfc='".$rfc."'");             
+      if ($query -> num_rows() > 0){
+        return true;
+      }else{
+       return false;
+      }
+   }
+   public function existRFCEdit($id, $rfc){
+    
+      $query= $this->db->query("SELECT rfc FROM cat_empleados WHERE id_empleado='".$id."' AND rfc='".$rfc."'");      
+      if ($query->num_rows() > 0) {
+          return $query->result();
+      }else{
+          return false;
+      }
+   }
    public function guardar_empleado($empleado){
       return $this->db->insert('cat_empleados', $empleado);
    }

@@ -168,10 +168,11 @@
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
+                        <a href="<? echo base_url('Nomina_controller/totales');?>" class="btn btn-primary" type="button">Consulta Totales</a>
+                    </li>
+                    <li>
                         <span class="m-r-sm text-muted welcome-message">Panel de control</span>
                     </li>
-
-
                     <li>
                         <a  href="<?php echo base_url();?>login_ctrl/cerrar_sesion">
                             <i class="fa fa-sign-out"></i> Log out

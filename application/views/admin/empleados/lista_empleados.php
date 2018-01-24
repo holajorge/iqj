@@ -109,11 +109,11 @@
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="curp">CURP</label>
-                                <input type="text" onblur="validarInput(this)" name="curp" id="curpEdit" class="form-control input-lg" tabindex="8" >                                           
+                                <input type="text" onblur="validarCrpEdit(this)" name="curp" id="curpEdit" class="form-control input-lg" tabindex="8" >                                           
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="rfc">RFC</label>
-                                <input type="text" name="rfc" onblur="ValidaRfc(this.value)" id="rfcEdit" class="form-control input-lg" tabindex="9">
+                                <input type="text" name="rfc" onblur="ValidaRfcEdit(this.value)" id="rfcEdit" class="form-control input-lg" tabindex="9">
                         </div>
                         <div class=" col-sm-6 col-md-6 ">
                                 <label for="no_empleado">Num. Empleado</label>
@@ -153,7 +153,7 @@
         </div>
         <div class="modal-footer">          
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-            <input type="submit" value="Guardar Cambios " class="btn btn-primary " tabindex="14">
+            <input type="submit" value="Guardar Cambios" id="btn_save_edit" class="btn btn-primary " tabindex="14">
         </div>
       </div>
     </form>

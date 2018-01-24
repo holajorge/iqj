@@ -34,7 +34,28 @@ class Empleado_controller extends CI_Controller {
         $this->load->view('admin/empleados/lista_empleados',$data);
         $this->load->view('global_view/foother');
     }
-
+    public function searchRFC(){
+        $rfc = $this->input->post("rfc");
+        $query = $this->Empleado_model->existRFC($rfc);
+        if ($query == 1) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);  
+    }
+    public function searchRFCEdit(){
+        $rfc = $this->input->post("rfc");
+        $id = $this->input->post("id");
+        $query = $this->Empleado_model->existRFCEdit($id, $rfc);
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['empleado'] = $query;            
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);  
+    }
     public function guardar_empleado(){
         $no_plaza = $this->input->post("no_plaza");
         $horas = $this->input->post("horas");

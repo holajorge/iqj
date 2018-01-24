@@ -216,9 +216,9 @@ function editEmpleado(id){
     document.getElementById("deptoEdit").value=nombre_depto; 
     document.getElementById("puestoEdit").value=nombre_puesto; 
     document.getElementById("tipo_trabajadorEdit").value=trabajador; 
-
 }
 
+////////////SECCION DE VALIDAR CURP Y RFC EMPLEADO ///////////////
 //Función para validar una CURP
 function curpValida(curp) {
     var re = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
@@ -245,7 +245,6 @@ function curpValida(curp) {
             
         return true; //Validado
 }
-
 //Handler para el evento cuando cambia el input
 //Lleva la CURP a mayúsculas para validarlo
 function validarInput(input) {
@@ -255,17 +254,139 @@ function validarInput(input) {
     if (curpValida(curp)) { // ⬅️ Acá se comprueba
         valido = "Válido";       
         console.log("si es validto");
+         $("#btn_guardar_empleado").attr("disabled", false); 
 
     } else {        
         sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");   
-        $( "#curpEdit" ).focus();  
+        $( "#curp" ).focus();  
+        $("#btn_guardar_empleado").attr("disabled", true); 
         return false;  
         console.log("no es validto");       
-    }       
-       
+    }           
+}
+function ValidaRfc(rfcStr) {
+  console.log("entro en la validacion del rfc");
+    $.ajax({
+        type: "POST",
+        url: baseURL +"Empleado_controller/searchRFC",
+        data: {rfc: rfcStr}, 
+         success: function(respuesta){
+           var obj = JSON.parse(respuesta);
+           if (obj.resultado == true) {
+                sweetAlert("YA EXISTE RFC","VULVA A INTENTAR CON  OTRO","error");                
+                $("#btn_guardar_empleado").attr("disabled", true);                                    
+            }else{
+                $("#btn_guardar_empleado").attr("disabled", false);  
+            }  
+            if (rfcStr.length < 13) {                       
+                $("#btn_guardar_empleado").attr("disabled", true);                        
+                return false;                      
+            }  
+             if (rfcStr.length > 13) {                       
+                $("#btn_guardar_empleado").attr("disabled", true);                        
+                return false;                      
+            }                   
+        }
+     });
+
+    var strCorrecta;
+    strCorrecta = rfcStr; 
+    if (rfcStr.length == 12 ){
+        var valid = '^(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))';
+        }else{
+        var valid = '^(([A-Z]|[a-z]|\s){1})(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))';
+    }
+    if (rfcStr.length > 13 ){
+        var valid = '^(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))';
+        }else{
+        var valid = '^(([A-Z]|[a-z]|\s){1})(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))';
+    }
+    var validRfc=new RegExp(valid);
+    var matchArray=strCorrecta.match(validRfc);
+    console.log(matchArray);
+    if (matchArray==null) {
+        sweetAlert("RFC NO VALIDA","VULVA A INTENTAR","error"); 
+        $("#rfc").focus(); 
+        $("#btn_guardar_empleado").attr("disabled", true);         
+        return false;
+    }
+    else
+    {
+        $("#btn_guardar_empleado").attr("disabled", false);
+       // alert('Cadena correcta:' + strCorrecta);
+       // sweetAlert("CAMPO SOLOA","VULVA A INTENTAR","error");  
+        return true;
+    }
 }
 
-function ValidaRfc(rfcStr) {
+////////////SECCION DE EN LA EDICION DEL EMPLEADO ///////////////
+function curpValidaEdit(curp) {
+    var re = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
+        validado = curp.match(re);
+    
+    if (!validado)  //Coincide con el formato general?
+        return false;
+    
+    //Validar que coincida el dígito verificador
+    function digitoVerificador(curp17) {
+        //Fuente https://consultas.curp.gob.mx/CurpSP/
+        var diccionario  = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
+            lngSuma      = 0.0,
+            lngDigito    = 0.0;
+        for(var i=0; i<17; i++)
+            lngSuma = lngSuma + diccionario.indexOf(curp17.charAt(i)) * (18 - i);
+        lngDigito = 10 - lngSuma % 10;
+        if (lngDigito == 10) return 0;
+        return lngDigito;
+    }
+      
+    if (validado[2] != digitoVerificador(validado[1])) 
+        return false;
+            
+        return true; //Validado
+}
+function validarCrpEdit(input) {
+    var curp = input.value.toUpperCase(),        
+        valido = "No válido";
+        
+    if (curpValidaEdit(curp)) { // ⬅️ Acá se comprueba
+        valido = "Válido";       
+        console.log("si es validto");
+         $("#btn_save_edit").attr("disabled", false); 
+
+    } else {        
+        sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");   
+        $( "#curp" ).focus();  
+        $("#btn_save_edit").attr("disabled", true); 
+        return false;  
+        console.log("no es validto");       
+    }           
+}
+function ValidaRfcEdit(rfcStr) {
+
+    $.ajax({
+        type: "POST",
+        url: baseURL +"Empleado_controller/searchRFC",
+        data: {rfc: rfcStr}, 
+         success: function(respuesta){
+           var obj = JSON.parse(respuesta);
+           if (obj.resultado === true) {
+                // sweetAlert("YA EXISTE RFC","VULVA A INTENTAR","error");                                 
+                // return false;
+            }else{
+                $("#btn_save_edit").attr("disabled", false);  
+            } 
+            if (rfcStr.length < 13) {                       
+                $("#btn_save_edit").attr("disabled", true);                        
+                return false;                      
+            }  
+             if (rfcStr.length > 13) {                       
+                $("#btn_save_edit").attr("disabled", true);                        
+                return false;                      
+            }                  
+        }
+     });
+
     var strCorrecta;
     strCorrecta = rfcStr;   
     if (rfcStr.length == 12 ){
@@ -287,9 +408,9 @@ function ValidaRfc(rfcStr) {
     }
     else
     {
+         $("#btn_save_edit").attr("disabled", false); 
        // alert('Cadena correcta:' + strCorrecta);
        // sweetAlert("CAMPO SOLOA","VULVA A INTENTAR","error");  
         return true;
     }
-    
 }
