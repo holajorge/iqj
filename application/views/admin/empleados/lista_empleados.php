@@ -81,7 +81,7 @@
                         </div>
                         <div class="col-sm-4 col-md-4">
                                 <label for="horas">HORAS</label>
-                                <input type="number" name="horas" id="horasEdit" class="form-control input-lg" tabindex="2">
+                                <input type="text" name="horas" id="horasEdit" class="form-control input-lg" tabindex="2">
                         </div> 
                         <div class="col-sm-4 col-md-4">
                                 <label for="nss">NSS</label>

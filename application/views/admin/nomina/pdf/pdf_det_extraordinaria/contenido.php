@@ -76,8 +76,8 @@
         <?php foreach ($detalles as $fila){ ?>            
             <tr>
                 <td width="15%" > <?php echo $fila->no_plaza; ?> </td>
-                <td width="65%" class="text-right"> $<?php echo number_format($fila->importe,2); ?> </td>
-                <td width="20%" class="text-right"> $<?php echo number_format($fila->isr,2); ?></td> 
+                <td width="70%" class="text-right"> $<?php echo number_format($fila->importe,2); ?> </td>
+                <td width="15%" class="text-right"> $<?php echo number_format($fila->isr,2); ?></td> 
                 
             </tr>
          <?php $menosIsr += $fila->isr; ?>           

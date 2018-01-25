@@ -11,6 +11,7 @@ class Percepciones_model extends CI_Model {
    	 	  
         $this->db->select('*');
         $this->db->from('cat_percepciones');
+        $this->db->order_by('id_percepcion', 'DESC');
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
             return $query->result();
@@ -24,6 +25,7 @@ class Percepciones_model extends CI_Model {
         $this->db->select('*');
         $this->db->from('cat_percepciones');
         $this->db->where('status',1);
+        $this->db->order_by('id_percepcion', 'DESC');
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
             return $query->result();

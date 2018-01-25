@@ -388,6 +388,23 @@ class Nomina_controller extends CI_Controller {
         echo json_encode($result);
         
     }
+    // ****************************************************************************************
+    //SE VALIDA QUE EL EMPLEADO NO PUEDA DARSE DE ALTA EN LA MISMA NÓMINA EXTRAORDINARIA
+    // ****************************************************************************************
+    public function validarEmpEnNominaEx(){
+        $id_empleado = $this->input->post("id_empleado");
+        $id_concepto_extraordinario = $this->input->post("id_nom_ex");
+
+        $data['empEnNominaEx'] = $this->Nomina_model->datos_empleado_nomina_extraordinaria($id_empleado, $id_concepto_extraordinario);
+
+        if ($data['empEnNominaEx']) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+
+        echo json_encode($result);
+    }
 
    
 }

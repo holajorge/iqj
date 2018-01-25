@@ -5,7 +5,8 @@ class Aportaciones_model extends CI_Model {
 
   public function getAll(){
      	 	$this->db->select('*');      
-        $this->db->from('cat_aportaciones');        
+        $this->db->from('cat_aportaciones');
+        $this->db->order_by('id_aportacion', 'DESC');        
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
             return $query->result();
@@ -17,7 +18,8 @@ class Aportaciones_model extends CI_Model {
   public function get_apor_activos(){
         $this->db->select('*');      
         $this->db->from('cat_aportaciones');
-        $this->db->where('status',1);        
+        $this->db->where('status',1);
+        $this->db->order_by('id_aportacion', 'DESC');        
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
             return $query->result();

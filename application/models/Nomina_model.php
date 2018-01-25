@@ -176,7 +176,7 @@ class Nomina_model extends CI_Model {
                                       group by cat_empleados.id_empleado");
 
       if ($query->num_rows() > 0) {
-          var_dump($query->result());
+          //var_dump($query->result());
           return $query->result();
       }else{
           return false;

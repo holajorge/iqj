@@ -130,8 +130,9 @@ function mostrar_tablas_det_nomina(event,id_nomina){
             var obj = JSON.parse(respuesta);
             if (obj.resultado === true) {
                 swal({
-                    title: "ALERTA",
-                    text: "EL EMPLEADO YA SE HA DADO DE ALTA EN ESTE PERIODO QUINQUENAL",
+                    html:true,
+                    title: "",
+                    text: "<strong> EL EMPLEADO YA SE HA DADO DE ALTA EN ESTE PERIODO QUINQUENAL </strong>",
                     type: "warning"
                 });
 
@@ -146,7 +147,7 @@ function mostrar_tablas_det_nomina(event,id_nomina){
                 mostrar_per_quinquenal(id_nomina);
                 //SE AGREGAN LOS DATOS DE LA ÚLTIMA NOMINA DEL EMPLEADO
                 //SOLO SI EXISTIESEN REGISTROS
-                agregarDatosNominaAnterior();
+                agregarDatosNominaAnterior(); 
             }
         } 
     });
@@ -173,6 +174,7 @@ function mostrar_per_quinquenal(id_nomina){
 // PERCEPCIONES
 // ***********************************************************************************
 function lista_percepciones(){
+
     var data=verificarConceptosExistentes("id_tab_per");
     $.ajax({
         url: baseURL + "Percepciones_ctrl/lista_percepciones",
@@ -212,6 +214,8 @@ function lista_percepciones(){
                     //SE LLAMA A LA FUNCIÓN QUE CALCULA UTOMÁTICAMENTE LAS DEDUCCIONES
                     calc_deducciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
                     calc_total_percepciones();
+                    //SE ORDENA LA TABLA DE FORMA ASCENDENTE
+                    ordenarTablas("id_tab_per");
             }
         } 
     });
@@ -365,6 +369,8 @@ function lista_deducciones(){
                     calc_deducciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
                     //SE LLAMA A LA FUNCIÓN QUE CALCULA UTOMÁTICAMENTE LAS APORTACIONES
                     calc_aportaciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
+                    //SE ORDENA LA TABLA DE FORMA ASCENDENTE
+                    ordenarTablas("id_tab_ded");
             }
         } 
     });
@@ -508,7 +514,6 @@ function get_data_tabla(nombre, tabla, id_input){
     }
     data.push({"camposvacios":camposVacios, "camposVaciosFaltantes":camposVaciosFaltantes});
     return data;
-    //console.log(data);
 }
 
 //************************************************************************************
@@ -589,6 +594,9 @@ function lista_aportaciones(){
                         }
                     }
                      calc_aportaciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
+                     //SE ORDENA LA TABLA DE FORMA ASCENDENTE
+                    ordenarTablas("id_tab_apor");
+
             }
         } 
     });
@@ -829,4 +837,41 @@ function verificarConceptosExistentes(nombre_tab){
         indiceCelda++;
     }
     return data;
+}
+// ***********************************************************************************
+//INICIALIZAR TABLAS CON EL PIUGIN TABLE SORT PARA QUE SE ACOMODEN EN FORMA ASCENDENTE
+// ***********************************************************************************
+function ordenarTablas(nameTable){
+      var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById(nameTable);
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 2; i < (rows.length - 2); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
 }

@@ -151,7 +151,7 @@
 					                        <div class="form-group" id="reloadExtra">
 					                        	<a class="btn btn-info  input-sm pull-right" data-toggle="modal" data-target="#crearExtraordinario"><span class="glyphicon  glyphicon-plus"></span> Crear Nuevo</a>					                			
 					                        	<label for="depto">Seleccione uno o Crea uno Nuevo</label>
-					                            <select class="form-control input-lg" id="dia" name="dia" tabindex="1">
+					                            <select class="form-control input-lg" id="dia" name="dia" onchange="validarNoDuplicidad(value);" tabindex="1">
 													<option selected disabled hidden>Seleccione Concepto</option>
 					                            	<?php if ($extraordinarios != null ): ?>
 					                            		<?php foreach ($extraordinarios as $concepto): ?>

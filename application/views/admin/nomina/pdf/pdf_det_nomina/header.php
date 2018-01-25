@@ -1,8 +1,10 @@
 <body>
     <?php
-    $D=date("d");
-    $M=date("m");
-    $Y=date("Y");
+    $fecha = $header_pdf[0]->periodo_fin;
+    $porciones = explode("-", $fecha);
+    $D=$porciones[2];
+    $M=$porciones[1];
+    $Y=$porciones[0];
     setlocale(LC_TIME, 'spanish');  
     $nombre=strftime("%B",mktime(0, 0, 0, $M+1, 0 ,0)); 
     $mes= strtoupper ($nombre );
