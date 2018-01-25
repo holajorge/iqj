@@ -96,6 +96,8 @@
     <?php endif ?>
     <!-- js direccion -->
     <script src="<?php echo base_url('assets/js/validations/nomina_extraudinaria.js'); ?>"></script>
+    <!-- js direccion -->
+    <script src="<?php echo base_url('assets/js/validations/concepto_totales.js'); ?>"></script>
 
 </body>
 </html>
