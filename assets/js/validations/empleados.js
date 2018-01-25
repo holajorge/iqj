@@ -196,8 +196,6 @@ function editEmpleado(id){
     var rfc=document.getElementById("rfc"+id).innerHTML;
     var no_empleado=document.getElementById("no_empleado"+id).innerHTML;
     var curp=document.getElementById("curp"+id).innerHTML;   
-    var nombre_depto=document.getElementById("nombre_depto"+id).innerHTML;
-    var nombre_puesto=document.getElementById("nombre_puesto"+id).innerHTML;
     var trabajador=document.getElementById("trabajador"+id).innerHTML; 
 
     document.getElementById("idEditar").innerHTML=id+"";
@@ -213,9 +211,6 @@ function editEmpleado(id){
     document.getElementById("rfcEdit").value=rfc;
     document.getElementById("curpEdit").value=curp;
     document.getElementById("no_empleadoEdit").value=no_empleado;   
-    document.getElementById("deptoEdit").value=nombre_depto; 
-    document.getElementById("puestoEdit").value=nombre_puesto; 
-    document.getElementById("tipo_trabajadorEdit").value=trabajador; 
 }
 
 ////////////SECCION DE VALIDAR CURP Y RFC EMPLEADO ///////////////
@@ -258,7 +253,6 @@ function validarInput(input) {
 
     } else {        
         sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");   
-        $( "#curp" ).focus();  
         $("#btn_guardar_empleado").attr("disabled", true); 
         return false;  
         console.log("no es validto");       
@@ -305,8 +299,7 @@ function ValidaRfc(rfcStr) {
     var matchArray=strCorrecta.match(validRfc);
     console.log(matchArray);
     if (matchArray==null) {
-        sweetAlert("RFC NO VALIDA","VULVA A INTENTAR","error"); 
-        $("#rfc").focus(); 
+        sweetAlert("RFC NO VALIDA","VULVA A INTENTAR","error");  
         $("#btn_guardar_empleado").attr("disabled", true);         
         return false;
     }
@@ -355,8 +348,7 @@ function validarCrpEdit(input) {
          $("#btn_save_edit").attr("disabled", false); 
 
     } else {        
-        sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");   
-        $( "#curp" ).focus();  
+        sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");     
         $("#btn_save_edit").attr("disabled", true); 
         return false;  
         console.log("no es validto");       
@@ -403,7 +395,6 @@ function ValidaRfcEdit(rfcStr) {
     var matchArray=strCorrecta.match(validRfc);
     if (matchArray==null) {
         sweetAlert("RFC NO VALIDA","VULVA A INTENTAR","error");  
-        $( "#rfcEdit" ).focus();
         return false;
     }
     else

@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="<?php echo base_url('assets/img/logo/favicon.png');?>"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>IMJVE | Dashboard</title>
+    <title>IQJ NÓMINA | DASHBOARD</title>
 
     <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet">
     <link href="<?php echo base_url('assets/font-awesome/css/font-awesome.css');?>" rel="stylesheet">
@@ -167,9 +167,6 @@
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                        <a href="<? echo base_url('Nomina_controller/totales');?>" class="btn btn-primary" type="button">Consulta Totales</a>
-                    </li>
                     <li>
                         <span class="m-r-sm text-muted welcome-message">Panel de control</span>
                     </li>

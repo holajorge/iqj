@@ -31,7 +31,7 @@ function inicalizarDataTable(name){
                 "sSortDescending": ": Activar para ordenar la columna de manera descendente"
             }
         },
-        "iDisplayLength": 10,
+        "iDisplayLength": 20,
         "aLengthMenu": [
             [10, 20, 30],
             [10, 20, 30]
