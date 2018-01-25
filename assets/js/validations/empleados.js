@@ -356,7 +356,7 @@ function validarCrpEdit(input) {
 
     } else {        
         sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");   
-        $( "#curp" ).focus();  
+        
         $("#btn_save_edit").attr("disabled", true); 
         return false;  
         console.log("no es validto");       
@@ -403,7 +403,7 @@ function ValidaRfcEdit(rfcStr) {
     var matchArray=strCorrecta.match(validRfc);
     if (matchArray==null) {
         sweetAlert("RFC NO VALIDA","VULVA A INTENTAR","error");  
-        $( "#rfcEdit" ).focus();
+       
         return false;
     }
     else

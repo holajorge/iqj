@@ -166,10 +166,8 @@
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                 </div>
-                <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                        <a href="<? echo base_url('Nomina_controller/totales');?>" class="btn btn-primary" type="button">Consulta Totales</a>
-                    </li>
+                <ul class="nav navbar-top-links navbar-right">                 
+                    <a href="<?php echo base_url('Reportes_nomina_ctrl/index');?>" class="btn btn-success" type="button" role="button" >Conceptos Totales</a>
                     <li>
                         <span class="m-r-sm text-muted welcome-message">Panel de control</span>
                     </li>
@@ -178,7 +176,7 @@
                             <i class="fa fa-sign-out"></i> Log out
                         </a>
                     </li>
-                </ul>
+                </ul>                 
             </nav>
           </div>
          <!--  <div class="row wrapper border-bottom white-bg page-heading">
