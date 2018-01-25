@@ -4,6 +4,16 @@ $(document).ready(function() {
       $(this).find(".modal-body").css("max-height", height);
     });
 
+     $( document ).ajaxStart(function() {
+        //$( "#loading" ).show();
+        console.log("cargando");
+    });
+
+     $( document ).ajaxStop(function() {
+      //$( "#loading" ).hide();
+      console.log("fin de carga");
+    });
+
 });
 
 function serach_periodos(id){
