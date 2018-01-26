@@ -33,8 +33,7 @@ class Periodo_controller extends CI_Controller {
 		$periodo = array(
 			'periodo_inicio' => $this->input->post('inicio'),		 
 		    'periodo_fin' => $this->input->post('fin'),
-		    'periodo_quinquenal' => $this->input->post('quinquenio'),		     
-		    'status' => 1,
+		    'periodo_quinquenal' => $this->input->post('quinquenio')
 		    );
 		$query = $this->Periodos_model->createPeriodo($periodo);
 		if ($query == 1) {
@@ -51,8 +50,7 @@ class Periodo_controller extends CI_Controller {
 		$periodo = array(
 			'periodo_inicio' => $this->input->post('inicio'),		 
 		    'periodo_fin' => $this->input->post('fin'),
-		    'periodo_quinquenal' => $this->input->post('quinquenio'),		     
-		    'status' => 1,
+		    'periodo_quinquenal' => $this->input->post('quinquenio')
 		    );
 		$query = $this->Periodos_model->updatePeriodo($id,$periodo);
 		if ($query == 1) {

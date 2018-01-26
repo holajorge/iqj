@@ -32,7 +32,24 @@ class Reportes_nomina_ctrl extends CI_Controller {
             $result['resultado'] = false;
         }
         echo json_encode($result);
+	}
+	public function getAllPeriodosPercepcion(){
 
+		$id_nomina = $this->input->post('id');
+		$query = $this->Reportes_nomina_Model->getAllConceptosPercepcionNominaPeriodo($id_nomina);
+		$query1 = $this->Reportes_nomina_Model->getAllConceptosDeduccionNominaPeriodo($id_nomina);
+		$query2 = $this->Reportes_nomina_Model->getAllConceptosAportacionNominaPeriodo($id_nomina);
+		if ($query != false) {
+
+            $result['resultado'] = true;
+            $result['percepciones'] = $query;
+            $result['deducciones'] = $query1;
+            $result['aportaciones'] = $query2;
+
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
 	}
 
 	//********************************************************************************
@@ -40,13 +57,13 @@ class Reportes_nomina_ctrl extends CI_Controller {
 	//********************************************************************************
 	public function reporteNominaPorConcepto(){
 		ob_start();
-		$id_nomina = 5;
-		$copceptosPercepciones[] = 1;
-		$copceptosPercepciones[] = 2;
-		$copceptosPercepciones[] = 3;
-		$copceptosPercepciones[] = 4;
-		$copceptosPercepciones[] = 5;
-
+		$id_nomina = $this->input->post("id_nomina");
+        $tipo = 0;
+        $mes= 2;
+        $anio = 2018;
+		$conceptosPercepciones = $this->input->post("percepcion");
+		$conceptosDeducciones = $this->input->post("deduccion");
+		$conceptosAportaciones = $this->input->post("aportacion");
 		
         //**********************************************************************************
         //       PDF
@@ -69,9 +86,9 @@ class Reportes_nomina_ctrl extends CI_Controller {
         $head               = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/header', $data, true);
         $mpdf->SetHTMLHeader($head);
         // /***************************************** contenido pdf ****************************************************/
-        $data2["totalesPercepciones"] = $this->Reportes_nomina_Model->sumaPorConceptoPercepcion($id_nomina, $copceptosPercepciones);
-		$data2["totalesDeducciones"] = $this->Reportes_nomina_Model->sumaPorConceptoDeducciones($id_nomina, $copceptosPercepciones);
-		$data2["totalesAportaciones"] = $this->Reportes_nomina_Model->sumaPorConceptoAportacion($id_nomina, $copceptosPercepciones);
+        $data2["totalesPercepciones"] = $this->Reportes_nomina_Model->sumaPorConceptoPercepcion($id_nomina, $conceptosPercepciones,$tipo,$mes,$anio);
+		$data2["totalesDeducciones"] = $this->Reportes_nomina_Model->sumaPorConceptoDeducciones($id_nomina, $conceptosDeducciones,$tipo,$mes,$anio);
+		$data2["totalesAportaciones"] = $this->Reportes_nomina_Model->sumaPorConceptoAportacion($id_nomina, $conceptosAportaciones,$tipo,$mes,$anio);
         $data2['header_pdf'] = $data['header_pdf'];
         $html = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenido', $data2, true);
         //**************************************** footer 1 ********************************************************

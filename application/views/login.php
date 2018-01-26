@@ -8418,10 +8418,10 @@
             <p>Iniciar Sesión</p>
             <form class="m-t" role="form" action="<?php echo base_url()?>login_ctrl/autentificarUser" method="POST">
                 <div class="form-group">                    
-                    <input type="text" name="rfc" id="rfc" class="form-control" placeholder="RFC" required="">
+                    <input type="text" name="rfc" id="rfc" class="form-control" placeholder="" required="">
                 </div>
                 <div class="form-group">                
-                    <input type="password" name="password" id="nombre" class="form-control" placeholder="Password" required="">
+                    <input type="password" name="password" id="nombre" class="form-control" placeholder="" required="">
                 </div>
                 <button type="submit" class="btn btn-primary block full-width m-b"><span class="glyphicon glyphicon-log-in"></span> Login</button>                                
             </form>

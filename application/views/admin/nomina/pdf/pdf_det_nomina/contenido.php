@@ -69,9 +69,9 @@
             <th COLSPAN="3" class="text-center success">PERCEPCIONES</th>
         </tr>
         <tr class="warning">                    
-            <th class="text-center" width="15%">CÓDIGO</th>
-            <th class="text-center" width="70%">DESCRIPCIÓN</th>
-            <th class="text-center" width="15%">IMPORTE</th>
+            <th width="15%">CÓDIGO</th>
+            <th width="70%">DESCRIPCIÓN</th>
+            <th class="text-right" width="15%">IMPORTE</th>
         </tr>
     </thead>
     <tbody>
@@ -103,9 +103,9 @@
             <th COLSPAN="3" class="text-center success">DEDUCCIONES</th>
         </tr>
         <tr class="warning">                    
-            <th class="text-center" width="15%">CÓDIGO</th>
-            <th class="text-center" width="70%">DESCRIPCIÓN</th>
-            <th class="text-center" width="15%">IMPORTE</th>
+            <th width="15%">CÓDIGO</th>
+            <th width="70%">DESCRIPCIÓN</th>
+            <th class="text-right" width="15%">IMPORTE</th>
         </tr>
     </thead>
     <tbody id="">
@@ -138,9 +138,9 @@
             <th COLSPAN="3" class="text-center success">APORTACIONES</th>
         </tr>
         <tr class="warning">                    
-            <th class="text-center">CÓDIGO</th>
-            <th class="text-center">DESCRIPCIÓN</th>
-            <th class="text-center">IMPORTE</th>
+            <th>CÓDIGO</th>
+            <th>DESCRIPCIÓN</th>
+            <th class="text-right">IMPORTE</th>
         </tr>
     </thead>
     <tbody id="">

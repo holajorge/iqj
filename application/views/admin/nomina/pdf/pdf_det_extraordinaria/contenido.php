@@ -65,9 +65,9 @@
             <th COLSPAN="3" class="text-center success" style="font-size: 15px;">NÓMINA EXTRAORDINARIA</th>
         </tr>
         <tr class="warning">                    
-            <th class="text-center" style="font-size: 15px;">CODIGO</th>            
+            <th style="font-size: 15px;">CODIGO</th>            
             <th class="text-center" style="font-size: 15px;">IMPORTE</th>
-            <th class="text-center" style="font-size: 15px;">ISR</th>
+            <th class="text-right" style="font-size: 15px;">ISR</th>
         </tr>
     </thead>
     <tbody>
