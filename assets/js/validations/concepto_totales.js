@@ -117,6 +117,7 @@ function serach_porMes(mes){
               
                 if (obj.resultado === true) { 
                 	var num_fila = 1;
+                	html += "<button type='button' onclick='seleccionarTodoPer()' class='btn btn-success btn-xs pull-right'>Seleccionar todo <span class='glyphicon glyphicon-ok' aria-hidden='true'></span></button>";
                 	html += "<table class='table table-hover' style='background: rgb(252,255,244);'>";
                 	html += "<thead>";
                 	html += "<tr>";
@@ -128,7 +129,7 @@ function serach_porMes(mes){
 	                for (l in obj.percepciones) {
 	                	html += "<tr>";
 	                	html += "<td>"+ obj.percepciones[l].percepcion +"</td>";
-	                	html += "<td class='text-center'><input value='"+obj.percepciones[l].id_percepcion+"' name='percepcion[]'  type='checkbox' /></td>";
+	                	html += "<td class='text-center'><input class='percepcion' value='"+obj.percepciones[l].id_percepcion+"' name='percepcion[]'  type='checkbox' /></td>";
 	                	html += "</tr>";
 	                    
 	                    num_fila ++;                      
@@ -138,6 +139,7 @@ function serach_porMes(mes){
                     $("#table_percepciones").html(html);  
 
                     var num_fila1 = 1;
+                    html1 += "<button type='button' onclick='seleccionarTodoDed()' class='btn btn-success btn-xs pull-right'>Seleccionar todo <span class='glyphicon glyphicon-ok' aria-hidden='true'></span></button>";
                 	html1 += "<table class='table table-hover' style='background: rgb(252,255,244);'>";
                 	html1 += "<thead>";
                 	html1 += "<tr>";
@@ -149,7 +151,7 @@ function serach_porMes(mes){
 	                for (l in obj.deducciones) {
 	                	html1 += "<tr>";
 	                	html1 += "<td>"+ obj.deducciones[l].deduccion +"</td>";
-	                	html1 += "<td class='text-center'><input value='"+obj.deducciones[l].id_deduccion+"' name='deduccion[]' type='checkbox' /></td>";
+	                	html1 += "<td class='text-center'><input class='deduccion' value='"+obj.deducciones[l].id_deduccion+"' name='deduccion[]' type='checkbox' /></td>";
 	                	html1 += "</tr>";
 	                    
 	                    num_fila1 ++;                      
@@ -159,6 +161,7 @@ function serach_porMes(mes){
                     $("#table_deducciones").html(html1);
 
                     var num_fila2 = 1;
+                    html2 += "<button type='button' onclick='seleccionarTodoApor()' class='btn btn-success btn-xs pull-right'>Seleccionar todo <span class='glyphicon glyphicon-ok' aria-hidden='true'></span></button>";
                 	html2 += "<table class='table table-hover' style='background: rgb(252,255,244);'>";
                 	html2 += "<thead>";
                 	html2 += "<tr>";
@@ -170,7 +173,7 @@ function serach_porMes(mes){
 	                for (l in obj.aportaciones) {
 	                	html2 += "<tr>";
 	                	html2 += "<td>"+ obj.aportaciones[l].aportacion +"</td>";
-	                	html2 += "<td class='text-center'><input value='"+obj.aportaciones[l].id_aportacion+"' name='aportacion[]' type='checkbox'  /></td>";
+	                	html2 += "<td class='text-center'><input class='aportacion' value='"+obj.aportaciones[l].id_aportacion+"' name='aportacion[]' type='checkbox'  /></td>";
 	                	html2 += "</tr>";
 	                    
 	                    num_fila2 ++;                      

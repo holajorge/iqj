@@ -70,9 +70,9 @@ class Reportes_nomina_ctrl extends CI_Controller {
 	public function reporteNominaPorConcepto(){
 		ob_start();
 		$id_nomina = $this->input->post("id_nomina");
-        $tipo = 0;
-        $mes= 2;
-        $anio = 2018;
+        $tipo = $this->input->post("tipo");
+        $mes= $this->input->post("mess");
+        $anio = $this->input->post("anio");
 		$conceptosPercepciones = $this->input->post("percepcion");
 		$conceptosDeducciones = $this->input->post("deduccion");
 		$conceptosAportaciones = $this->input->post("aportacion");
@@ -94,7 +94,12 @@ class Reportes_nomina_ctrl extends CI_Controller {
         $mpdf->WriteHTML($stylesheet, 1); 
         /******************************************** head pdf ******************************************************/
         // $data['header_pdf'] = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
-        $data['header_pdf'] = $this->Reportes_nomina_Model->informacionNomina($id_nomina);
+        if ($tipo == 0) {
+           $data['header_pdf1']['mes'] = $mes;
+           $data['header_pdf1']['anio'] = $anio;
+        }else{
+            $data['header_pdf'] = $this->Reportes_nomina_Model->informacionNomina($id_nomina);
+        }
         $head               = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/header', $data, true);
         $mpdf->SetHTMLHeader($head);
         // /***************************************** contenido pdf ****************************************************/

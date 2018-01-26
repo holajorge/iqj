@@ -51,6 +51,6 @@
         <div class="col-lg-12"  >
             <button style="display: none" id="guardad_conceptos" class="btn btn-primary pull-right btn-lg" type="submit">GUARDAR</button>
         </div>
-    </div> -->
+    </div>
 
 </div>

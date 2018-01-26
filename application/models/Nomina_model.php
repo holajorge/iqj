@@ -219,7 +219,7 @@ class Nomina_model extends CI_Model {
                     AND empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion 
                     AND empleadosxpercepciones.id_nomina = tab_nomina.id_nomina 
                         AND cat_empleados.id_empleado =  '".$id_empleado."'
-                        AND tab_nomina.id_nomina = '".$id_nomina."' ");
+                        AND tab_nomina.id_nomina = '".$id_nomina."' order by cat_percepciones.id_percepcion");
 
       if ($query->num_rows() > 0) {
           return $query->result();
@@ -243,7 +243,7 @@ class Nomina_model extends CI_Model {
                     AND empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion 
                     AND empleadosxdeducciones.id_nomina = tab_nomina.id_nomina 
                         AND cat_empleados.id_empleado =  '".$id_empleado."'
-                        AND tab_nomina.id_nomina = '".$id_nomina."' ");
+                        AND tab_nomina.id_nomina = '".$id_nomina."' order by cat_deducciones.id_deduccion");
 
       if ($query->num_rows() > 0) {
           return $query->result();
@@ -268,7 +268,7 @@ class Nomina_model extends CI_Model {
                     AND empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion 
                     AND empleadosxaportaciones.id_nomina = tab_nomina.id_nomina 
                         AND cat_empleados.id_empleado =  '".$id_empleado."'
-                        AND tab_nomina.id_nomina = '".$id_nomina."' ");
+                        AND tab_nomina.id_nomina = '".$id_nomina."' order by cat_aportaciones.id_aportacion");
 
       if ($query->num_rows() > 0) {
           return $query->result();

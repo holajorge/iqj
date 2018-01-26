@@ -1,11 +1,9 @@
 <body>
     <?php
-    $fecha = $header_pdf[0]->periodo_fin;
-    //$fecha = "2018-01-16";
-    $porciones = explode("-", $fecha);
-    $D=$porciones[2];
-    $M=$porciones[1];
-    $Y=$porciones[0];
+    $mesRep = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+    $D=date("d");
+    $M=date("m");
+    $Y=date("Y");
     setlocale(LC_TIME, 'spanish');  
     $nombre=strftime("%B",mktime(0, 0, 0, $M+1, 0 ,0)); 
     $mes= strtoupper ($nombre );
@@ -28,16 +26,32 @@
         </tr>
         <tr>
             <td></td>
-            <td class="text-center"> <h5 class="txt-negrita">REPORTE DE NÓMINA POR CONCEPTO</h5> </td>
+            <td class="text-center"> <h5 class="txt-negrita">DEVENGADO DE NÓMINA POR CONCEPTO</h5> </td>
             <td></td>
         </tr>
         <tr>
             <td></td>
-            <td class="text-center"> <h5>PERIODO<strong class="txt-negrita"> <?php echo $header_pdf[0]->periodo_quinquenal; ?></strong></h5> </td>
+            <td class="text-center"> <h5><strong class="txt-negrita">
+             
+                 <?php if (isset($header_pdf)): ?>
+                     <?php echo "PERIODO ".$header_pdf[0]->periodo_quinquenal; ?>
+                 <?php endif ?>
+                 <?php if (isset($header_pdf1)): ?>
+                    <?php  $mesReporte = $header_pdf1['mes']; ?>
+                    <?php echo $mesRep[$mesReporte - 1]; ?>
+                    <?php  echo $header_pdf1['anio']; ?>
+                 <?php endif ?>
+             </strong></h5> </td>
         </tr>
         <tr>
             <td></td>
-            <td class="text-center txt-negrita"> <h5> DEL <?php echo $header_pdf[0]->periodo_inicio; ?> AL <?php echo $header_pdf[0]->periodo_fin; ?> </h5> </td>
+            <td class="text-center txt-negrita"> 
+            <h5> 
+                <?php if (isset($header_pdf)): ?>
+                   DEL <?php echo $header_pdf[0]->periodo_inicio; ?> AL <?php echo $header_pdf[0]->periodo_fin; ?>  
+                <?php endif ?>
+            </h5> 
+            </td>
         </tr>
     </table> 
 
