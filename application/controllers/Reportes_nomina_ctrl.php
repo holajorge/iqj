@@ -33,6 +33,18 @@ class Reportes_nomina_ctrl extends CI_Controller {
         }
         echo json_encode($result);
 	}
+	public function getAllMontPeriodosC(){
+		$fecha = $this->input->post('anio');
+		$query = $this->Reportes_nomina_Model->getAllMontPeriodos($fecha);
+		if ($query != false) {
+            $result['resultado'] = true;
+            $result['meses'] = $query;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+
+	}
 	public function getAllPeriodosPercepcion(){
 
 		$id_nomina = $this->input->post('id');
@@ -104,6 +116,24 @@ class Reportes_nomina_ctrl extends CI_Controller {
         //**********************************************************************************
         //    FIN   PDF
         //**********************************************************************************
+    }
+	public function getAllPeriodosPercepcionMes(){
+
+		$mes = $this->input->post('mes');
+		$query = $this->Reportes_nomina_Model->getAllConceptosPercepcionNominaPeriodoMes($mes);
+		$query1 = $this->Reportes_nomina_Model->getAllConceptosDeduccionNominaPeriodoMes($mes);
+		$query2 = $this->Reportes_nomina_Model->getAllConceptosAportacionNominaPeriodoMes($mes);
+		if ($query != false) {
+
+            $result['resultado'] = true;
+            $result['percepciones'] = $query;
+            $result['deducciones'] = $query1;
+            $result['aportaciones'] = $query2;
+
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
 	}
 
 }

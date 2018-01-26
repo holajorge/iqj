@@ -18,11 +18,11 @@
                 </select>
             </form>
         </div>
-        <div class="col-lg-4">
-            <h3>Seleccione el Periodo</h3>
-            <select class="form-control input-lg" id="periodo" name="periodo" onchange="serach_conseptos(value);">
+        <div class="col-lg-4" id="peridosdiv">
+            <!-- <h3>Seleccione el Periodo</h3> -->
+            <!-- <select class="form-control input-lg" id="periodo" name="periodo" onchange="serach_conseptos(value);">
                 
-            </select>
+            </select> -->
         </div>
                 
     </div><br><br>
@@ -30,6 +30,9 @@
     <div class="row">
         <form id="formTotalConcepts" method="POST" action="<?php echo base_url('Reportes_nomina_ctrl/reporteNominaPorConcepto');?>" target="_blank">
             <input type="hidden" name="id_nomina" id="id_nomina">
+            <input type="hidden" name="tipo" id="tipo">
+            <input type="hidden" name="anio" id="anioo">
+            <input type="hidden" name="mess" id="mess">
             <div class="col-lg-4"  id="table_percepciones" >
                 
             </div>
@@ -44,9 +47,9 @@
             </div>
         </form>
     </div>
-    <!-- <div class="row">
-        <div class="col-lg-12"  id="guardad_conceptos">
-            <button class="btn btn-primary pull-right btn-lg" type="submit">GUARDAR</button>
+    <div class="row">
+        <div class="col-lg-12"  >
+            <button style="display: none" id="guardad_conceptos" class="btn btn-primary pull-right btn-lg" type="submit">GUARDAR</button>
         </div>
     </div> -->
 
