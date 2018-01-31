@@ -1,6 +1,11 @@
 $(document).ready(function() {
-   
-    $("#formPuesto").validate({
+    
+
+});
+
+function addPuesto(){
+
+  $("#formPuesto").validate({
 
       rules: {
         nivel: { required: true},
@@ -12,6 +17,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formPuesto").serialize();
+        var l = $("#ladda_btn_addPuesto").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Puesto_ctrl/create_puesto",
@@ -29,19 +36,34 @@ $(document).ready(function() {
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
+                    l.ladda('stop');
                     toastr.success('Los datos se guardaron correctamente', 'DATOS GUARDADOS');
                 }, 1300);
                 }
             } 
         });
       }
-    });
+  });
+}
 
-    $("#formPuestosEditar").validate({
+function editPuesto(id){
+
+    var nivel=document.getElementById("nivel"+id).innerHTML;    
+    var nombre=document.getElementById("nombre"+id).innerHTML;            
+
+    document.getElementById("idEditar").innerHTML=id+"";
+    document.getElementById("idEditar").value=id; 
+    document.getElementById("nivelEditar").value=nivel;
+    document.getElementById("nombreEditar").value=nombre;                      
+}
+
+function saveEditPuesto(){
+
+  $("#formPuestosEditar").validate({
 
       rules: {
         nivel: { required: true},
-        nombre: { required: true},            
+        nombre: { required: true},
       },        
       messages: {
         nivel: "Nivel Necesario",
@@ -49,6 +71,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formPuestosEditar").serialize();
+        var l = $("#ladda_btn_editPuesto").ladda();
+         l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Puesto_ctrl/edit_puestos",
@@ -57,6 +81,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#editarPuesto").modal('hide');
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -76,43 +101,31 @@ $(document).ready(function() {
         });
       }
     });
-
-});
-
-function editPuesto(id){
-
-    var nivel=document.getElementById("nivel"+id).innerHTML;    
-    var nombre=document.getElementById("nombre"+id).innerHTML;            
-
-    document.getElementById("idEditar").innerHTML=id+"";
-    document.getElementById("idEditar").value=id;              
-    document.getElementById("nivelEditar").value=nivel;
-    document.getElementById("nombreEditar").value=nombre;                      
 }
 
-function savePuestoEdit(){
+// function savePuestoEdit(){
 
-        $.ajax({
-                url: baseURL + "Puesto_ctrl/edit_puestos",
-                type: "POST",
-                data: $("#formPuestosEditar").serialize(),
-                success: function(respuesta) {
-                    var obj = JSON.parse(respuesta);
-                        if (obj.resultado === true) {
-                          $("#editarPuesto").modal('hide');
-                                setTimeout(function() {
-                                toastr.options = {
-                                    closeButton: true,
-                                    progressBar: true,
-                                    showMethod: 'slideDown',
-                                    timeOut: 4000
-                                };
-                            toastr.success('Los datos se guardaron correctamente', 'DATOS ACTUALIZADOS');
-                        }, 1300);
-                }
-            } 
-        });
-}
+//         $.ajax({
+//                 url: baseURL + "Puesto_ctrl/edit_puestos",
+//                 type: "POST",
+//                 data: $("#formPuestosEditar").serialize(),
+//                 success: function(respuesta) {
+//                     var obj = JSON.parse(respuesta);
+//                         if (obj.resultado === true) {
+//                           $("#editarPuesto").modal('hide');
+//                                 setTimeout(function() {
+//                                 toastr.options = {
+//                                     closeButton: true,
+//                                     progressBar: true,
+//                                     showMethod: 'slideDown',
+//                                     timeOut: 4000
+//                                 };
+//                             toastr.success('Los datos se guardaron correctamente', 'DATOS ACTUALIZADOS');
+//                         }, 1300);
+//                 }
+//             } 
+//         });
+// }
 
 function deshabilitarPuesto(id, nombre){
   var name = "<p><strong>"+nombre+"</strong><p>";

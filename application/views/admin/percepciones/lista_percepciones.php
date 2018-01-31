@@ -47,9 +47,9 @@
         <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Editar Percepciones</h4>        
+                <h4 class="modal-title" id="myModalLabel">Editar Percepción</h4>
               </div>
-              <div class="modal-body">        
+              <div class="modal-body">
                 <input type="hidden" name="id" id="idEditar" value="">
                 <div class="row">
                     <div class="col-xs-12 col-sm-4 col-md-4">
@@ -68,7 +68,7 @@
               </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <input type="submit" class="btn btn-primary" value="Guardar Cambios" tabindex="3">
+                <button id="ladda_btn_saveEditPercepcion" type="submit" class="ladda-button btn btn-primary" tabindex="3" data-style="expand-left" onclick="saveEditPercepcion()"> Guardar Cambios</button>
             </div>      
         </div>
     </form>  

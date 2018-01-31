@@ -22,6 +22,12 @@
     <script src="<?php echo base_url('assets/js/inspinia.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/plugins/pace/pace.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/plugins/iCheck/icheck.min.js'); ?>"></script>
+    
+    <!-- Ladda -->
+    <script src="<?php echo base_url('assets/js/plugins/ladda/spin.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/plugins/ladda/ladda.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/plugins/ladda/ladda.jquery.min.js'); ?>"></script>    
+
     <script>
         $(document).ready(function(){
             $('.i-checks').iCheck({
@@ -98,6 +104,10 @@
     <script src="<?php echo base_url('assets/js/validations/nomina_extraudinaria.js'); ?>"></script>
     <!-- js direccion -->
     <script src="<?php echo base_url('assets/js/validations/concepto_totales.js'); ?>"></script>
+    <!-- js para los perfiles de usuarios -->
+    <script src="<?php echo base_url('assets/js/validations/user.js'); ?>"></script>
+     <!-- js para los compoenentes -->
+    <script src="<?php echo base_url('assets/js/validations/componentes.js'); ?>"></script>
 
 </body>
 </html>

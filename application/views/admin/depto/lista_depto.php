@@ -17,15 +17,15 @@
                             <?php if ($deptos != null ): ?>
                                 <?php foreach ($deptos as  $depto): ?>
                                     <tr class="gradeA">         
-                                        <td><label  id="nombre<?php echo $depto->id_depto ?>"><?php echo  $depto->nombre ?></label></td> 
-                                        <td><label  id="direccion<?php echo $depto->id_depto ?>"><?php echo $depto->direccion ?></label></td>                                       
+                                        <td><label  id="nombre<?php echo $depto->id_depto ?>"><?php echo  $depto->nombre ?></label></td>
+                                        <td><label  id="direccion<?php echo $depto->id_depto ?>"><?php echo $depto->direccion ?></label></td>
                                         <td class="text-center">
                                             <?php if ($depto->status == 1): ?>
                                                 <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarDepto('<?php echo $depto->id_depto ?>', '<?php echo $depto->nombre ?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
                                             <?php else: ?>
                                                 <button type="button" class="btn btn-success btn-rounded" onclick="habilitarDepto('<?php echo $depto->id_depto ?>', '<?php echo $depto->nombre ?>')"><span class="fa fa-heart"></span> Habilitar </button>
-                                            <?php endif ?>                                            
-                                            <button class="btn btn-info btn-rounded" onclick="editDepto('<?php echo $depto->id_depto ?>')" data-toggle="modal" data-target="#editarDepto"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
+                                            <?php endif ?>
+                                                <button type="button" class="btn btn-info btn-rounded" onclick="editDepto('<?php echo $depto->id_depto ?>', '<?php echo $depto->direccion ?>')" data-toggle="modal" data-target="#editarDepto"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
                                         </td>                                    
                                     </tr>                                
                             <?php endforeach ?>
@@ -64,12 +64,8 @@
                     <div class="col-xs-12 col-sm-6 col-md-6">
                         <div class="form-group">
                             <label for="puesto">Direccion</label>
-                            <select class="form-control input-lg" id="direccionEditar" name="direccion">                               
-                                <?php foreach ($direcciones as $direccion): ?>                               
-                                    <option  value="<?php echo $direccion->id_direccion ?>" <?php echo ($depto->direccion == $direccion->nombre) ? 'selected' : '';?>>
-                                            <?php echo $direccion->nombre; ?>
-                                    </option>  
-                                <?php endforeach ?>                                                                                     
+                            <select class="form-control input-lg" id="direccionEditarID" name="direccion">                               
+                                                                                                               
                             </select>
                         </div>
                     </div>                                         
@@ -77,7 +73,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <input type="submit" value="Guardar Cambios" class="btn btn-primary custom-close" tabindex="3">
+        <button id="ladda_btn_editDepto" type="submit" class="ladda-button btn btn-primary custom-close" data-style="expand-left" tabindex="3" onclick="saveEditDepto()">Guardar Cambios</button>
       </div>
     </div>
  </form>

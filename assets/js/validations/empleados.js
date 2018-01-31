@@ -1,23 +1,27 @@
 $(document).ready(function() {
 
     inicalizarDataTable("tabla_lista_empleados");
-   
-    $("#form_crearr_empleado").validate({
+
+});
+
+function saveEmPloye(){
+    $("#form_crear_empleado").validate({
 
         rules: {
-            no_plaza: { required: true, maxlength: 5, number: true},
+            no_plaza: { required: true, number: true},
             nombre: { required: true, maxlength: 60, },
             horas: { required: true },
             nss: {required: true},
-            ap_paterno: { required: true, maxlength: 30},            
+            ap_paterno: { required: true},            
             fecha_nacimiento: { required: true, date: true},
             fecha_ingreso: { required: true, date: true},            
             rfc: {required: true},
             curp: {required: true},
-            no_empleado: { required: true, minlength: 2}, 
+            no_empleado: { required: true}, 
             id_depto: { required: true},
             id_puesto: { required: true},     
-            id_tipo_trabajador: { required: true},         
+            id_tipo_trabajador: { required: true},    
+            componente: { required: true},     
         },        
         messages: {
             horas: "Horas Necesarias",
@@ -33,10 +37,13 @@ $(document).ready(function() {
             no_empleado: "ingrese numero Empleado",
             id_depto: "Debe seleccionar Depto.",
             id_puesto: "Debe seleccionar Puesto.",     
-            id_tipo_trabajador: "Debe seleccionar Tipo.",        
+            id_tipo_trabajador: "Debe seleccionar Tipo.",  
+            componente: "Debe seleccionar un Componente"      
         },
         submitHandler: function(){    
-            var dataString = $("#form_crearr_empleado").serialize();
+            var dataString = $("#form_crear_empleado").serialize();
+            var l = $("#btn_guardar_empleado").ladda();
+            l.ladda('start');
             $.ajax({
                 type: "POST",
                 url:baseURL + "empleado_controller/guardar_empleado",
@@ -45,7 +52,7 @@ $(document).ready(function() {
                   var obj = JSON.parse(respuesta);
                     if (obj.resultado === true) {                      
                        //Limpiar formulario
-                       $("#form_crearr_empleado")[0].reset(); 
+                       $("#form_crear_empleado")[0].reset(); 
                        //Mensaje de operación realizada con éxito
                         setTimeout(function() {
                             toastr.options = {
@@ -54,6 +61,7 @@ $(document).ready(function() {
                                 showMethod: 'slideDown',
                                 timeOut: 4000
                             };
+                        l.ladda('stop');
                         toastr.success('Los datos se guardaron correctamente', 'GUARDARON DATOS');                        
                     }, 1300);
                     }
@@ -61,20 +69,23 @@ $(document).ready(function() {
             });
         }
     });
+}
+
+function saveEditEmploye(){
 
     $("#form_edit_empleado").validate({
 
         rules: {
-            no_plaza: { required: true, maxlength: 5, number: true},
+            no_plaza: { required: true, number: true},
             horas: { required: true },
-            nombre: { required: true, maxlength: 60, },            
-            ap_paterno: { required: true, maxlength: 30},
-            ap_materno: { required: true, maxlength: 30},
+            nombre: { required: true },            
+            ap_paterno: { required: true},
+            ap_materno: { required: true},
             fecha_nacimiento: { required: true, date: true},
             fecha_ingreso: { required: true, date: true},            
             curp: {required: true},
             rfc: {required: true},            
-            no_empleado: { required: true, minlength: 2},             
+            no_empleado: { required: true},             
         },        
         messages: {
             horas: "Horas Necesarias",
@@ -93,6 +104,8 @@ $(document).ready(function() {
         },
         submitHandler: function(){    
             var dataString = $("#form_edit_empleado").serialize();
+            var l = $("#btn_save_edit").ladda();
+            l.ladda('start');
             $.ajax({
                 type: "POST",
                 url:baseURL + "empleado_controller/updater_empleado",
@@ -101,6 +114,7 @@ $(document).ready(function() {
                   var obj = JSON.parse(respuesta);
                     if (obj.resultado === true) {                      
                        //Limpiar formulario
+                       l.ladda('stop');
                        $("#editarEmpleado").modal('hide');
                        //Mensaje de operación realizada con éxito
                         setTimeout(function() {
@@ -120,7 +134,8 @@ $(document).ready(function() {
             });
         }
     });
-});
+
+}
 
 function deshabilitarEmpleado(id, nombre, paterno){
   var name = "<p><strong>"+nombre+' '+paterno+"</strong><p>";
@@ -183,8 +198,7 @@ function habilitarEmpleado(id, nombre, paterno){
     });
 }
 
-function editEmpleado(id){
-
+function editEmpleado(id, depto, puesto, trabajdor, componente ){    
     var no_plaza=document.getElementById("no_plaza"+id).innerHTML;    
     var horas=document.getElementById("horas"+id).innerHTML;
     var nss=document.getElementById("nss"+id).innerHTML;
@@ -196,7 +210,6 @@ function editEmpleado(id){
     var rfc=document.getElementById("rfc"+id).innerHTML;
     var no_empleado=document.getElementById("no_empleado"+id).innerHTML;
     var curp=document.getElementById("curp"+id).innerHTML;   
-    var trabajador=document.getElementById("trabajador"+id).innerHTML; 
 
     document.getElementById("idEditar").innerHTML=id+"";
     document.getElementById("idEditar").value=id;              
@@ -211,6 +224,68 @@ function editEmpleado(id){
     document.getElementById("rfcEdit").value=rfc;
     document.getElementById("curpEdit").value=curp;
     document.getElementById("no_empleadoEdit").value=no_empleado;   
+
+    var html = "";
+    var html1 = "";
+    var html2 = "";
+    var html3 = "";
+    $.ajax({
+        type: "POST",
+        url:baseURL + "Empleado_controller/getSelected",
+        success: function(respuesta) {
+          var obj = JSON.parse(respuesta);
+            if (obj.resultado === true) {                      
+                              
+                var num_fila = 1;
+                for (l in obj.deptos) {
+              
+                    if (obj.deptos[l].nombre == depto) {
+                        html +=  "<option value='"+ obj.deptos[l].id_depto +"' selected>" + obj.deptos[l].nombre +"</option>" ;  
+                    }else{
+                        html +=  "<option value='"+ obj.deptos[l].id_depto +"'>" + obj.deptos[l].nombre +"</option>" ;      
+                    }
+                   num_fila ++; 
+                }     
+                $("#deptoID").html(html); 
+
+                var num_fila1 = 1;
+                for (l in obj.puestos) {
+              
+                    if (obj.puestos[l].nombre == puesto) {
+                        html1 +=  "<option value='"+ obj.puestos[l].id_puesto +"' selected>" + obj.puestos[l].nombre +"</option>" ;  
+                    }else{
+                        html1 +=  "<option value='"+ obj.puestos[l].id_puesto +"'>" + obj.puestos[l].nombre +"</option>" ;      
+                    }
+                   num_fila1 ++; 
+                }     
+                $("#puestoID").html(html1);
+
+                var num_fila2 = 1;
+                for (l in obj.tipo_trabajador) {
+              
+                    if (obj.tipo_trabajador[l].nombre_tipo_trabajador == trabajdor) {
+                        html2 +=  "<option value='"+ obj.tipo_trabajador[l].id_tipo_trabajador +"' selected>" + obj.tipo_trabajador[l].nombre_tipo_trabajador +"</option>" ;  
+                    }else{
+                        html2 +=  "<option value='"+ obj.tipo_trabajador[l].id_tipo_trabajador +"'>" + obj.tipo_trabajador[l].nombre_tipo_trabajador +"</option>" ;      
+                    }
+                   num_fila2 ++; 
+                }     
+                $("#trabajadorID").html(html2);  
+
+                var num_fila3 = 1;
+                for (l in obj.componentes) {
+              
+                    if (obj.componentes[l].nombre == componente) {
+                        html3 +=  "<option value='"+ obj.componentes[l].id_componente +"' selected>" + obj.componentes[l].nombre +"</option>" ;  
+                    }else{
+                        html3 +=  "<option value='"+ obj.componentes[l].id_componente +"'>" + obj.componentes[l].nombre +"</option>" ;      
+                    }
+                   num_fila3 ++; 
+                }     
+                $("#componenteID").html(html3);
+            }
+        } 
+    });
 }
 
 ////////////SECCION DE VALIDAR CURP Y RFC EMPLEADO ///////////////

@@ -68,7 +68,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary" tabindex="5">Guardar Cambios</button>
+        <button id="ladda_btn_editPuesto" type="submit" class="ladda-button btn btn-primary" data-style="expand-left" tabindex="3" onclick="saveEditPuesto()">Guardar Cambios</button>
       </div>
     </div>
   </form>

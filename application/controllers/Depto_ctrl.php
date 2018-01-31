@@ -58,6 +58,20 @@ class Depto_ctrl extends CI_Controller {
         }
         echo json_encode($result);	
 	}
+
+	public function getAdrress(){
+
+		$query = $this->Depto_model->get_direcciones(); 
+
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['direcciones'] = $query;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+
+	}
 	public function deshabilitar_Depto(){
 
 		$id = $this->input->post('id');

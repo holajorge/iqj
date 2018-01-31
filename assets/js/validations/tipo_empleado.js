@@ -1,16 +1,21 @@
 $(document).ready(function() {
+   
+    
+});
+function saveTypeEmploye(){
 
-    $("#formTipoEmple").validate({
+   $("#formTipoEmple").validate({
 
       rules: {
         nombre: { required: true},            
-      },        
+      },
       messages: {
-        nombre: "Tipo de Empleado Necesario",
-                  
+        nombre: "Tipo de Empleado es Necesario",     
       },
       submitHandler: function(){    
         var dataString = $("#formTipoEmple").serialize();
+        var l = $("#ladda_btn_saveEmploye").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "TipoEmpleado_ctrl/create_tipoEmpleado",
@@ -28,6 +33,7 @@ $(document).ready(function() {
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
+                    l.ladda('stop');
                     toastr.success('Los datos se guardaron correctamente', 'DATOS GUARDADOS');
                 }, 1300);
                 }
@@ -36,16 +42,31 @@ $(document).ready(function() {
       }
     });
 
-    $("#formTipoEmpleadoEditar").validate({
+}
 
-      nombre: {
+function editTipoEmpleado(id){
+
+  var nombre=document.getElementById("nombre"+id).innerHTML;    
+
+  document.getElementById("idEditar").innerHTML=id+"";
+  document.getElementById("idEditar").value=id;              
+  document.getElementById("nombreEditar").value=nombre;
+}
+
+function saveEditTypeEmploye(){
+
+  $("#formTipoEmpleadoEditar").validate({
+
+      rules: {
         nombre: { required: true},
       },
       messages: {
-        nombre: "Tipo de Empleado Necesario",          
+        nombre: "Tipo de Empleado Necesario",
       },
-      submitHandler: function(){    
+      submitHandler: function(){
         var dataString = $("#formTipoEmpleadoEditar").serialize();
+        var l = $("#ladda_btn_editEmploye").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "TipoEmpleado_ctrl/edit_tipoEmpleado",
@@ -54,6 +75,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#editarTipoEmpleado").modal('hide');
                    //Mensaje de operación realizada con éxito
                     setTimeout(function(){
@@ -72,17 +94,11 @@ $(document).ready(function() {
             }
         });
       }
-    });
-});
-
-function editTipoEmpleado(id){
-
-    var nombre=document.getElementById("nombre"+id).innerHTML;    
-
-    document.getElementById("idEditar").innerHTML=id+"";
-    document.getElementById("idEditar").value=id;              
-    document.getElementById("nombreEditar").value=nombre;
+  });
 }
+
+
+
 
 function deshabilitarEmpleadoTipo(id, nombre){
   var name = "<p><strong>"+nombre+"</strong><p>";

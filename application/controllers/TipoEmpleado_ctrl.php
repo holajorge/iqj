@@ -34,7 +34,8 @@ class TipoEmpleado_ctrl extends CI_Controller {
     public function create_tipoEmpleado(){
     
         $tipoEmpleado = array(            
-            'nombre_tipo_trabajador' => $this->input->post('nombre')                             
+            'nombre_tipo_trabajador' => $this->input->post('nombre'),
+            'status' => 1                            
             );
         $query = $this->TipoEmpleado_model->createTiploEmpleado($tipoEmpleado);
         if ($query == 1) {

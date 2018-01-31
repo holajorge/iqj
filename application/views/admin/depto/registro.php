@@ -3,7 +3,7 @@
 			<form role="form" id="formDepto">
 				<h2>Registro de Departamento</small></h2>
 				<hr class="colorgraph">
-				<div class="row">					
+				<div class="row">
 					<div class="col-xs-12 col-sm-6 col-md-9">
 						<div class="form-group">
 							<label for="nombre">Nombre Departamento</label>
@@ -25,7 +25,7 @@
 				<hr class="colorgraph">
 				<div class="row">
 					<div class="col-xs-12 col-md-4">
-						<input type="submit" value="Registrar" class="btn btn-primary btn-block btn-lg" tabindex="3">
+						<button id="ladda_btn_addDepto" type="submit" class="ladda-button btn btn-primary btn-block btn-lg" data-style="expand-left" tabindex="3" onclick="addDepto()"> <span class="fa fa-save"></span> Registrar</button>
 					</div>
 				</div>
 			</form>

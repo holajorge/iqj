@@ -22,6 +22,7 @@
                                     <th>CURP</th>
                                     <th>Nu Empleado</th>
                                     <th>TIPO T</th>
+                                    <th>Componente</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
@@ -37,19 +38,20 @@
                                         <td><label  id="ap_materno<?php echo $empleado->id_empleado ?>"><?php echo $empleado->ap_materno?></label></td> 
                                         <td><label  id="fecha_nacimiento<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->fecha_nacimiento ?></label></td> 
                                         <td><label  id="fecha_ingreso<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->fecha_ingreso ?></label></td> 
-                                        <td><label  id="nombre_depto<?php echo $empleado->id_empleado ?>"><?php echo $empleado->nombre_depto?></label></td> 
-                                        <td><label  id="nombre_puesto<?php echo $empleado->id_empleado ?>"><?php echo $empleado->nombre_puesto?></label></td> 
+                                        <td><label  id="nombre_depto"> <?php echo $empleado->nombre_depto?> </label></td> 
+                                        <td><label  id="nombre_puesto"> <?php echo $empleado->nombre_puesto?> </label></td> 
                                         <td><label  id="rfc<?php echo $empleado->id_empleado ?>"><?php echo $empleado->rfc?></label></td>
                                         <td><label  id="curp<?php echo $empleado->id_empleado ?>"><?php echo $empleado->curp?></label></td>
                                         <td><label  id="no_empleado<?php echo $empleado->id_empleado ?>"><?php echo $empleado->no_empleado?></label></td>
-                                        <td><label  id="trabajador<?php echo $empleado->id_empleado ?>"><?php echo $empleado->trabajador?></label></td>
+                                        <td><label  id="trabajador"> <?php echo $empleado->trabajador?></label></td>
+                                        <td><label  id="componente"> <?php echo $empleado->componente?></label></td>
                                         <td class="text-center">
                                             <?php if ($empleado->status == 1): ?>
                                             <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarEmpleado('<?php echo $empleado->id_empleado?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
                                             <?php else: ?>
                                                 <button type="button" class="btn btn-success btn-rounded" onclick="habilitarEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>' )"><span class="fa fa-heart"></span> Habilitar </button>
                                             <?php endif ?>                                              
-                                            <button class="btn btn-info" onclick="editEmpleado('<?php echo $empleado->id_empleado ?>')" data-toggle="modal" data-target="#editarEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
+                                            <button  type="button" class="btn btn-info btn-rounded" onclick="editEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_depto?>','<?php echo $empleado->nombre_puesto?>','<?php echo $empleado->trabajador?>','<?php echo $empleado->componente?>')" data-toggle="modal" data-target="#editarEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
                                         </td>  
                                     </tr>
                                 <?php endforeach ?>
@@ -121,39 +123,29 @@
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="deptoEdit">Departamento</label>
-                            <select class="form-control input-lg" name="depto" tabindex="11">                                    
-                                <?php foreach ($deptos as $depto): ?>                               
-                                    <option  value="<?php echo $depto->id_depto ?>" <?php echo ($empleado->nombre_depto== $depto->nombre) ? 'selected' : '';?>>
-                                            <?php echo $depto->nombre; ?>
-                                    </option>  
-                                <?php endforeach ?>
+                            <select class="form-control input-lg" name="depto" tabindex="11" id="deptoID">                                                                    
                             </select>
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="puesto">Puesto</label>
-                            <select class="form-control input-lg" name="puesto" tabindex="12">
-                                <?php foreach ($puestos as $puesto): ?>                                     
-                                     <option  value="<?php echo $puesto->id_puesto ?>" <?php echo ($empleado->nombre_puesto== $puesto->nombre) ? 'selected' : '';?>>
-                                        <?php echo $puesto->nombre; ?>
-                                     </option>                                                                                                                 
-                                <?php endforeach ?>
+                            <select class="form-control input-lg" name="puesto" tabindex="12" id="puestoID">                                
                             </select>
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="tipo_trabajador">Tipo Empleado</label>
-                            <select class="form-control input-lg" name="tipo_trabajador" tabindex="13">                                    
-                                <?php foreach ($tipo_trabajador as $tipo_empleado): ?>
-                                    <option  value="<?php echo $tipo_empleado->id_tipo_trabajador ?>" <?php echo ($empleado->trabajador== $tipo_empleado->nombre_tipo_trabajador) ? 'selected' : '';?>>
-                                            <?php echo $tipo_empleado->nombre_tipo_trabajador; ?>
-                                    </option>                                        
-                                <?php endforeach ?>
-                            </select>                           
-                        </div>                  
-                </div>           
+                            <select class="form-control input-lg" name="tipo_trabajador" tabindex="13" id="trabajadorID">                                                                
+                            </select>
+                        </div> 
+                        <div class=" col-sm-6 col-md-6">
+                            <label for="componenteEmpleado">Componente</label>
+                            <select class="form-control input-lg" name="componente" tabindex="14" id="componenteID">                                                                    
+                            </select>
+                        </div>
+                </div>
         </div>
-        <div class="modal-footer">          
+        <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-            <input type="submit" value="Guardar Cambios" id="btn_save_edit" class="btn btn-primary " tabindex="14">
+            <button type="submit" id="btn_save_edit" class="ladda-button btn btn-primary" data-style="expand-left" tabindex="15" onclick="saveEditEmploye()">Guardar Cambios</button>
         </div>
       </div>
     </form>

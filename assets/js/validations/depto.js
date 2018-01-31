@@ -1,17 +1,24 @@
 $(document).ready(function() {
 
-    $("#formDepto").validate({
+
+});
+
+function addDepto(){
+
+  $("#formDepto").validate({
 
       rules: {
         nombre: { required: true},
         direccion: { required: true},            
-      },        
+      },
       messages: {
         nombre: "Nombre Necesario",
         direccion: "Seleccione una Direccion",            
       },
-      submitHandler: function(){    
+      submitHandler: function(){
         var dataString = $("#formDepto").serialize();
+        var l = $("#ladda_btn_addDepto").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Depto_ctrl/create_depto",
@@ -29,6 +36,7 @@ $(document).ready(function() {
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
+                    l.ladda('stop');
                     toastr.success('Los datos se guardaron correctamente', 'DATOS GUARDADOS');
                 }, 1300);
                 }
@@ -36,8 +44,43 @@ $(document).ready(function() {
         });
       }
     });
+}
+// llenar el select para direcciones
+function editDepto(id, direccion){
+   
+  var nombre=document.getElementById("nombre"+id).innerHTML;    
 
-    $("#formDeptoEditar").validate({
+  document.getElementById("idEditar").innerHTML=id+"";
+  document.getElementById("idEditar").value=id;              
+  document.getElementById("nombreEditar").value=nombre;
+
+   $.ajax({
+      type: "GET",
+      url: baseURL +"Depto_ctrl/getAdrress",        
+       success: function(respuesta){
+         var obj = JSON.parse(respuesta);
+         if (obj.resultado == true) {
+            var html = "";
+            var num_fila = 1;
+              for (l in obj.direcciones) {              
+                  if (obj.direcciones[l].nombre == direccion) {
+                      html +=  "<option value='"+ obj.direcciones[l].id_direccion +"' selected>" + obj.direcciones[l].nombre +"</option>" ;  
+                  }else{
+                      html +=  "<option value='"+ obj.direcciones[l].id_direccion +"'>" + obj.direcciones[l].nombre +"</option>" ; 
+                  }
+                 num_fila ++; 
+              }
+              $("#direccionEditarID").html(html); 
+
+          }
+        }
+   });
+
+}
+
+function saveEditDepto(){
+
+  $("#formDeptoEditar").validate({
 
       rules: {
         nombre: { required: true},
@@ -49,6 +92,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formDeptoEditar").serialize();
+        var l = $("#ladda_btn_editDepto").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Depto_ctrl/edit_depto",
@@ -57,6 +102,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#editarDepto").modal('hide');
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -75,65 +121,33 @@ $(document).ready(function() {
             } 
         });
       }
-    });
-});
-function saveDepto(){
-    event.preventDefault();
-    $.ajax({
-            url: baseURL + "Depto_ctrl/create_depto",
-            type: "POST",
-            data: $("#formDepto").serialize(),
-            success: function(respuesta) {
-                var obj = JSON.parse(respuesta);
-                    if (obj.resultado === true) {
-                      
-                       //Limpiar formulario
-                       $("#formDepto")[0].reset(); 
-                       //Mensaje de operación realizada con éxito
-                        setTimeout(function() {
-                            toastr.options = {
-                                closeButton: true,
-                                progressBar: true,
-                                showMethod: 'slideDown',
-                                timeOut: 4000
-                            };
-                        toastr.success('Los datos se guardaron correctamente', 'DATOS GUARDADOS');
-                    }, 1300);
-            }
-        } 
-    });
+  });
 }
-function editDepto(id){
 
-    var nombre=document.getElementById("nombre"+id).innerHTML;    
+// function saveDeptoEdit(){
 
-    document.getElementById("idEditar").innerHTML=id+"";
-    document.getElementById("idEditar").value=id;              
-    document.getElementById("nombreEditar").value=nombre;
-}
-function saveDeptoEdit(){
+//     $.ajax({
+//         url: baseURL + "Depto_ctrl/edit_depto",
+//         type: "POST",
+//         data: $("#formDeptoEditar").serialize(),
+//         success: function(respuesta) {
+//             var obj = JSON.parse(respuesta);
+//                if (obj.resultado === true) {
+//                  $('#editarDepto').modal('hide');
+//                  setTimeout(function() {
+//                  toastr.options = {
+//                  closeButton: true,
+//                  progressBar: true,
+//                  showMethod: 'slideDown',
+//                  timeOut: 4000
+//                  };
+//                  toastr.success('Los datos se guardaron correctamente', 'DATOS ACTUALIZADOS');
+//                }, 1300);
+//             }
+//         } 
+//     });
+// }
 
-    $.ajax({
-        url: baseURL + "Depto_ctrl/edit_depto",
-        type: "POST",
-        data: $("#formDeptoEditar").serialize(),
-        success: function(respuesta) {
-            var obj = JSON.parse(respuesta);
-               if (obj.resultado === true) {
-                 $('#editarDepto').modal('hide');
-                 setTimeout(function() {
-                 toastr.options = {
-                 closeButton: true,
-                 progressBar: true,
-                 showMethod: 'slideDown',
-                 timeOut: 4000
-                 };
-                 toastr.success('Los datos se guardaron correctamente', 'DATOS ACTUALIZADOS');
-               }, 1300);
-            }
-        } 
-    });
-}
 function deshabilitarDepto(id, nombre){
   var name = "<p><strong>"+nombre+"</strong><p>";
   var text = "<h3>¿SEGURO DE DESHABILITAR?</h3>";
