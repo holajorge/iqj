@@ -7,14 +7,22 @@ $(document).ready(function() {
      $( document ).ajaxStart(function() {
         //$( "#loading" ).show();
         console.log("cargando");
+        $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
+        // $('#myModalStatusBar').modal('show');
     });
 
      $( document ).ajaxStop(function() {
       //$( "#loading" ).hide();
       console.log("fin de carga");
+      $('#myModalStatusBar').modal('hide')
     });
+     // $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
 
 });
+
+function openModal(){
+    $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
+}
 
 function serach_periodos(id){
 

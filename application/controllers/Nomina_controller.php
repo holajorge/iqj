@@ -31,6 +31,7 @@ class Nomina_controller extends CI_Controller {
         $data['periodos'] = $this->Nomina_model->getAllPeriodos();
         $this->load->view('global_view/header',$dato);
         $this->load->view('admin/nomina/periodos', $data);
+        $this->load->view('global_view/alert_procesando');
         $this->load->view('global_view/foother');
     }
 
@@ -66,6 +67,7 @@ class Nomina_controller extends CI_Controller {
             $query["extraordinarios"] = $this->Nomina_model->gelAllCX();       
             $this->load->view('global_view/header', $dato);
             $this->load->view('admin/nomina/alta_extraudinaria', $query);
+            $this->load->view('global_view/alert_procesando');
             $this->load->view('global_view/foother');
     }
     public function buscar_periodo(){
@@ -104,6 +106,7 @@ class Nomina_controller extends CI_Controller {
         $showScript['NominaJs'] = true;
         $this->load->view('global_view/header',$dato);
 		$this->load->view('admin/nomina/detalle_nomina',$query);
+        $this->load->view('global_view/alert_procesando');
 		$this->load->view('global_view/foother',$showScript);
 	}
 
@@ -123,6 +126,7 @@ class Nomina_controller extends CI_Controller {
         $showScript['editarNominaJs'] = true;
         $this->load->view('global_view/header',$dato);
         $this->load->view('admin/nomina/editar',$data);
+        $this->load->view('global_view/alert_procesando');
         $this->load->view('global_view/foother',$showScript);
     }
 	public function create_conceptoExtra(){

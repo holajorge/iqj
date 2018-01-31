@@ -51,9 +51,8 @@ function datosEmpleado(id){
 function insetaExtaordinaria(){
 
     $("#dia").html("");
-
+    $("#crearExtraordinario").modal('hide');
      $("#formExtraCreate").validate({        
-
       rules: {
         fecha: { required: true, date: true },
         nombre: { required: true, },            
@@ -72,6 +71,15 @@ function insetaExtaordinaria(){
                 console.log(respuesta);
                 var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {
+                    //setTimeout(function() {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 1200
+                        };
+                        toastr.success('El concepto de agregó correctamente', 'ACTUALIZANDO DATOS'); 
+                    //}, 1300);
                     $('#formExtraCreate')[0].reset();
                     var html = "";
                         html += "<option selected disabled hidden>Seleccione Concepto</option>";
@@ -89,7 +97,7 @@ function insetaExtaordinaria(){
                     }
                     $("#dia").html(html);                    
                 }
-                $("#crearExtraordinario").modal('hide');                 
+                // $("#crearExtraordinario").modal('hide');                 
             } 
         });
       }

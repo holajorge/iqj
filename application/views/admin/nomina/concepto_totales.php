@@ -1,6 +1,6 @@
  <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <form id="prueba">
                 <h3>Seleccione Año</h3>
                 <select class="form-control input-lg" name="anio" id="anio" onchange="serach_yaer(value);">
@@ -11,18 +11,29 @@
                 </select>
             </form>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <form id="tipoConsulta">
                 <h3>Seleccione Tipo Consulta</h3>
                 <select class="form-control input-lg" name="mes" id="mes" onchange="serach_periodo(value);">                
                 </select>
             </form>
         </div>
-        <div class="col-lg-4" id="peridosdiv">
+        <div class="col-lg-3" id="peridosdiv">
             <!-- <h3>Seleccione el Periodo</h3> -->
             <!-- <select class="form-control input-lg" id="periodo" name="periodo" onchange="serach_conseptos(value);">
                 
             </select> -->
+        </div>
+        <div class="col-lg-3">
+            <form id="prueba">
+                <h3>Sel. Componente (Opcional)</h3>
+                <select class="form-control input-lg" name="componente" id="componente" onchange="selc_componente(value);">
+                    <option value="0" >Ninguno</option>
+                    <?php foreach ($componentes as $componente): ?>
+                        <option value="<?php echo $componente->id_componente ?>"> <?php echo $componente->nombre ?></option>
+                    <?php endforeach ?>
+                </select>
+            </form>
         </div>
                 
     </div><br><br>
@@ -33,6 +44,7 @@
             <input type="hidden" name="tipo" id="tipo">
             <input type="hidden" name="anio" id="anioo">
             <input type="hidden" name="mess" id="mess">
+            <input type="hidden" name="inputComponente" id="inputComponente" value="0">
             <div class="col-lg-4"  id="table_percepciones" >
                 
             </div>

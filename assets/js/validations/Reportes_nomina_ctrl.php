@@ -14,7 +14,7 @@ class Reportes_nomina_ctrl extends CI_Controller {
 			$this->load->view('global_view/header');	
 			
 			$datos["years"] = $this->Reportes_nomina_Model->gelAllYear();
-            $datos["componentes"] = $this->Reportes_nomina_Model->getComponentes();	
+             $datos["componentes"] = $this->Reportes_nomina_Model->getComponentes();    		
 			$this->load->view('admin/nomina/concepto_totales', $datos);
 			$this->load->view('global_view/foother');
       
@@ -69,23 +69,23 @@ class Reportes_nomina_ctrl extends CI_Controller {
 	//SE CALCULA EL TOTAL DE LOS CONSEPTOS DE LA NÓMINA SELECCIONADA
 	//********************************************************************************
 	public function reporteNominaPorConcepto(){
-		ob_start();
+        ob_start();
         $componenteRp = $this->input->post("inputComponente");
-		$id_nomina = $this->input->post("id_nomina");
+        $id_nomina = $this->input->post("id_nomina");
         $tipo = $this->input->post("tipo");
         $mes= $this->input->post("mess");
         $anio = $this->input->post("anio");
-		$conceptosPercepciones = $this->input->post("percepcion");
-		$conceptosDeducciones = $this->input->post("deduccion");
-		$conceptosAportaciones = $this->input->post("aportacion");
-		
+        $conceptosPercepciones = $this->input->post("percepcion");
+        $conceptosDeducciones = $this->input->post("deduccion");
+        $conceptosAportaciones = $this->input->post("aportacion");
+        
         //**********************************************************************************
         //       PDF
         //**********************************************************************************
         $this->load->library('m_pdf');
         $mpdf = new \Mpdf\Mpdf([
         'mode' => 'utf-8',
-        'margin_top' => 45
+        'margin_top' => 36
         // 'margin_bottom' => 25,
         // 'margin_header' => 16,
         // 'margin_footer' => 13
@@ -125,8 +125,8 @@ class Reportes_nomina_ctrl extends CI_Controller {
             // die();
         } else{
             $data2["totalesPercepciones"] = $this->Reportes_nomina_Model->sumaPorConceptoPercepcion($id_nomina, $conceptosPercepciones,$tipo,$mes,$anio);
-    		$data2["totalesDeducciones"] = $this->Reportes_nomina_Model->sumaPorConceptoDeducciones($id_nomina, $conceptosDeducciones,$tipo,$mes,$anio);
-    		$data2["totalesAportaciones"] = $this->Reportes_nomina_Model->sumaPorConceptoAportacion($id_nomina, $conceptosAportaciones,$tipo,$mes,$anio);
+            $data2["totalesDeducciones"] = $this->Reportes_nomina_Model->sumaPorConceptoDeducciones($id_nomina, $conceptosDeducciones,$tipo,$mes,$anio);
+            $data2["totalesAportaciones"] = $this->Reportes_nomina_Model->sumaPorConceptoAportacion($id_nomina, $conceptosAportaciones,$tipo,$mes,$anio);
         }
         $data2['header_pdf'] = $data['header_pdf'];
         $html = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenido', $data2, true);

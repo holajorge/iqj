@@ -114,7 +114,10 @@
 					  	<tr>
 					  		<td style="display: none;" ><?php echo $percepcion->id_percepcion; ?></td>
 					  		<td><?php echo $percepcion->indicador; ?> </td>
-					  		<td><?php echo $percepcion->nombre; ?> </td>
+					  		<td>
+					  			<?php echo $percepcion->nombre; ?>
+					  			<input type="hidden" id="<?php  echo 'id_per_form_'.$percepcion->id_percepcion; ?>" value="<?php  echo  $percepcion->formula; ?>">
+					  		</td>
 					  		<td> <input type="number" style='text-align: right;' id="id_per_<?php echo $percepcion->id_percepcion; ?>" value="<?php echo $percepcion->importe; ?>" onkeyup='calc_total_percepciones()' onchange='calc_total_percepciones()' name='importe_percepcion' class='importe_percepcion'>  </td>
 					  		<td><button type='button' id='borrar_celda_per_edit' class='btn btn-danger btn-sm'> <span class='glyphicon glyphicon-trash'></span> </button> </td>
 					  	</tr>
@@ -155,7 +158,7 @@
 					  		<td><?php echo $deduccion->indicador; ?> </td>
 					  		<td><?php echo $deduccion->nombre; ?> </td>
 					  		<td>
-					  			<?php if ($deduccion->id_deduccion > 1 & $deduccion->id_deduccion <= 7){ ?>
+					  			<?php if ($deduccion->id_deduccion >= 1 & $deduccion->id_deduccion <= 7){ ?>
 					  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled>
 					  			<?php }else{ ?>
 					  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion'>
@@ -189,6 +192,7 @@
 						<table class="table table-bordered table-striped" id="id_tab_apor">
 		            		<thead>
 		            			<tr>
+		            				<input type="hidden" id="id_subsidioAlEmpleo" value="0">
 		            				<th COLSPAN="4" class="text-center success">APORTACIONES</th>
 		            			</tr>
 			                    <tr class="warning">
@@ -207,15 +211,10 @@
 									  		<td><?php echo $aportacion->indicador; ?> </td>
 									  		<td><?php echo $aportacion->nombre; ?> </td>
 									  		<td>
-									  			<?php if ($aportacion->id_aportacion > 0 & $aportacion->id_aportacion <= 8){ ?>
+									  			<?php if ($aportacion->id_aportacion > 0 & $aportacion->id_aportacion <= 9){ ?>
 									  				<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled>
 									  			<?php }else{ ?>
-									  					<?php if ($aportacion->id_aportacion == 9): ?>
-									  						<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones();calcular_liquido();' onchange='calc_total_aportaciones();calcular_liquido();' name='importe_aportacion' class='importe_aportacion'>
-									  					<?php else: ?>
-															<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion'>
-									  					<?php endif ?>
-									  				 
+													<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion'>
 									  			<?php } ?>
 									  		</td>
 									  		<td><button type='button' id='borrar_celda_apor_edit' class='btn btn-danger btn-sm'> <span class='glyphicon glyphicon-trash'></span> </button></td>

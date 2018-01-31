@@ -14,6 +14,5 @@
     <div id="resultado_periodo">
         <div class="row">                    
         </div>
-    </div>    
+    </div>   
 </div>
-

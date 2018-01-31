@@ -23,6 +23,10 @@ function serach_yaer(anio){
 	 	$("#mes").html(html);
 	}
 }
+
+function selc_componente(id_comp){
+	document.getElementById("inputComponente").value = id_comp;
+}
 function serach_periodo(tipo){
 
 	$("#table_percepciones").empty();

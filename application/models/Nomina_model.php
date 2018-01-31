@@ -209,7 +209,7 @@ class Nomina_model extends CI_Model {
   //***************************************************************************
   public function percepciones_nomina($id_empleado, $id_nomina){
 
-    $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.indicador, cat_percepciones.nombre, empleadosxpercepciones.importe, 
+    $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.indicador, cat_percepciones.nombre,  cat_percepciones.formula, empleadosxpercepciones.importe, 
                       cat_empleados.nombre as empleado, cat_empleados.curp, cat_empleados.no_plaza,  cat_empleados.rfc , cat_puestos.nombre as 'puesto',
                       cat_depto.nombre as 'depto', cat_empleados.no_empleado, tab_nomina.periodo_inicio, tab_nomina.periodo_fin, tab_nomina.periodo_quinquenal
                    FROM cat_percepciones, empleadosxpercepciones, tab_nomina,  cat_empleados, cat_puestos, cat_depto
@@ -308,7 +308,7 @@ class Nomina_model extends CI_Model {
   //***************************************************************************
   public function getLastNominaPercepciones($id_empleado){
 
-      $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.indicador, cat_percepciones.nombre, empleadosxpercepciones.importe, 
+      $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.indicador, cat_percepciones.nombre, cat_percepciones.formula, empleadosxpercepciones.importe, 
                       cat_empleados.nombre as empleado, cat_empleados.curp, cat_empleados.no_plaza,  cat_empleados.rfc , cat_puestos.nombre as 'puesto',
                       cat_depto.nombre as 'depto', cat_empleados.no_empleado, tab_nomina.id_nomina,tab_nomina.periodo_inicio, tab_nomina.periodo_fin, tab_nomina.periodo_quinquenal 
                    FROM cat_percepciones, empleadosxpercepciones, tab_nomina,  cat_empleados, cat_puestos, cat_depto

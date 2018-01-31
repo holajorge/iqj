@@ -8,6 +8,31 @@ class Reportes_nomina_Model extends CI_Model {
       $this->load->database();
     }
 
+      public function getComponentes(){
+      $this->db->select("*");
+        $this->db->from("cat_componentes");
+        $this->db->order_by("id_componente", "asc");
+      $query = $this->db->get();
+       if ($query->num_rows() > 0) {
+          return $query->result();
+       } else {
+          return false;
+       }
+    }
+
+    public function getComponenteIndividual($id){
+      $this->db->select("*");
+        $this->db->from("cat_componentes");
+        $this->db->where('id_componente',$id);
+        $this->db->order_by("id_componente", "asc");
+      $query = $this->db->get();
+       if ($query->num_rows() > 0) {
+          return $query->result();
+       } else {
+          return false;
+       }
+    }
+
     public function gelAllYear(){
     	
     	$query = $this->db->query("SELECT id_nomina, YEAR(periodo_inicio) as year from tab_nomina group by year");
@@ -176,6 +201,149 @@ class Reportes_nomina_Model extends CI_Model {
        }
 
       return $totales;
+    }
+    //*****************************************************************************************
+    //SE CALCULA EL DEVENGADO POR MES Y POR COMPONENTE
+    //*****************************************************************************************
+    public function devengadoPorMesYComponentePercepcion($copceptosPercepciones,$mes,$anio,$componente){
+          // var_dump($copceptosPercepciones);
+          // die();
+            for ($i=0; $i < count($copceptosPercepciones) ; $i++) { 
+            $concepto = $copceptosPercepciones[$i];
+            $query = $this->db->query("SELECT cat_percepciones.indicador, cat_percepciones.nombre,
+                                       SUM(empleadosxpercepciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxpercepciones ON tab_nomina.id_nomina = empleadosxpercepciones.id_nomina 
+                                       INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                       INNER JOIN cat_empleados ON empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+                                       INNER JOIN cat_componentes ON cat_empleados.id_componente = cat_componentes.id_componente
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  AND        empleadosxpercepciones.id_percepcion = ".$concepto."
+                                       AND cat_componentes.id_componente = ".$componente);
+            $data = $query->result();
+            $totales[] = array(
+                        "indicador" =>$data[0]->indicador,
+                        "concepto" =>$data[0]->nombre,
+                        "total" => $data[0]->total
+                        );
+          }
+          
+          return $totales;
+    }
+    //*****************************************************************************************
+    //SE CALCULA EL DEVENGADO POR MES Y POR COMPONENTE
+    //*****************************************************************************************
+    public function devengadoPorMesYComponenteDeduccion($copceptosPercepciones,$mes,$anio,$componente){
+            for ($i=0; $i < count($copceptosPercepciones) ; $i++) { 
+            $concepto = $copceptosPercepciones[$i];
+            $query = $this->db->query("SELECT cat_deducciones.indicador, cat_deducciones.nombre,
+                                       SUM(empleadosxdeducciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxdeducciones ON tab_nomina.id_nomina = empleadosxdeducciones.id_nomina 
+                                       INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+                                       INNER JOIN cat_empleados ON empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+                                       INNER JOIN cat_componentes ON cat_empleados.id_componente = cat_componentes.id_componente
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND        empleadosxdeducciones.id_deduccion = ".$concepto."
+                                       AND cat_componentes.id_componente = ".$componente);
+            $data = $query->result();
+            $totales[] = array(
+                        "indicador" =>$data[0]->indicador,
+                        "concepto" =>$data[0]->nombre,
+                        "total" => $data[0]->total
+                        );
+          }
+
+          return $totales;
+    }
+    //*****************************************************************************************
+    //SE CALCULA EL DEVENGADO POR MES Y POR COMPONENTE
+    //*****************************************************************************************
+    public function devengadoPorMesYComponenteAportacion($copceptosPercepciones,$mes,$anio,$componente){
+            for ($i=0; $i < count($copceptosPercepciones) ; $i++) { 
+            $concepto = $copceptosPercepciones[$i];
+            $query = $this->db->query("SELECT cat_aportaciones.indicador, cat_aportaciones.nombre,
+                                       SUM(empleadosxaportaciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxaportaciones ON tab_nomina.id_nomina = empleadosxaportaciones.id_nomina 
+                                       INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                                       INNER JOIN cat_empleados ON empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+                                       INNER JOIN cat_componentes ON cat_empleados.id_componente = cat_componentes.id_componente
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND        empleadosxaportaciones.id_aportacion = ".$concepto."
+                                       AND cat_componentes.id_componente = ".$componente);
+            $data = $query->result();
+            $totales[] = array(
+                        "indicador" =>$data[0]->indicador,
+                        "concepto" =>$data[0]->nombre,
+                        "total" => $data[0]->total
+                        );
+          }
+
+          return $totales;
+    }
+    //**********************************************************************************************************************************
+    public function devengadoPorQuincenaYComponentePercepcion($copceptosPercepciones,$id_nomina,$componente){
+      for ($i=0; $i < count($copceptosPercepciones) ; $i++) { 
+            $concepto = $copceptosPercepciones[$i];
+            $query = $this->db->query("SELECT cat_percepciones.indicador, cat_percepciones.nombre,
+                                        SUM(empleadosxpercepciones.importe) AS total 
+                                        FROM empleadosxpercepciones
+                                        INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion =  cat_percepciones.id_percepcion
+                                        INNER JOIN cat_empleados ON empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+                                       INNER JOIN cat_componentes ON cat_empleados.id_componente = cat_componentes.id_componente
+                                        WHERE empleadosxpercepciones.id_percepcion = ".$concepto." and empleadosxpercepciones.id_nomina = ".$id_nomina." 
+                                        AND cat_componentes.id_componente = ".$componente);
+            $data = $query->result();
+            $totales[] = array(
+                        "indicador" =>$data[0]->indicador,
+                        "concepto" =>$data[0]->nombre,
+                        "total" => $data[0]->total
+                        );
+          }
+
+          return $totales;
+    }
+//**************************************************************************************************************************************
+    public function devengadoPorQuincenaYComponenteDeduccion($copceptosPercepciones,$id_nomina,$componente){
+      for ($i=0; $i < count($copceptosPercepciones) ; $i++) { 
+            $concepto = $copceptosPercepciones[$i];
+            $query = $this->db->query("SELECT cat_deducciones.indicador, cat_deducciones.nombre,
+                                        SUM(empleadosxdeducciones.importe) AS total 
+                                        FROM empleadosxdeducciones
+                                        INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion =  cat_deducciones.id_deduccion
+                                        INNER JOIN cat_empleados ON empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+                                       INNER JOIN cat_componentes ON cat_empleados.id_componente = cat_componentes.id_componente
+                                        WHERE empleadosxdeducciones.id_deduccion = ".$concepto." and empleadosxdeducciones.id_nomina = ".$id_nomina."
+                                        AND cat_componentes.id_componente = ".$componente);
+            $data = $query->result();
+            $totales[] = array(
+                        "indicador" =>$data[0]->indicador,
+                        "concepto" =>$data[0]->nombre,
+                        "total" => $data[0]->total
+                        );
+          }
+
+          return $totales;
+    }
+//**************************************************************************************************************************************
+    public function devengadoPorQuincenaYComponenteAportacion($copceptosPercepciones,$id_nomina,$componente){
+      for ($i=0; $i < count($copceptosPercepciones) ; $i++) { 
+            $concepto = $copceptosPercepciones[$i];
+            $query = $this->db->query("SELECT cat_aportaciones.indicador, cat_aportaciones.nombre,
+                                        SUM(empleadosxaportaciones.importe) AS total 
+                                        FROM empleadosxaportaciones
+                                        INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion =  cat_aportaciones.id_aportacion
+                                        INNER JOIN cat_empleados ON empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+                                       INNER JOIN cat_componentes ON cat_empleados.id_componente = cat_componentes.id_componente
+                                        WHERE empleadosxaportaciones.id_aportacion = ".$concepto." and empleadosxaportaciones.id_nomina = ".$id_nomina." 
+                                        AND cat_componentes.id_componente =".$componente);
+            $data = $query->result();
+            $totales[] = array(
+                        "indicador" =>$data[0]->indicador,
+                        "concepto" =>$data[0]->nombre,
+                        "total" => $data[0]->total
+                        );
+          }
+
+          return $totales;
     }
     //*****************************************************************************************
     //SE BUSCA LA INFORMACIÓN DE LA NÓMINA (PERIODO QUINQUENAL) DE FORMA INDIVIDUAL 

@@ -10,13 +10,13 @@
     ?>
      <table width="100%" style="margin: 0;">
         <tr>
-            <td rowspan="2" width="20%">
+            <td rowspan="2" width="200">
                 <img style="vertical-align: top" src="<?php echo base_url(); ?>assets/img/logo/juventud.png" width="150" />
             </td>
-            <td class="text-center" width="60%">
+            <td class="text-center">
                 <h5>GOBIERNO DEL ESTADO DE QUINTANA ROO</h5>
             </td>
-            <td style="text-align: right;" width="20%">
+            <td style="text-align: right;">
                 <?php echo $D." ".$mes." ".$Y; ?>
             </td>
         </tr>
@@ -48,17 +48,7 @@
             <td class="text-center txt-negrita"> 
             <h5> 
                 <?php if (isset($header_pdf)): ?>
-                   DEL <?php echo $header_pdf[0]->periodo_inicio; ?> AL <?php echo $header_pdf[0]->periodo_fin; ?>
-                <?php endif ?>
-            </h5> 
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="text-center txt-negrita"> 
-            <h5> 
-                <?php if (isset($header_pdf_comp)): ?>
-                    <?php echo $header_pdf_comp; ?>
+                   DEL <?php echo $header_pdf[0]->periodo_inicio; ?> AL <?php echo $header_pdf[0]->periodo_fin; ?>  
                 <?php endif ?>
             </h5> 
             </td>

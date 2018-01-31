@@ -175,6 +175,7 @@
 							<table class="table table-bordered table-striped" id="id_tab_apor">
 			            		<thead>
 			            			<tr>
+			            				<input type="hidden" id="id_subsidioAlEmpleo" value="0">
 			            				<th COLSPAN="4" class="text-center success">APORTACIONES</th>
 			            			</tr>
 				                    <tr class="warning">
