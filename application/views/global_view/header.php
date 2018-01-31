@@ -19,7 +19,8 @@
     <link href="<?php echo base_url('assets/css/plugins/toastr/toastr.min.css'); ?> " rel="stylesheet">
     <!-- Gritter -->
     <link href="<?php echo base_url('assets/js/plugins/gritter/jquery.gritter.css'); ?> " rel="stylesheet">
-
+    
+    <link href="<?php echo base_url('assets/css/plugins/ladda/ladda-themeless.min.css'); ?> " rel="stylesheet">
     <link href="<?php echo base_url('assets/css/animate.css'); ?> " rel="stylesheet">
     <link href="<?php echo base_url('assets/css/style.css'); ?> " rel="styesheet">
     <link href="<?php echo base_url('assets/css/plugins/dataTables/datatables.min.css'); ?>" rel="stylesheet">   
@@ -48,22 +49,22 @@
                           <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> 
                                 <span class="block m-t-xs"> 
-                                   <strong class="font-bold text-center"><?php echo $this->session->userdata('nombre').' ' .$this->session->userdata('apellido');; ?></strong>
+                                   <strong class="font-bold text-center"><?php echo $this->session->userdata('nombre').' '.$this->session->userdata('apellido'); ?></strong>
                                 </span> 
                                 <span class="text-muted text-xs block">Administrador <b class="caret"></b>
                                 </span> 
                             </span> 
                           </a>
-                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="profile.html">Perfil</a></li>
-                                <li class="divider"></li>
-                                <li><a href="<?php echo base_url();?>login_ctrl/cerrar_sesion">Logout</a></li>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs" >
+                            <li><a href="<?php echo base_url('User_ctrl/perfil'); ?>">Perfil</a></li>
+                            <li class="divider"></li>
+                            <li><a href="<?php echo base_url();?>login_ctrl/cerrar_sesion">Logout</a></li>
                         </ul>
                       </div>
-                      <div class="logo-element">IV+ </div>
+                      <div class="logo-element">IQJ</div>
                     </li>
                     <li <?php  if (isset($active)) {    if ($active == "nomina") {  echo "class='active'";  }  }  ?> >
-                        <a href="index.html"><i class="fa fa-dollar"></i> <span class="nav-label">Nómina</span> <span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-dollar"></i> <span class="nav-label">Nómina</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li <?php  if (isset($active1)) {  if ($active1 == "periodos") { echo "class='active'"; }}?>>
                                 <a href="<?php echo base_url('Nomina_controller/periodos'); ?> ">Ordinaria</a>
@@ -80,7 +81,7 @@
                         </ul>
                     </li>
                     <li <?php  if (isset($active)) {    if ($active == "periodo") {  echo "class='active'";   }}  ?> > 
-                        <a href="index.html"><i class="fa fa-sort-amount-asc"></i> <span class="nav-label">Periodos</span> <span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-sort-amount-asc"></i> <span class="nav-label">Periodos</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li <?php if (isset($active1)) {  if ($active1 == "lista_periodos") { echo "class='active'";}  }  ?> >              
                               <a href="<?php echo base_url('Periodo_controller/index'); ?>">Lista de Periodos</a>
@@ -111,8 +112,19 @@
                             <li <?php  if (isset($active)) {   if ($active1 == "alta_aportaciones") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('Aportaciones_ctrl/create'); ?>">Alta Aportacion</a></li>
                         </ul>
                     </li>
+                    <li <?php  if (isset($active)) {     if ($active == "componente") {  echo "class='active'";   }}  ?>>
+                        <a href="#"><i class="fa fa-gears"></i> <span class="nav-label">Componentes</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li <?php  if (isset($active)) {   if ($active1 == "lista_componentes") {  echo "class='active'";  }  }  ?>>
+                                <a href="<?php echo base_url('Componente_ctrl/index'); ?>">Lista de Componentes</a>
+                            </li>
+                            <li <?php  if (isset($active)) {   if ($active1 == "alta_componente") {  echo "class='active'";  }  }  ?>>
+                                <a href="<?php echo base_url('Componente_ctrl/create'); ?>">Alta Componente</a>
+                            </li>
+                        </ul>
+                    </li>
                     <li <?php  if (isset($active)) {     if ($active == "empleado") {  echo "class='active'";   }}  ?> > 
-                        <a href="index.html"><i class="fa fa-group"></i> <span class="nav-label">Empleados</span> <span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Empleados</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li <?php if (isset($active1)) {  if ($active1 == "lista_empleado") { echo "class='active'";}  }  ?> >              
                               <a href="<?php echo base_url('empleado_controller/lista_empleado'); ?>">Lista de empleados</a>

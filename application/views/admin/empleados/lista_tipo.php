@@ -23,7 +23,7 @@
                                             <?php else: ?>
                                                 <button type="button" class="btn btn-success btn-rounded" onclick="habilitarEmpleadoTipo('<?php echo $tipoEmpleado->id_tipo_trabajador ?>', '<?php echo $tipoEmpleado->nombre_tipo_trabajador?>')"><span class="fa fa-heart"></span> Habilitar </button>
                                             <?php endif ?>                                        
-                                            <button class="btn btn-info" onclick="editTipoEmpleado('<?php echo $tipoEmpleado->id_tipo_trabajador ?>')" data-toggle="modal" data-target="#editarTipoEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
+                                            <button class="btn btn-info btn-rounded" onclick="editTipoEmpleado('<?php echo $tipoEmpleado->id_tipo_trabajador ?>')" data-toggle="modal" data-target="#editarTipoEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
                                         </td>                                    
                                     </tr>                                
                                 <?php endforeach ?>
@@ -61,7 +61,7 @@
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <input type="submit" value="Guardar Cambios" class="btn btn-primary custom-close" tabindex="3">
+        <button id="ladda_btn_editEmploye" type="submit" class="ladda-button btn btn-primary custom-close" tabindex="3" data-style="expand-left" onclick="saveEditTypeEmploye()"> Guardar Cambios</button>
       </div>
     </div>
  </form>

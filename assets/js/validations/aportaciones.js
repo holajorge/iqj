@@ -1,5 +1,10 @@
 $(document).ready(function() {
 
+      
+});
+
+function saveAportacion(){
+
     $("#formAportacion").validate({
 
       rules: {
@@ -12,6 +17,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formAportacion").serialize();
+        var l = $("#ladda_btn_saveAportacion").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Aportaciones_ctrl/create_aportacion",
@@ -20,6 +27,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#formAportacion")[0].reset(); 
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -35,9 +43,22 @@ $(document).ready(function() {
             } 
         });
       }
-    });
+    }); 
+}
+function editAportacion(id){
 
-    $("#formAportacionEditar").validate({
+    var indicador=document.getElementById("indicador"+id).innerHTML;    
+    var nombre=document.getElementById("nombre"+id).innerHTML;                         
+
+    document.getElementById("idEditar").innerHTML=id+"";
+    document.getElementById("idEditar").value=id;              
+    document.getElementById("indicadorEditar").value=indicador;
+    document.getElementById("nombreEditar").value=nombre;           
+}
+
+function saveEditAportacion(){
+    
+     $("#formAportacionEditar").validate({
 
       rules: {
         indicador: { required: true},
@@ -49,6 +70,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formAportacionEditar").serialize();
+        var l = $("#ladda_btn_editAportacion").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Aportaciones_ctrl/edit_apartacion",
@@ -57,6 +80,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#editarAportacion").modal('hide');
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -76,18 +100,10 @@ $(document).ready(function() {
         });
       }
     });
-});
 
-function editAportacion(id){
-
-    var indicador=document.getElementById("indicador"+id).innerHTML;    
-    var nombre=document.getElementById("nombre"+id).innerHTML;                         
-
-    document.getElementById("idEditar").innerHTML=id+"";
-    document.getElementById("idEditar").value=id;              
-    document.getElementById("indicadorEditar").value=indicador;
-    document.getElementById("nombreEditar").value=nombre;           
 }
+
+
 function deshabilitarAportacion(id, nombre){
   var name = "<p><strong>"+nombre+"</strong><p>";
   var text = "<h3>¿SEGURO DE DESHABILITAR APORTACIÓN?</h3>";

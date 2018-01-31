@@ -14,6 +14,7 @@ class Empleado_controller extends CI_Controller {
         $data['deptos'] = $this->Empleado_model->get_departamentos();
         $data['puestos'] = $this->Empleado_model->get_puestos();
         $data['tipo_trabajador'] = $this->Empleado_model->get_tipoTrabajador();
+        $data['componentes'] = $this->Empleado_model->get_lista_componente();
         $dato['active'] = "empleado";
         $dato['active1'] = "alta_empleado";
         $this->load->view('global_view/header',$dato);
@@ -22,10 +23,8 @@ class Empleado_controller extends CI_Controller {
     }
 
     public function lista_empleado(){
-        $data['deptos'] = $this->Empleado_model->get_departamentos();
-        $data['puestos'] = $this->Empleado_model->get_puestos();
-        $data['tipo_trabajador'] = $this->Empleado_model->get_tipoTrabajador();
-        $data['empleados'] = $this->Empleado_model->get_lista_empleados();        
+        
+        $data['empleados'] = $this->Empleado_model->get_lista_empleados();              
         
         $dato['active'] = "empleado";
         $dato['active1'] = "lista_empleado";
@@ -33,6 +32,25 @@ class Empleado_controller extends CI_Controller {
         $this->load->view('global_view/header',$dato);
         $this->load->view('admin/empleados/lista_empleados',$data);
         $this->load->view('global_view/foother');
+    }
+    public function getSelected(){
+    
+        $query = $this->Empleado_model->get_departamentos();
+        $query1 = $this->Empleado_model->get_puestos();
+        $query2 = $this->Empleado_model->get_lista_componente();
+        $query3 = $this->Empleado_model->get_tipoTrabajador();
+
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['deptos'] = $query;
+            $result['puestos'] = $query1;
+            $result['componentes'] = $query2;
+            $result['tipo_trabajador'] = $query3;
+
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
     }
     public function searchRFC(){
         $rfc = $this->input->post("rfc");
@@ -71,6 +89,7 @@ class Empleado_controller extends CI_Controller {
         $no_empleado = $this->input->post("no_empleado");
         $rfc = $this->input->post("rfc");        
         $id_tipo_trabajador = $this->input->post("id_tipo_trabajador");
+        $id_componente = $this->input->post("componente");
 
         $emplado = array(
                     'no_plaza' => $no_plaza, 
@@ -87,7 +106,9 @@ class Empleado_controller extends CI_Controller {
                     'rfc' => $rfc,
                     'horas' => $horas,
                     'id_tipo_trabajador' => $id_tipo_trabajador,
+                    'id_componente' => $id_componente,
                     'status' => 1
+
                     );
         $query = $this->Empleado_model->guardar_empleado($emplado);
         if ($query == 1) {
@@ -115,6 +136,7 @@ class Empleado_controller extends CI_Controller {
         $id_puesto = $this->input->post("puesto");
         $no_empleado = $this->input->post("no_empleado");               
         $id_tipo_trabajador = $this->input->post("tipo_trabajador");
+        $id_componente = $this->input->post("componente");
 
         $empleado = array(
             'no_plaza' => $no_plaza, 
@@ -130,7 +152,8 @@ class Empleado_controller extends CI_Controller {
             'id_puesto' => $id_puesto,
             'no_empleado' => $no_empleado,
             'rfc' => $rfc,                    
-            'id_tipo_trabajador' => $id_tipo_trabajador
+            'id_tipo_trabajador' => $id_tipo_trabajador,
+            'id_componente' => $id_componente,
         );
         $query = $this->Empleado_model->updateEmpleado($id_empleado,$empleado);
         if ($query == 1) {

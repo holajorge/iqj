@@ -1,7 +1,7 @@
 
    <div class="row  border-bottom white-bg dashboard-header">
 	    <div class=" col-sm-8 col-md-8 col-md-offset-2">
-			<form role="form" id="form_crearr_empleado">
+			<form role="form" id="form_crear_empleado">
 				<h2>Registro de Empleados</small></h2>
 				<hr class="colorgraph">
 				<div class="row">	
@@ -81,12 +81,23 @@
 				                 		<option value="<?php echo $fila->id_tipo_trabajador ?>"> <?php echo $fila->nombre_tipo_trabajador ?></option>
 				           			<?php } ?> 
 								</select>							
+						</div>	
+						<div class=" col-sm-6 col-md-6">							
+								<label for="tipo_trabajador">Componente</label>
+								<select class="form-control " id="compoenete" name="componente" tabindex="14">
+									<option value="" selected disabled hidden>Seleccione un Componente</option>
+									<?php
+				                  		foreach ($componentes as $componente) {
+				                 	?>
+				                 		<option value="<?php echo $componente->id_componente ?>"> <?php echo $componente->nombre ?></option>
+				           			<?php } ?> 
+								</select>							
 						</div>					
 				</div>
-
+				<br>
 				<div class="row">
 					<div class=" col-md-3 pull-right">
-						<input type="submit" value="Registrar" id="btn_guardar_empleado" class="btn btn-primary btn-block btn-lg" tabindex="15">						
+						<button id="btn_guardar_empleado" type="submit" class="ladda-button btn btn-primary btn-block btn-lg" data-style="expand-left" tabindex="15" onclick="saveEmPloye()"><span class="fa fa-save"></span> Registrar</button>
 					</div>
 				</div>
 			</form>

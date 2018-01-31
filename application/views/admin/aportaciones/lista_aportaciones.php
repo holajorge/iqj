@@ -60,11 +60,11 @@
                                 <input type="text" name="nombre" id="nombreEditar" class="form-control input-lg" tabindex="2">
                             </div>
                         </div>                                    
-                    </div>                            
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" value="Guardar Cambios" class="btn btn-primary" tabindex="3" >
+                    <button id="ladda_btn_editAportacion" type="submit" class="ladda-button btn btn-primary" tabindex="3" data-style="expand-left" onclick="saveEditAportacion()" ><span class="fa fa-save"></span> Guardar Cambios</button>
                 </div>
         </div>
     </form>

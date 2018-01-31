@@ -20,15 +20,15 @@ class Depto_model extends CI_Model {
   }
   public function get_direcciones(){
 
-       $this->db->select('*');
-        $this->db->from('cat_direcciones');
-        $query = $this->db->get();
+      $this->db->select('*');
+      $this->db->from('cat_direcciones');
+      $query = $this->db->get();
 
-        if ($query->num_rows() > 0) {
+      if ($query->num_rows() > 0) {
             return $query->result();
-        } else {
+      } else {
             return false;
-        }
+      }
   }
   public function insertDepto( $depto){
    	return $this->db->insert('cat_depto', $depto);

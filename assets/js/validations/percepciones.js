@@ -1,6 +1,10 @@
 $(document).ready(function() {
 
-    $("#formPercepcion").validate({
+  
+});
+function savePercepcion(){
+
+   $("#formPercepcion").validate({
 
       rules: {
         indicador: { required: true},
@@ -10,8 +14,10 @@ $(document).ready(function() {
         indicador: "Indicador Necesario",
         nombre: "Nombre Indicador Necesario",            
       },
-      submitHandler: function(){    
-        var dataString = $("#formPercepcion").serialize();
+      submitHandler: function(){ 
+      var dataString = $("#formPercepcion").serialize();
+      var l = $("#ladda_btn_savePercepcion").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Percepciones_ctrl/create_percepciones",
@@ -19,7 +25,7 @@ $(document).ready(function() {
             success: function(respuesta) {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
-                   //Limpiar formulario
+                   //Limpiar formulario                   
                    $("#formPercepcion")[0].reset(); 
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -29,6 +35,7 @@ $(document).ready(function() {
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
+                    l.ladda('stop');
                     toastr.success('Los datos se guardaron correctamente', 'DATOS GUARDADOS');
                 }, 1300);
                 }
@@ -36,8 +43,11 @@ $(document).ready(function() {
         });
       }
     });
+   
+}
+function saveEditPercepcion(){
 
-    $("#formPercepcionEditar").validate({
+  $("#formPercepcionEditar").validate({
 
       rules: {
         indicador: { required: true},
@@ -49,6 +59,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formPercepcionEditar").serialize();
+        var l = $("#ladda_btn_saveEditPercepcion").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Percepciones_ctrl/edit_perception",
@@ -57,6 +69,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#editarPercepcion").modal('hide');
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -75,9 +88,8 @@ $(document).ready(function() {
             } 
         });
       }
-    });
-
-});
+  });
+}
 
 function verificarIndicador(){
 
@@ -102,7 +114,7 @@ function verificarIndicador(){
   }); 
 }
 
-    function editPercepcion(id){
+function editPercepcion(id){
 
             var indicador=document.getElementById("indicador"+id).innerHTML;    
             var nombre=document.getElementById("nombre"+id).innerHTML;                         
@@ -112,9 +124,9 @@ function verificarIndicador(){
             document.getElementById("indicadorEditar").value=indicador;
             document.getElementById("nombreEditar").value=nombre;  
                                        
-    }
+}
 
-    function deletePercepcion(id,nombre){
+function deletePercepcion(id,nombre){
       var name = "<p><strong>"+nombre+"</strong><p>";
       var text = "<h3>¿SEGURO DE DESHABILITAR?</h3>";
        swal({
@@ -143,35 +155,35 @@ function verificarIndicador(){
                   }
                 });
         });
-    }
+}
 
-    function habilitarPercepcion(id,nombre){
-         var name = "<p><strong>"+nombre+"</strong><p>";
-        var text = "<h3>¿SEGURO DE HABILITAR PERCEPCIÓN?</h3>";
-        swal({
-            title: text+name,            
-             type: "warning",
-             html:true,
-             showCancelButton: true,
-             confirmButtonColor: "#DD6B55",
-             confirmButtonText: "SI, HABILITAR AHORA!",
-             closeOnConfirm: false
-           }, function (isConfirm) {
-            if (!isConfirm) return;
-                $.ajax({
-                  url: baseURL + "Percepciones_ctrl/habilitar_Percepcion",
-                  type: "POST",
-                  data: {id: id},
-                  dataType: "html",
-                  success: function () {
-                    swal("Hecho!", "PERCEPCIÓN HABILITADO CORRECTAMENTE!", "success");
-                    setTimeout(function() {
-                      window.location.href = baseURL+"Percepciones_ctrl/index";
-                    }, 2000);
-                  },
-                  error: function (xhr, ajaxOptions, thrownError) {
-                    swal("Error deleting!", "Please try again", "error");
-                  }
-                });
-        });
-    }
+function habilitarPercepcion(id,nombre){
+    var name = "<p><strong>"+nombre+"</strong><p>";
+    var text = "<h3>¿SEGURO DE HABILITAR PERCEPCIÓN?</h3>";
+    swal({
+        title: text+name,            
+         type: "warning",
+         html:true,
+         showCancelButton: true,
+         confirmButtonColor: "#DD6B55",
+         confirmButtonText: "SI, HABILITAR AHORA!",
+         closeOnConfirm: false
+       }, function (isConfirm) {
+        if (!isConfirm) return;
+            $.ajax({
+              url: baseURL + "Percepciones_ctrl/habilitar_Percepcion",
+              type: "POST",
+              data: {id: id},
+              dataType: "html",
+              success: function () {
+                swal("Hecho!", "PERCEPCIÓN HABILITADO CORRECTAMENTE!", "success");
+                setTimeout(function() {
+                  window.location.href = baseURL+"Percepciones_ctrl/index";
+                }, 2000);
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                swal("Error deleting!", "Please try again", "error");
+              }
+            });
+    });
+}

@@ -1,17 +1,23 @@
 $(document).ready(function() {
 
-    $("#formDeduciones").validate({
+    
+});
+
+function saveDeduccion(){
+  $("#formDeduciones").validate({
 
       rules: {
         indicador: { required: true},
         nombre: { required: true},            
-      },        
+      }, 
       messages: {
         indicador: "Indicador Necesario",
         nombre: "Nombre Indicador Necesario",            
       },
       submitHandler: function(){    
         var dataString = $("#formDeduciones").serialize();
+        var l = $("#ladda_btn_saveDeduccion").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Deduciones_ctrl/create_deducciones",
@@ -29,6 +35,7 @@ $(document).ready(function() {
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
+                    l.ladda('stop');
                     toastr.success('Los datos se guardaron correctamente', 'DATOS GUARDADOS');                   
                 }, 1300);
                 }
@@ -36,8 +43,21 @@ $(document).ready(function() {
         });
       }
     });
+}
 
-    $("#formDeduccionEditar").validate({
+function editDeduccion(id){
+
+    var indicador=document.getElementById("indicador"+id).innerHTML;    
+    var nombre=document.getElementById("nombre"+id).innerHTML;                         
+
+    document.getElementById("idEditar").innerHTML=id+"";
+    document.getElementById("idEditar").value=id;              
+    document.getElementById("indicadorEditar").value=indicador;
+    document.getElementById("nombreEditar").value=nombre;           
+}
+
+function saveEditDeduccion(){
+  $("#formDeduccionEditar").validate({
 
       rules: {
         indicador: { required: true},
@@ -49,6 +69,8 @@ $(document).ready(function() {
       },
       submitHandler: function(){    
         var dataString = $("#formDeduccionEditar").serialize();
+        var l = $("#ladda_btn_editDeduccion").ladda();
+        l.ladda('start');
         $.ajax({
             type: "POST",
             url:baseURL + "Deduciones_ctrl/edit_deduccion",
@@ -57,6 +79,7 @@ $(document).ready(function() {
               var obj = JSON.parse(respuesta);
                 if (obj.resultado === true) {                      
                    //Limpiar formulario
+                   l.ladda('stop');
                    $("#editarDeduccion").modal('hide');
                    //Mensaje de operación realizada con éxito
                     setTimeout(function() {
@@ -76,17 +99,6 @@ $(document).ready(function() {
         });
       }
     });
-});
-
-function editDeduccion(id){
-
-    var indicador=document.getElementById("indicador"+id).innerHTML;    
-    var nombre=document.getElementById("nombre"+id).innerHTML;                         
-
-    document.getElementById("idEditar").innerHTML=id+"";
-    document.getElementById("idEditar").value=id;              
-    document.getElementById("indicadorEditar").value=indicador;
-    document.getElementById("nombreEditar").value=nombre;           
 }
 
 function deshabilitarDeduccion(id,nombre){

@@ -7,6 +7,7 @@ class Login_ctrl extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('Login_model');
+        $this->load->library('bcrypt');
     }
 
 	public function index()
@@ -25,17 +26,15 @@ class Login_ctrl extends CI_Controller {
 
 		if ($this->input->post())  {
 
-	      $rfc = $this->input->post('rfc');
-	      $password = $this->input->post('password');
-	      
-	      $fila =  $this->Login_model->authUserRoot($rfc, $password);
-
-	      // var_dump($fila); die();
-
-	      if($fila){  	    
-	        $tipo = $fila[0]->tipo_usuario;
+		    $rfc = $this->input->post('rfc');	     
+		      
+		    $fila =  $this->Login_model->authUserRoot($rfc);    
+		    
+	      	if ($this->bcrypt->check_password($this->input->post('password'), $fila[0]->password)) {
+	        	$tipo = $fila[0]->tipo_usuario;
 		        if($tipo == "admin"){
-			          $data = array(
+			          $data = array(	
+			          	'id_empleado'   =>  $fila[0]->id_empleado,
 			            'id_usuario'   =>  $fila[0]->id_usuario,
 			            'nombre'   =>  $fila[0]->nombre,
 			            'apellido'   =>  $fila[0]->ap_paterno,
@@ -46,11 +45,11 @@ class Login_ctrl extends CI_Controller {
 
 			          redirect('Admin_controller');	      
 			     } 
-	   	  }else{	
-	   	  	 $this->session->set_flashdata('error', '<strong>Usuario o Contraseña</strong> Incorrecto*');   
-	     	redirect('Login_ctrl');              
-	      } 
-	  }
+		   	}else{	
+		 	  	$this->session->set_flashdata('error', '<strong>Usuario o Contraseña</strong> Incorrecto*');   
+		     	redirect('Login_ctrl');              
+		    } 
+	  	}
 	}
 	
     
