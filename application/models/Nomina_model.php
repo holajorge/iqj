@@ -54,13 +54,28 @@ class Nomina_model extends CI_Model {
   }
   public function buscar_periodo($id_nomina){
 
-      $query = $this->db->query("SELECT ce.id_empleado, tn.id_nomina , ce.no_plaza, ce.rfc, ce.nombre  AS nombre_emp, ce.ap_paterno,  ce.ap_materno, ce.fecha_ingreso, cd.nombre as 'depto', cp.nombre as 'puesto',  ce.curp 
+      $query = $this->db->query("SELECT ce.id_empleado, tn.id_nomina, (SELECT SUM(empleadosxpercepciones.importe)
+                    FROM cat_empleados
+                    INNER JOIN empleadosxpercepciones ON cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                    INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                    INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) as totalPercepciones, (SELECT SUM(empleadosxdeducciones.importe) FROM cat_empleados INNER JOIN empleadosxdeducciones ON cat_empleados.id_empleado = empleadosxdeducciones.id_empleado INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) AS totalDeducciones, (SELECT SUM(empleadosxaportaciones.importe)
+                    FROM cat_empleados
+                    INNER JOIN empleadosxaportaciones ON cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                    INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                    INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) AS totalAportaciones,(SELECT empleadosxaportaciones.importe as imp
+                    FROM cat_empleados
+                    INNER JOIN empleadosxaportaciones ON cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                    INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                    INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado AND empleadosxaportaciones.id_aportacion = 9 GROUP by imp) AS subsidioAlEmpleo, ce.no_plaza, ce.rfc, ce.nombre  AS nombre_emp, ce.ap_paterno,  ce.ap_materno, ce.fecha_ingreso, cd.nombre as 'depto', cp.nombre as 'puesto',  ce.curp 
                     FROM empleadosxpercepciones  exp, cat_empleados ce, tab_nomina tn,  cat_depto cd, cat_puestos cp
                     WHERE cp.id_puesto=ce.id_puesto 
                         AND cd.id_depto=ce.id_depto 
                         AND ce.id_empleado=exp.id_empleado 
                         AND exp.id_nomina=tn.id_nomina 
-                        AND tn.id_nomina='".$id_nomina."' 
+                        AND tn.id_nomina= ".$id_nomina."
                         GROUP BY exp.id_empleado");
 
       if ($query->num_rows() > 0) {

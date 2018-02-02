@@ -45,9 +45,11 @@ function serach_periodos(id){
                     html += "<th>RFC</th>";
                     html += "<th>NOMBRE</th>";
                     html += "<th>APELLIDOS</th>";
-                    html += "<th>FECHA INGRESO</th>";
+                    html += "<th>PERCEPCIONES</th>";
+                    html += "<th>DEDUCCIONES</th>";
+                    html += "<th>APORTACIONES</th>";
+                    html += "<th>LÍQUIDO</th>";
                     html += "<th>CURP</th>";
-                    html += "<th>DEPTO</th>";
                     html += "<th>PUESTO</th>";
                     html += "<th>IMPRIMIR</th>";              
                     html += "</tr>";
@@ -55,14 +57,23 @@ function serach_periodos(id){
                     html += "<tbody>";
                     var num_fila = 1;
                     for (l in obj.empleado) {
+                        var sumaPercepciones = parseFloat(obj.empleado[l].totalPercepciones);
+                        var sumaDeducciones = parseFloat(obj.empleado[l].totalDeducciones);
+                        var liquido = sumaPercepciones - sumaDeducciones;
+                        var subsidioAlEmpleo = obj.empleado[l].subsidioAlEmpleo;
+                        if (subsidioAlEmpleo != null) {
+                            liquido += parseFloat(subsidioAlEmpleo);
+                        }
                         html += "<tr>";
                         html += "<td>" + obj.empleado[l].no_plaza + "</td>";
                         html += "<td>" + obj.empleado[l].rfc +"</td>";
                         html += "<td>" + obj.empleado[l].nombre_emp +"</td>";
                         html += "<td>" + obj.empleado[l].ap_paterno + " " + obj.empleado[l].ap_materno+"</td>";
-                        html += "<td>" + obj.empleado[l].fecha_ingreso +"</td>";
+                        html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalPercepciones), "$") +"</td>";
+                        html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalDeducciones), "$") +"</td>";
+                        html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalAportaciones), "$") +"</td>";
+                        html += "<td class='text-right'>" + fNumber.go(parseFloat(liquido), "$"); +"</td>";
                         html += "<td>" + obj.empleado[l].curp + "</td>";
-                        html += "<td>" + obj.empleado[l].depto + "</td>";
                         html += "<td>" + obj.empleado[l].puesto + "</td>";                        
                         html += "<td>";
                         html += "<button type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
@@ -86,6 +97,35 @@ function printDetalle(id_empleado, id_nomina){
 
 	window.open(baseURL + "Nomina_controller/pdf_por_empleado?id_emp="+ id_empleado +"&id_nom="+id_nomina);
 
+}
+
+var fNumber = {
+sepMil: ",", // separador para los miles
+sepDec: '.', // separador para los decimales
+formatear:function (num){
+num +='';
+var splitStr = num.split('.');
+var splitLeft = splitStr[0];
+var splitRight = splitStr.length > 1 ? this.sepDec + splitStr[1] : '';
+var regx = /(\d+)(\d{3})/;
+while (regx.test(splitLeft)) {
+splitLeft = splitLeft.replace(regx, '$1' + this.sepMil + '$2');
+}
+//se hace un parseo a flotante de los números decimal para redondearlos a 2 dígitos
+var valor = parseFloat(splitRight).toFixed(2);
+//el valor regresado es 0.xx, por lo tanto, se elimina el "0." para obtener el decimal puro 
+var splitDecimal = valor.split('.');
+var imprimirDecimal = splitDecimal[1];
+if (splitDecimal.length == 1) {
+    imprimirDecimal = "00";
+}
+return this.simbol + splitLeft +"." + imprimirDecimal;
+// return this.simbol + splitLeft + splitRight;
+},
+go:function(num, simbol){
+this.simbol = simbol ||'';
+return this.formatear(num);
+}
 }
 
 	
