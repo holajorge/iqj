@@ -84,8 +84,7 @@ $(document).ready(function() {
 });
 
 function editPeriodo(id){
-
-    console.log(id);
+   
     var periodo_inicio=document.getElementById("periodo_inicio"+id).innerHTML;    
     var periodo_fin=document.getElementById("periodo_fin"+id).innerHTML;            
     var periodo_quinquenal=document.getElementById("periodo_quinquenal"+id).innerHTML;    

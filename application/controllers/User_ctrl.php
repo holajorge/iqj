@@ -9,12 +9,46 @@ class User_ctrl extends CI_Controller {
         $this->load->library('bcrypt');
     }
 	public function list(){
+		if($this->session->userdata('logged_in')==true){
 	      	$dato['active'] = "usuarios";
 	        $dato['active1'] = "lista_usuarios";
 			$data['users'] = $this->User_model->getAll();			
 			$this->load->view('global_view/header', $dato);
 			$this->load->view('admin/usuario/lista_users',$data);
 			$this->load->view('global_view/foother');	
+		}else{
+          redirect('login_ctrl');
+         } 
+	}
+	public function create(){
+
+			$dato['active'] = "usuarios";
+	        $dato['active1'] = "registro";
+	        $data['tipos'] = $this->User_model->getAllTipoUser();
+			$data['empleados'] = $this->User_model->getAllEmpleado();
+			$this->load->view('global_view/header', $dato);
+			$this->load->view('admin/usuario/alta',$data);
+			$this->load->view('global_view/foother');	
+
+	}
+	public function createUserType(){
+		
+			$password = $this->input->post("password");			
+
+			$alta = array(
+				'id_empleado' => $this->input->post("id_empleado"),
+				'id_usuario' => $this->input->post("id_usuario"),				
+				'password' => $this->bcrypt->hash_password($password),
+				'status'  => 1
+			);
+			$query = $this->User_model->saveUserType($alta);
+
+			if ($query != false) {
+            $result['resultado'] = true;
+	        } else {
+	            $result['resultado'] = false;
+	        }
+	        echo json_encode($result);
 	}
 	public function perfil(){
 			$id_empleado = $this->session->userdata('id_empleado');
@@ -38,7 +72,31 @@ class User_ctrl extends CI_Controller {
 	            $result['resultado'] = false;
 	        }
 	        echo json_encode($result);
+	}
+	public function deshabilitar_user(){
 
+		$id_empleadoxusuario = $this->input->post('id');
+        $query = $this->User_model->deshabilitarUsuario($id_empleadoxusuario);
+        
+        if ($query == 1) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);  
+	}
+
+	public function habilitar_User(){
+
+		$id_empleadoxusuario = $this->input->post('id');
+        $query = $this->User_model->habilitarUsuario($id_empleadoxusuario);
+
+        if ($query == 1) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);  
 
 	}
 

@@ -11,6 +11,15 @@
     <title>IQJ NÓMINA | DASHBOARD</title>
 
     <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:700|Nunito" rel="stylesheet">
+    <style>
+        tr {
+                font-family: 'Raleway', sans-serif;
+        }
+        td{
+            font-family: 'Nunito', sans-serif;
+        }
+    </style>
     <link href="<?php echo base_url('assets/font-awesome/css/font-awesome.css');?>" rel="stylesheet">
     <link href="<?php echo base_url('assets/css/plugins/iCheck/custom.css'); ?>" rel="stylesheet"> 
     <!-- sweetAlert -->
@@ -24,6 +33,7 @@
     <link href="<?php echo base_url('assets/css/animate.css'); ?> " rel="stylesheet">
     <link href="<?php echo base_url('assets/css/style.css'); ?> " rel="styesheet">
     <link href="<?php echo base_url('assets/css/plugins/dataTables/datatables.min.css'); ?>" rel="stylesheet">   
+    
 
     
     <script>
@@ -127,13 +137,16 @@
                         <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Empleados</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li <?php if (isset($active1)) {  if ($active1 == "lista_empleado") { echo "class='active'";}  }  ?> >              
-                              <a href="<?php echo base_url('empleado_controller/lista_empleado'); ?>">Lista de empleados</a>
+                              <a href="<?php echo base_url('Empleado_controller/lista_empleado'); ?>">Lista de empleados</a>
                             </li>
                             <li <?php if (isset($active1)) {  if ($active1 == "lista_TipoEmpleado") { echo "class='active'";}  }  ?> >              
                               <a href="<?php echo base_url('TipoEmpleado_ctrl/index'); ?>">Lista de Tipo Empleados</a>
                             </li>
+                            <li <?php if (isset($active1)) {  if ($active1 == "lista_deshabilitados") { echo "class='active'";}  }  ?> >              
+                              <a href="<?php echo base_url('Empleado_controller/lista_deshabilitados'); ?>">Deshabilitados</a>
+                            </li>
                             <li <?php  if (isset($active1)) { if ($active1 == "alta_empleado") { echo "class='active'";  }   }    ?>   >                                             
-                              <a href="<?php echo base_url('Empleado_controller/create'); ?> ">Alta de empleados</a>
+                              <a href="<?php echo base_url('Empleado_controller/create'); ?> ">Alta de Empleados</a>
                             </li>
                             <li <?php  if (isset($active1)) { if ($active1 == "alta_tipo") { echo "class='active'";  }   }    ?>   >                                             
                               <a href="<?php echo base_url('TipoEmpleado_ctrl/create'); ?> ">Alta de Tipo Empleado</a>

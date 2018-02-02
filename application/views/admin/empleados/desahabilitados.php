@@ -15,8 +15,8 @@
                                     <th>AP. PATERNO</th>
                                     <th>AP. MATERNO</th>
                                     <th>FECHA NACIMIENTO</th>                                    
-                                    <th>FECHA INGRESO</th>
-                                    <th>DEPTO</th>
+                                    <th>INGRESO</th>
+                                    <th>DEPARTAMENTO</th>
                                     <th>PUESTO</th>                                    
                                     <th>RFC</th>
                                     <th>CURP</th>
@@ -29,7 +29,7 @@
                             <tbody>
                             <?php if ($empleados != null ):  ?>                                                                                        
                                 <?php foreach ($empleados as $empleado): ?>
-                                    <tr class="gradeX">
+                                    <tr class="gradeX" >
                                         <td><label  id="no_plaza<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->no_plaza ?></label></td>
                                         <td><label  id="horas<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->horas ?></label></td>  
                                         <td><label  id="nss<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->nss ?></label></td>  
@@ -45,12 +45,8 @@
                                         <td><label  id="no_empleado<?php echo $empleado->id_empleado ?>"><?php echo $empleado->no_empleado?></label></td>
                                         <td><label  id="trabajador"> <?php echo $empleado->trabajador?></label></td>
                                         <td><label  id="componente"> <?php echo $empleado->componente?></label></td>
-                                        <td class="text-center">
-                                            <?php if ($empleado->status == 1): ?>
-                                            <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarEmpleado('<?php echo $empleado->id_empleado?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
-                                            <?php else: ?>
-                                                <button type="button" class="btn btn-success btn-rounded" onclick="habilitarEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>' )"><span class="fa fa-heart"></span> Habilitar </button>
-                                            <?php endif ?>                                              
+                                        <td class="text-center">                                            
+                                            <button type="button" class="btn btn-success btn-rounded" onclick="habilitarEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>' )"><span class="fa fa-heart"></span> Habilitar </button>                                                                                        
                                             <button  type="button" class="btn btn-info btn-rounded" onclick="editEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_depto?>','<?php echo $empleado->nombre_puesto?>','<?php echo $empleado->trabajador?>','<?php echo $empleado->componente?>')" data-toggle="modal" data-target="#editarEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
                                         </td>  
                                     </tr>
