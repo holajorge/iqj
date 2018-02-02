@@ -30,15 +30,15 @@
             </tr>
             <tr>
                 <td>
-                    <strong>61</strong> Comments
+                    RFC: <strong><?php echo $infomacion->rfc; ?></strong>
                 </td>
                 <td>
-                    <strong>54</strong> Articles
+                    CURP: <strong><?php echo $infomacion->curp; ?></strong> 
                 </td>
             </tr>
             <tr>
                 <td>
-                    <strong>154</strong> Tags
+                   Tipo Usuario: <strong> <?php echo $infomacion->tipo; ?> </strong>
                 </td>
                 <td>
                     <button class="btn btn-danger btn-rounded" onclick="showFormChange()"> <span class=" fa fa-edit"></span> Cambiar Contraseña</button>
@@ -74,7 +74,7 @@
                 </div>               
                 <div class="form-group">
                     <button type="button" class="btn btn-default" onclick="canselarCambioPassword()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" onclick="changePassword()">Cambiar</button>
+                    <button id="btn_cambiarPassword" type="submit" class="ladda-button btn btn-primary" ata-style="expand-left" onclick="changePassword()">Cambiar</button>
                 </div>
             </form>
         </div>    

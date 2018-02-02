@@ -16,10 +16,9 @@ class Login_ctrl extends CI_Controller {
 			if($this->session->userdata('logged_in')==true){
 				redirect('Admin_controller');
 			}else{
-				$data["error"] = "";
+				$data['error'] = $this->session->flashdata('error');
 				$this->load->view('login',$data);
-			}
-					
+			}					
 	}
 
 	public function autentificarUser(){
@@ -29,10 +28,9 @@ class Login_ctrl extends CI_Controller {
 		    $rfc = $this->input->post('rfc');	     
 		      
 		    $fila =  $this->Login_model->authUserRoot($rfc);    
-		    
-	      	if ($this->bcrypt->check_password($this->input->post('password'), $fila[0]->password)) {
-	        	$tipo = $fila[0]->tipo_usuario;
-		        if($tipo == "admin"){
+		    if ($fila) {		    			  
+		      	if ($this->bcrypt->check_password($this->input->post('password'), $fila[0]->password)) {
+		        	$tipo = $fila[0]->tipo_usuario;			        
 			          $data = array(	
 			          	'id_empleado'   =>  $fila[0]->id_empleado,
 			            'id_usuario'   =>  $fila[0]->id_usuario,
@@ -42,13 +40,16 @@ class Login_ctrl extends CI_Controller {
 			            'tipo_usuario'=> $fila[0]->tipo_usuario
 			            );
 			          $this->session->set_userdata($data);
+			          redirect('Admin_controller');	      				    
+			   	}else{	
+			 	  	$this->session->set_flashdata('error', '<strong>Usuario o Contraseña</strong> Incorrecto*');   
+			     	redirect('Login_ctrl');              
+			    } 
 
-			          redirect('Admin_controller');	      
-			     } 
-		   	}else{	
-		 	  	$this->session->set_flashdata('error', '<strong>Usuario o Contraseña</strong> Incorrecto*');   
-		     	redirect('Login_ctrl');              
-		    } 
+			}else{	
+			 	  	$this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');   
+			     	redirect('Login_ctrl');              
+			}
 	  	}
 	}
 	

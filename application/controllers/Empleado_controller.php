@@ -52,6 +52,16 @@ class Empleado_controller extends CI_Controller {
         }
         echo json_encode($result);
     }
+    public function lista_deshabilitados(){
+
+        $dato['active'] = "empleado";
+        $dato['active1'] = "lista_deshabilitados";
+        $data['empleados'] = $this->Empleado_model->get_deshabilidatos();
+        $this->load->view('global_view/header',$dato);
+        $this->load->view('admin/empleados/desahabilitados',$data);
+        $this->load->view('global_view/foother');
+
+    }
     public function searchRFC(){
         $rfc = $this->input->post("rfc");
         $query = $this->Empleado_model->existRFC($rfc);

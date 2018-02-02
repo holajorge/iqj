@@ -1,45 +1,53 @@
-<div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-12">
-            <a type="button" class="col-lg-2 btn btn-primary pull-right" href="<?php echo base_url('User_ctrl/create'); ?>" >Registrar Usuario</a>
-            <div class="ibox float-e-margins">
-                <div class="ibox-content">
-                  <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover dataTables-example" id="tabla_lista_empleados">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>   
-                                    <th>Usuario</th>  
-                                    <th>Status</th>  
-                                    <th class="text-center">Acciones</th>                                                                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <?php if ($users != null): ?>                                
-                                <?php foreach ($users as  $user): ?>                                                                
-                                    <tr class="gradeA"> 
-                                        <td><label  id="nombre<?php echo $user->id_empleadoxusuario ?>"><?php echo  $user->nombre ?></label></td> 
-                                        <td><label  id="ap_paterno<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->ap_paterno?></label></td>
-                                        <td><label  id="usuario<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->usuario?></label></td>
-                                        <td><label  id="usuario<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->status?></label></td>
-                                         <td class="text-center">
-                                            <button type="button" class="btn btn-danger" onclick="deletePuesto('<?php echo $user->id_empleadoxusuario ?>')">deshabilitar</button>                                  
-                                            <button class="btn btn-info" onclick="editPuesto('<?php echo $user->id_empleadoxusuario ?>')" data-toggle="modal" data-target="#editarUsuario">Editar</button>                                                               
-                                        </td>  
-                                    </tr>                                
-                                <?php endforeach ?>
-                            <?php else: ?>
-                            <?php endif ?>                            
-                            </tbody>                            
-                        </table>
+<?php if ( $this->session->userdata('tipo_usuario') == "admin" ): ?>
+    
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <a type="button" class="col-lg-2 btn btn-primary pull-right" href="<?php echo base_url('User_ctrl/create'); ?>" >Registrar Usuario</a>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                      <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover dataTables-example" id="tabla_lista_empleados">
+                                <thead>
+                                    <tr>
+                                        <th>Numero</th>  
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>                                       
+                                        <th>RFC</th>  
+                                        <th class="text-center">Acciones</th>                                                                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php if ($users != null): ?>
+                                    <?php foreach ($users as  $user): ?> 
+                                        <tr class="gradeA"> 
+                                            <td><label  id="numero<?php echo $user->id_empleadoxusuario ?>"><?php echo  $user->no_empleado ?></label></td> 
+                                            <td><label  id="ap_paterno<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->ap_paterno?></label></td>
+                                            <td><label  id="nombre<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->nombre?></label></td>
+                                            <td><label  id="rfc<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->rfc?></label></td>
+                                             <td class="text-center">
+                                                <?php if ($user->status == 1): ?>
+                                                    <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
+                                                <?php else: ?>
+                                                    <button type="button" class="btn btn-success btn-rounded" onclick="habilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>')"><span class="fa fa-heart"></span> Habilitar </button>
+                                                <?php endif ?>
+                                                    <!-- <button type="button" class="btn btn-info btn-rounded" onclick="editDepto('<?php echo $user->id_empleadoxusuario ?>')" data-toggle="modal" data-target="#editarUser"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                             -->
+                                            </td> 
+                                        </tr>
+                                    <?php endforeach ?>
+                                <?php else: ?>
+                                <?php endif ?>                            
+                                </tbody>                            
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+<?php else: ?>
+    <h1>usted mo esta autorizado</h1>
+<?php endif ?>
 
 <!-- Modal -->
 <div class="modal fade" id="editarPuesto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
