@@ -85,6 +85,49 @@ class Nomina_controller extends CI_Controller {
         echo json_encode($result);
     }
 
+    public function print_list_employee(){
+        ob_start();
+         $id_nomina = $_GET["id"];
+        //**********************************************************************************
+        //       PDF
+        //**********************************************************************************
+        $this->load->library('m_pdf');
+        $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'margin_top' => 40,
+        'format' => 'A4-L'
+        // 'margin_bottom' => 25,
+        // 'margin_header' => 16,
+        // 'margin_footer' => 13
+        ]);
+        // $mpdf->AddPage('L');
+        /**************************************** Hoja de estilos ****************************************************/
+        //$stylesheet = file_get_contents('assets/css/pdf/pdf.css');
+        $stylesheet = file_get_contents('assets/css/bootstrap.min.css');
+        $mpdf->WriteHTML($stylesheet, 1); 
+        /******************************************** head pdf ******************************************************/
+        $data['header_pdf'] = $this->Nomina_model->datos_lista_empleado($id_nomina);
+        $head               = $this->load->view('admin/nomina/pdf/pdf_det_lista_totales/header', $data, true);
+        $mpdf->SetHTMLHeader($head);
+        // /***************************************** contenido pdf ****************************************************/
+        $data2["listaPeriodoTotales"] = $this->Nomina_model->buscar_periodoList($id_nomina);   
+        // $data2['header_pdf'] = $data['header_pdf'];
+        $html = $this->load->view('admin/nomina/pdf/pdf_det_lista_totales/contenido', $data2, true);
+        //**************************************** footer 1 ********************************************************
+        $data3['pie_pagina'] = "";
+        $footer = $this->load->view('admin/nomina/pdf/pdf_det_lista_totales/footer', $data3, true);
+        $mpdf->SetHTMLFooter($footer);
+
+        /****************************************** imprmir pagina ********************************************************/
+        $mpdf->WriteHTML($html);
+        //$mpdf->AddPage();
+        ob_clean();
+        $mpdf->Output('Nomina_ordinaria.pdf', "I");
+        //**********************************************************************************
+        //    FIN   PDF
+        //**********************************************************************************
+    }
+
     public function buscar_diasExtraordinarios(){
 
         $id_nomina = $this->input->post("id");

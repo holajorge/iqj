@@ -84,6 +84,38 @@ class Nomina_model extends CI_Model {
           return false;
       }
   }
+   public function buscar_periodoList($id_nomina){
+
+      $query = $this->db->query("SELECT ce.id_empleado, tn.id_nomina, (SELECT SUM(empleadosxpercepciones.importe)
+                    FROM cat_empleados
+                    INNER JOIN empleadosxpercepciones ON cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                    INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                    INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) as totalPercepciones, (SELECT SUM(empleadosxdeducciones.importe) FROM cat_empleados INNER JOIN empleadosxdeducciones ON cat_empleados.id_empleado = empleadosxdeducciones.id_empleado INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) AS totalDeducciones, (SELECT SUM(empleadosxaportaciones.importe)
+                    FROM cat_empleados
+                    INNER JOIN empleadosxaportaciones ON cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                    INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                    INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) AS totalAportaciones,(SELECT empleadosxaportaciones.importe as imp
+                    FROM cat_empleados
+                    INNER JOIN empleadosxaportaciones ON cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                    INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                    INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado AND empleadosxaportaciones.id_aportacion = 9 GROUP by imp) AS subsidioAlEmpleo, ce.no_plaza, ce.rfc, ce.nombre  AS nombre_emp, ce.ap_paterno,  ce.ap_materno, ce.fecha_ingreso, cd.nombre as 'depto', cp.nombre as 'puesto',  ce.curp 
+                    FROM empleadosxpercepciones  exp, cat_empleados ce, tab_nomina tn,  cat_depto cd, cat_puestos cp
+                    WHERE cp.id_puesto=ce.id_puesto 
+                        AND cd.id_depto=ce.id_depto 
+                        AND ce.id_empleado=exp.id_empleado 
+                        AND exp.id_nomina=tn.id_nomina 
+                        AND tn.id_nomina= ".$id_nomina."
+                        GROUP BY ce.no_plaza");
+      var_dump($query->result());
+      if ($query->num_rows() > 0) {
+          return $query->result();          
+      }else{
+          return false;
+      }
+  }
   public function seach_diaExtraordinario($id_extra){
 
       $query = $this->db->query("SELECT ce.id_empleado, exe.id_concepto_extraordinario, ce.no_plaza,ce.horas, ce.rfc, ce.curp, ce.nombre  AS nombre_emp, 
@@ -161,6 +193,22 @@ class Nomina_model extends CI_Model {
                     AND cat_empleados.id_tipo_trabajador = cat_tipo_trabajador.id_tipo_trabajador 
                         AND cat_empleados.id_empleado =  ".$id_empleado."
                         AND tab_nomina.id_nomina = ".$id_nomina." group by cat_empleados.id_empleado");
+
+      if ($query->num_rows() > 0) {
+          return $query->result();
+      }else{
+          return false;
+      }
+
+  }
+  //***************************************************************************
+  //DATOS DE LISTA DE EMPLEADOS POR NOMINA PARA EL ENCABEZADO DEL PDF
+  //***************************************************************************
+  public function datos_lista_empleado($id_nomina){
+
+      $query = $this->db->query("SELECT  tab_nomina.periodo_inicio, tab_nomina.periodo_fin, tab_nomina.periodo_quinquenal
+                                  FROM tab_nomina
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina." ");
 
       if ($query->num_rows() > 0) {
           return $query->result();

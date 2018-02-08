@@ -9,6 +9,9 @@
                 <?php endforeach ?>
             </select>
         </div>
+        <div class="col-lg-8" > <br><br><br>
+            <button style="display: none;" id="showBtnPrint" class="btn btn-primary btn-lg pull-right"  onclick="imprimirList()"><span class='glyphicon glyphicon-print' aria-hidden='true'></span> IMPRIMIR LISTA</button>
+        </div>
     </div><br>
     <!-- Table result seach periodos -->
     <div id="resultado_periodo">

@@ -25,7 +25,7 @@ function openModal(){
 }
 
 function serach_periodos(id){
-
+    $("#showBtnPrint").css('display', 'none');  
 	$("#resultado_periodo").html("");
 	$.ajax({
             url: baseURL + "Nomina_controller/buscar_periodo",
@@ -34,7 +34,7 @@ function serach_periodos(id){
             success: function(respuesta) {
                 var obj = JSON.parse(respuesta);
                     if (obj.resultado === true) {                                         
-                       
+                    $("#showBtnPrint").css('display', 'block');   
                     // **********************************************************************
                     //Creación de la tabla de resultados
                     var html = "";
@@ -56,35 +56,36 @@ function serach_periodos(id){
                     html += "</thead>";
                     html += "<tbody>";
                     var num_fila = 1;
-                    for (l in obj.empleado) {
-                        var sumaPercepciones = parseFloat(obj.empleado[l].totalPercepciones);
-                        var sumaDeducciones = parseFloat(obj.empleado[l].totalDeducciones);
-                        var liquido = sumaPercepciones - sumaDeducciones;
-                        var subsidioAlEmpleo = obj.empleado[l].subsidioAlEmpleo;
-                        if (subsidioAlEmpleo != null) {
-                            liquido += parseFloat(subsidioAlEmpleo);
+                        for (l in obj.empleado) {
+                            var sumaPercepciones = parseFloat(obj.empleado[l].totalPercepciones);
+                            var sumaDeducciones = parseFloat(obj.empleado[l].totalDeducciones);
+                            var liquido = sumaPercepciones - sumaDeducciones;
+                            var subsidioAlEmpleo = obj.empleado[l].subsidioAlEmpleo;
+                            if (subsidioAlEmpleo != null) {
+                                liquido += parseFloat(subsidioAlEmpleo);
+                            }
+                            html += "<tr>";
+                            html += "<td>" + obj.empleado[l].no_plaza + "</td>";
+                            html += "<td>" + obj.empleado[l].rfc +"</td>";
+                            html += "<td>" + obj.empleado[l].nombre_emp +"</td>";
+                            html += "<td>" + obj.empleado[l].ap_paterno + " " + obj.empleado[l].ap_materno+"</td>";
+                            html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalPercepciones), "$") +"</td>";
+                            html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalDeducciones), "$") +"</td>";
+                            html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalAportaciones), "$") +"</td>";
+                            html += "<td class='text-right'>" + fNumber.go(parseFloat(liquido), "$"); +"</td>";
+                            html += "<td>" + obj.empleado[l].curp + "</td>";
+                            html += "<td>" + obj.empleado[l].puesto + "</td>";                        
+                            html += "<td>";
+                            html += "<button type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
+                            html += "<a class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
+                            html += "</td>";
+                            html += "</tr>";
+                            num_fila ++;
                         }
-                        html += "<tr>";
-                        html += "<td>" + obj.empleado[l].no_plaza + "</td>";
-                        html += "<td>" + obj.empleado[l].rfc +"</td>";
-                        html += "<td>" + obj.empleado[l].nombre_emp +"</td>";
-                        html += "<td>" + obj.empleado[l].ap_paterno + " " + obj.empleado[l].ap_materno+"</td>";
-                        html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalPercepciones), "$") +"</td>";
-                        html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalDeducciones), "$") +"</td>";
-                        html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalAportaciones), "$") +"</td>";
-                        html += "<td class='text-right'>" + fNumber.go(parseFloat(liquido), "$"); +"</td>";
-                        html += "<td>" + obj.empleado[l].curp + "</td>";
-                        html += "<td>" + obj.empleado[l].puesto + "</td>";                        
-                        html += "<td>";
-                        html += "<button type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
-                        html += "<a class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
-                        html += "</td>";
-                        html += "</tr>";
-                        num_fila ++;
-                    }
                     html += "</tbody>";
                     html += "</table>";
                     $("#resultado_periodo").html(html);
+
                     inicalizarDataTable("miTabla");
 
                     // ***********************************************************************
@@ -100,32 +101,39 @@ function printDetalle(id_empleado, id_nomina){
 }
 
 var fNumber = {
-sepMil: ",", // separador para los miles
-sepDec: '.', // separador para los decimales
-formatear:function (num){
-num +='';
-var splitStr = num.split('.');
-var splitLeft = splitStr[0];
-var splitRight = splitStr.length > 1 ? this.sepDec + splitStr[1] : '';
-var regx = /(\d+)(\d{3})/;
-while (regx.test(splitLeft)) {
-splitLeft = splitLeft.replace(regx, '$1' + this.sepMil + '$2');
+    sepMil: ",", // separador para los miles
+    sepDec: '.', // separador para los decimales
+    formatear:function (num){
+    num +='';
+    var splitStr = num.split('.');
+    var splitLeft = splitStr[0];
+    var splitRight = splitStr.length > 1 ? this.sepDec + splitStr[1] : '';
+    var regx = /(\d+)(\d{3})/;
+    while (regx.test(splitLeft)) {
+    splitLeft = splitLeft.replace(regx, '$1' + this.sepMil + '$2');
+    }
+    //se hace un parseo a flotante de los números decimal para redondearlos a 2 dígitos
+    var valor = parseFloat(splitRight).toFixed(2);
+    //el valor regresado es 0.xx, por lo tanto, se elimina el "0." para obtener el decimal puro 
+    var splitDecimal = valor.split('.');
+    var imprimirDecimal = splitDecimal[1];
+    if (splitDecimal.length == 1) {
+        imprimirDecimal = "00";
+    }
+    return this.simbol + splitLeft +"." + imprimirDecimal;
+    // return this.simbol + splitLeft + splitRight;
+    },
+    go:function(num, simbol){
+    this.simbol = simbol ||'';
+    return this.formatear(num);
+    }
 }
-//se hace un parseo a flotante de los números decimal para redondearlos a 2 dígitos
-var valor = parseFloat(splitRight).toFixed(2);
-//el valor regresado es 0.xx, por lo tanto, se elimina el "0." para obtener el decimal puro 
-var splitDecimal = valor.split('.');
-var imprimirDecimal = splitDecimal[1];
-if (splitDecimal.length == 1) {
-    imprimirDecimal = "00";
-}
-return this.simbol + splitLeft +"." + imprimirDecimal;
-// return this.simbol + splitLeft + splitRight;
-},
-go:function(num, simbol){
-this.simbol = simbol ||'';
-return this.formatear(num);
-}
+
+function imprimirList(){
+
+    var id = document.getElementById("periodo").value;
+    window.open(baseURL + "Nomina_controller/print_list_employee?id="+id);
+
 }
 
 	
