@@ -539,7 +539,7 @@ class Nomina_controller extends CI_Controller {
 
         // SUB NODOS OBLIGATORIOS DE NOMINA [Receptor]
         // Obligatorios de Receptor
-        $datos['nomina12']['Receptor']['ClaveEntFed'] = 'JAL';
+        $datos['nomina12']['Receptor']['ClaveEntFed'] = 'ROO';
         $datos['nomina12']['Receptor']['Curp'] = 'CACF880922HJCMSR03';
         $datos['nomina12']['Receptor']['NumEmpleado'] = '060';
         $datos['nomina12']['Receptor']['PeriodicidadPago'] = '04';
