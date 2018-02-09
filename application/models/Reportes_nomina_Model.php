@@ -21,7 +21,7 @@ class Reportes_nomina_Model extends CI_Model {
     }
 
     public function getComponenteIndividual($id){
-      $this->db->select("*");
+        $this->db->select("*");
         $this->db->from("cat_componentes");
         $this->db->where('id_componente',$id);
         $this->db->order_by("id_componente", "asc");

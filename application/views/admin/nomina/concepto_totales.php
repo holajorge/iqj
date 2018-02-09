@@ -29,6 +29,7 @@
                 <h3>Sel. Componente (Opcional)</h3>
                 <select class="form-control input-lg" name="componente" id="componente" onchange="selc_componente(value);">
                     <option value="0" >Ninguno</option>
+                    <option value="-1" >Todo</option>
                     <?php foreach ($componentes as $componente): ?>
                         <option value="<?php echo $componente->id_componente ?>"> <?php echo $componente->nombre ?></option>
                     <?php endforeach ?>
