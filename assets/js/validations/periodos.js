@@ -78,6 +78,7 @@ function serach_periodos(id){
                             html += "<td>";
                             html += "<button type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
                             html += "<a class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
+                            html += "<a class='btn btn-success' href='"+baseURL +"Nomina_controller/crearTimbre?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
                             html += "</td>";
                             html += "</tr>";
                             num_fila ++;
