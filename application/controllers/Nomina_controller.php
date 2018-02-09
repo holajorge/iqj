@@ -454,7 +454,7 @@ class Nomina_controller extends CI_Controller {
         echo json_encode($result);
     }
 
-public function crearTimbre(){
+    public function crearTimbre(){
 
         error_reporting(0);
         $id_empleado = $_GET["id_emp"];
@@ -476,8 +476,8 @@ public function crearTimbre(){
         $datos['complemento'] = 'nomina12';
 
         $datos['version_cfdi'] = '3.3';
-        $datos['cfdi']='./assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_1.xml';
-        $datos['xml_debug']='./assets/cfdi/timbrados/debug_ejemplo_cfdi33_nomina12_prueba_1.xml';
+        $datos['cfdi']='./assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_11.xml';
+        $datos['xml_debug']='./assets/cfdi/timbrados/debug_ejemplo_cfdi33_nomina12_prueba_11.xml';
 
         $datos['PAC']['usuario'] = 'DEMO700101XXX';
         $datos['PAC']['pass'] = 'DEMO700101XXX';
@@ -633,12 +633,9 @@ public function crearTimbre(){
             $valor=str_replace('&lt;br/&gt;','<br/>',$valor);
             echo "<b>[$variable]=</b>$valor<hr>";
         }
-        //print_r($res);
-        $this->leer($res);
-
-     
-    }
-      
+        print_r($res);
+        // $this->leer($res);
+    }      
     public function leer($data){
         echo "<p><b>Ahora mostrandolo con estilo</b></p>";
         //$xml        = new SimpleXMLElement ("../../timbrados/ejemplo_cfdi33_nomina12_prueba.xml",null,true);
@@ -704,6 +701,51 @@ public function crearTimbre(){
           echo "</br> Sello digital del CFDI:  ".$selloDigitalCFDI;
           echo "</br> Sello del SAT:  ".$selloDelSAT;
           echo "</br> Cadena original:  ".$cadenaOriginalComplemtoSAT; 
+    }
+
+    public function prueba_pdf_timbrado(){
+
+        ob_start();
+         $id_empleado = $_GET["id_emp"];
+         $id_nomina = $_GET["id_nom"];
+        //**********************************************************************************
+        //       PDF
+        //**********************************************************************************
+        $this->load->library('m_pdf');
+        $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'margin_top' => 36
+        // 'margin_bottom' => 25,
+        // 'margin_header' => 16,
+        // 'margin_footer' => 13
+        ]);
+        /**************************************** Hoja de estilos ****************************************************/
+        //$stylesheet = file_get_contents('assets/css/pdf/pdf.css');
+        $stylesheet = file_get_contents('./assets/css/bootstrap.min.css');
+        $mpdf->WriteHTML($stylesheet, 1); 
+        /******************************************** head pdf ******************************************************/
+        $data['header_pdf'] = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
+        $head               = $this->load->view('admin/nomina/pdf/pdf_det_timbrado/header', $data, true);
+        $mpdf->SetHTMLHeader($head);
+        // /***************************************** contenido pdf ****************************************************/
+        $data2["percepciones"] = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
+        $data2['deducciones'] = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
+        $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
+        $data2['header_pdf'] = $data['header_pdf'];
+        $html = $this->load->view('admin/nomina/pdf/pdf_det_timbrado/contenido', $data2, true);
+        //**************************************** footer 1 ********************************************************
+        $data3['pie_pagina'] = "";
+        $footer = $this->load->view('admin/nomina/pdf/pdf_det_nomina/footer', $data3, true);
+        $mpdf->SetHTMLFooter($footer);
+
+        /****************************************** imprmir pagina ********************************************************/
+        $mpdf->WriteHTML($html);
+        //$mpdf->AddPage();
+        ob_clean();
+        $mpdf->Output('Nomina_ordinaria.pdf', "I");
+        //**********************************************************************************
+        //    FIN   PDF
+        //**********************************************************************************
     }
 
 }

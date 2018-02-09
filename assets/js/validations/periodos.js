@@ -51,7 +51,7 @@ function serach_periodos(id){
                     html += "<th>LÍQUIDO</th>";
                     html += "<th>CURP</th>";
                     html += "<th>PUESTO</th>";
-                    html += "<th>IMPRIMIR</th>";              
+                    html += "<th>ACCIONES</th>";              
                     html += "</tr>";
                     html += "</thead>";
                     html += "<tbody>";
@@ -76,9 +76,9 @@ function serach_periodos(id){
                             html += "<td>" + obj.empleado[l].curp + "</td>";
                             html += "<td>" + obj.empleado[l].puesto + "</td>";                        
                             html += "<td>";
-                            html += "<button type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
-                            html += "<a class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
-                            html += "<a class='btn btn-success' href='"+baseURL +"Nomina_controller/crearTimbre?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
+                            html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
+                            html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
+                            html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"Nomina_controller/prueba_pdf_timbrado?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
                             html += "</td>";
                             html += "</tr>";
                             num_fila ++;
