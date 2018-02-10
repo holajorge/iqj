@@ -22,45 +22,69 @@
 
 </style>
 <!-- ************************************************************************ -->
-<!-- DATOS DEL EMPLEADO-->
+<!-- DATOS DEL INSTITUTO-->
 <!-- ************************************************************************ -->
-<table class="table" id="id_tab_per" style="margin-top: 2rem; font-size: 12px;">
-    <tbody id="">
+<table class="table" id="id_tab_per" style="margin-top: 2rem; font-size: 10px;">
+    <tbody>
        <tr>
-            <td> No. de plaza: </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->no_plaza; ?> </td>
-            <td> No. de empleado: </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->no_empleado; ?> </td> 
+            <td width="15%" style="color:#3498DB; font:bold 10px"> Forma de pago: </td> 
+            <td width="35%"> 99 - por definir </td>
+            <td width="15%" style="color:#3498DB; font:bold 10px"> Folio: </td> 
+            <td width="35%" class="txt-negrita"> RFC - 95 </td> 
        </tr>
        <tr>
-            <td> Nombre:  </td> 
-            <td class="txt-negrita"> <?php
+            <td style="color:#3498DB; font:bold 10px"> Método de pago:  </td> 
+            <td> PPD - Pago en parcialidades o diferido </td>
+            <td style="color:#3498DB; font:bold 10px"> Fecha: </td> 
+            <td> 11/1/2018 12:04:39 </td> 
+       </tr>
+       <tr>
+            <td style="color:#3498DB; font:bold 10px"> Moneda:  </td> 
+            <td> MXN - Peso Mexicano </td>
+       </tr>
+    </tbody>
+</table>
+<!-- ************************************************************************ -->
+<!-- DATOS DEL EMPLEADO-->
+<!-- ************************************************************************ -->
+<table class="table" id="id_tab_per" style="margin-top: 2rem; font-size: 10px;">
+    <tbody>
+        <tr>
+            <th style="color: #3498DB;" COLSPAN="3" class="success">Datos del Cliente</th>
+        </tr>
+       <tr>
+            <td  width="15%" class="txt-negrita"> No. Plaza: </td> 
+            <td  width="35%"> <?php echo $header_pdf[0]->no_plaza; ?> </td>
+            <td  width="15%" class="txt-negrita"> No. Empleado: </td> 
+            <td  width="35%" > <?php echo $header_pdf[0]->no_empleado; ?> </td> 
+       </tr>
+       <tr>
+            <td class="txt-negrita"> Nombre:  </td> 
+            <td> <?php
                 echo $header_pdf[0]->empleado;
                 echo " ";
                 echo $header_pdf[0]->ap_paterno;
                 echo " ";
                 echo $header_pdf[0]->ap_materno; 
             ?></td>
-            <td> RFC: </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->rfc; ?> </td> 
+            <td class="txt-negrita"> RFC: </td> 
+            <td> <?php echo $header_pdf[0]->rfc; ?> </td> 
        </tr>
        <tr>
-            <td> CURP:  </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->curp; ?></td>
-            <td> DEPARTAMENTO: </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->depto; ?> </td> 
+            <td class="txt-negrita"> CURP:  </td> 
+            <td><?php echo $header_pdf[0]->curp; ?> </td>
+            <td class="txt-negrita"> DEPARTAMENTO:  </td> 
+            <td > <?php echo $header_pdf[0]->depto; ?> </td>
        </tr>
        <tr>
-            <td> NIVEL:  </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->nivel; ?></td>
-            <td> HORAS: </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->horas; ?> hrs. </td> 
+            <td class="txt-negrita"> NIVEL:  </td> 
+            <td> <?php echo $header_pdf[0]->nivel; ?> </td>
+            <td class="txt-negrita"> HOLAS:  </td> 
+            <td><?php echo $header_pdf[0]->horas; ?> </td>
        </tr>
-       <tr>
-            <td> NSS:  </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->nss; ?></td>
-            <td> </td> 
-            <td> </td> 
+        <tr>
+            <td class="txt-negrita"> NSS:  </td> 
+            <td> <?php echo $header_pdf[0]->nss; ?> </td>          
        </tr>
     </tbody>
 </table>
@@ -69,7 +93,7 @@
 <!-- PERCEPCIONES-->
 <!-- ************************************************************************ -->
 <?php  $total_percepciones = floatval($dataCFDI['datosNomina']['TotalPercepciones']); ?>
-<table class="tabla-color" id="" style="font-size: 12px;" width="100%">
+<table class="tabla-color" id="" style="font-size: 10px;" width="100%">
     <thead>
         <tr>
             <th COLSPAN="3" class="text-center success">PERCEPCIONES</th>
@@ -101,7 +125,7 @@
 <!-- DEDUCCIONES -->
 <!-- ************************************************************************ -->
 <?php $total_deduccion = floatval($dataCFDI['datosNomina']['TotalDeducciones']); ?>
-<table class="tabla-color margen-arriba" id="" style="font-size: 12px;" width="100%">
+<table class="tabla-color margen-arriba" id="" style="font-size: 10px;" width="100%">
     <thead>
         <tr>
             <th COLSPAN="3" class="text-center success">DEDUCCIONES</th>
@@ -134,7 +158,7 @@
 <!-- ************************************************************************ -->
 <?php $subsidioSalario = 0; ?>
 <?php if ( !empty($aportaciones) ) { ?>
-<table class="tabla-color margen-arriba" id="" style="font-size: 12px;" width="100%">
+<table class="tabla-color margen-arriba" id="" style="font-size: 10px;" width="100%">
     <thead>
         <tr>
             <th COLSPAN="3" class="text-center success">APORTACIONES</th>
@@ -198,7 +222,7 @@
 <!-- CÓDIGO QR -->
 <!-- ************************************************************************ -->
 <div class="img-QR">
-    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_1.png" alt="">
+    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_11.png" alt="">
 </div>
 <!-- ************************************************************************ -->
 <!-- CELLO DIGITAL DEL CFDI -->

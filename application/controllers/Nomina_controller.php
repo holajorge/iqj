@@ -490,7 +490,7 @@ class Nomina_controller extends CI_Controller {
         //$datos['factura']['descuento'] = '0.00';
         //$datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
         $datos['factura']['fecha_expedicion'] = "2018-02-06T19:50:53";
-        $datos['factura']['folio'] = '156';
+        $datos['factura']['folio'] = '163';
         $datos['factura']['forma_pago'] = '01';
         $datos['factura']['LugarExpedicion'] = '45079';
         $datos['factura']['metodo_pago'] = 'PUE';
@@ -738,8 +738,8 @@ class Nomina_controller extends CI_Controller {
         $mpdf->WriteHTML($stylesheet, 1); 
         /******************************************** head pdf ******************************************************/
         $data['header_pdf'] = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
-        // $head               = $this->load->view('admin/nomina/pdf/pdf_det_nomina/header', $data, true);
-        // $mpdf->SetHTMLHeader($head);
+        $head               = $this->load->view('admin/nomina/pdf/pdf_cfdi_ordinaria/header', $data, true);
+        $mpdf->SetHTMLHeader($head);
         // /***************************************** contenido pdf ****************************************************/
         // $data2["percepciones"] = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
         // $data2['deducciones'] = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
