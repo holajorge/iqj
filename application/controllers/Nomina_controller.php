@@ -462,8 +462,8 @@ public function crearTimbre(){
 
         $empleado = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
 
-        $percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
-        $data2['deducciones'] = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
+        //$percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
+        //$data2['deducciones'] = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
         $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
 
         date_default_timezone_set('America/Cancun');
@@ -490,7 +490,7 @@ public function crearTimbre(){
         //$datos['factura']['descuento'] = '0.00';
         //$datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
         $datos['factura']['fecha_expedicion'] = "2018-02-06T19:50:53";
-        $datos['factura']['folio'] = '104';
+        $datos['factura']['folio'] = '156';
         $datos['factura']['forma_pago'] = '01';
         $datos['factura']['LugarExpedicion'] = '45079';
         $datos['factura']['metodo_pago'] = 'PUE';
@@ -626,17 +626,19 @@ public function crearTimbre(){
 
         ///////////    MOSTRAR RESULTADOS DEL ARRAY $res   ///////////
         
-        echo "<h1>Respuesta Generar XML y Timbrado</h1>";
+        //echo "<h1>Respuesta Generar XML y Timbrado</h1>";
         foreach($res AS $variable=>$valor)
         {
             $valor=htmlentities($valor);
             $valor=str_replace('&lt;br/&gt;','<br/>',$valor);
-            echo "<b>[$variable]=</b>$valor<hr>";
+            //echo "<b>[$variable]=</b>$valor<hr>";
         }
         //print_r($res);
-        $this->leer($res);
 
-     
+        //SE LEEN LOS DATOS QUE DEVUELVE EL TIMBRADO DEL CFDI Y SE GUARDA EN UNA VARIABLE (ARRAY)
+        $dataCFDI = $this->leer($res);
+        //SE IMPRIME EL PDF CON LOS DATOS DEL CFDI TIMBRADO
+        $this->pdfCFDI($dataCFDI, $id_empleado, $id_nomina);     
     }
       
     public function leer($data){
@@ -687,23 +689,78 @@ public function crearTimbre(){
           $selloDelSAT = $data['representacion_impresa_selloSAT'];
           $cadenaOriginalComplemtoSAT = $data['representacion_impresa_cadena']; 
     
-          echo "</br> Percepciones: ".$percepciones[0]['Concepto'];
-          echo "</br> Percepciones: ".$percepciones[1]['Concepto'];
-          echo "</br> Percepciones: ".$percepciones[2]['Concepto'];
+          // echo "</br> Percepciones: ".$percepciones[0]['Concepto'];
+          // echo "</br> Percepciones: ".$percepciones[1]['Concepto'];
+          // echo "</br> Percepciones: ".$percepciones[2]['Concepto'];
     
-          echo "</br> deducciones: ".$deducciones[0]['Concepto'];
-          echo "</br> deducciones: ".$deducciones[1]['Concepto'];
+          // echo "</br> deducciones: ".$deducciones[0]['Concepto'];
+          // echo "</br> deducciones: ".$deducciones[1]['Concepto'];
     
-          echo "</br> Total Percepciones: ".$datosNomina['TotalPercepciones'];
-          echo "</br> Total Deducciones: ".$datosNomina['TotalDeducciones'];
+          // echo "</br> Total Percepciones: ".$datosNomina['TotalPercepciones'];
+          // echo "</br> Total Deducciones: ".$datosNomina['TotalDeducciones'];
     
-          echo "</br> TotalImpuestosRetenidos (ISR): ".$totalDeducciones['TotalImpuestosRetenidos'];
-          echo "</br> TotalOtrasDeducciones: ".$totalDeducciones['TotalOtrasDeducciones'];
+          // echo "</br> TotalImpuestosRetenidos (ISR): ".$totalDeducciones['TotalImpuestosRetenidos'];
+          // echo "</br> TotalOtrasDeducciones: ".$totalDeducciones['TotalOtrasDeducciones'];
     
     
-          echo "</br> Sello digital del CFDI:  ".$selloDigitalCFDI;
-          echo "</br> Sello del SAT:  ".$selloDelSAT;
-          echo "</br> Cadena original:  ".$cadenaOriginalComplemtoSAT; 
+          // echo "</br> Sello digital del CFDI:  ".$selloDigitalCFDI;
+          // echo "</br> Sello del SAT:  ".$selloDelSAT;
+          // echo "</br> Cadena original:  ".$cadenaOriginalComplemtoSAT;
+
+          $dataCFDI = array('percepciones' => $percepciones,
+                            'deducciones' => $deducciones,
+                            'totalPercepciones' =>$totalPercepciones,
+                            'totalDeducciones' =>$totalDeducciones,
+                            'datosNomina' => $datosNomina,
+                            'selloDigitalCFDI'=> $selloDigitalCFDI,
+                            'selloDelSAT' => $selloDelSAT,
+                            'cadenaOriginalComplemtoSAT' => $cadenaOriginalComplemtoSAT
+                            );
+        return $dataCFDI; 
+    }
+
+    public function pdfCFDI($dataCFDI,$id_empleado, $id_nomina){
+        ob_start();
+        //**********************************************************************************
+        //       PDF
+        //**********************************************************************************
+        $this->load->library('m_pdf');
+        $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'margin_top' => 36
+        // 'margin_bottom' => 25,
+        // 'margin_header' => 16,
+        // 'margin_footer' => 13
+        ]);
+        /**************************************** Hoja de estilos ****************************************************/
+        //$stylesheet = file_get_contents('assets/css/pdf/pdf.css');
+        $stylesheet = file_get_contents('assets/css/bootstrap.min.css');
+        $mpdf->WriteHTML($stylesheet, 1); 
+        /******************************************** head pdf ******************************************************/
+        $data['header_pdf'] = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
+        // $head               = $this->load->view('admin/nomina/pdf/pdf_det_nomina/header', $data, true);
+        // $mpdf->SetHTMLHeader($head);
+        // /***************************************** contenido pdf ****************************************************/
+        // $data2["percepciones"] = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
+        // $data2['deducciones'] = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
+        // $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
+        $data2['header_pdf'] = $data['header_pdf'];
+        $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
+        $data2['dataCFDI'] = $dataCFDI;
+        $html = $this->load->view('admin/nomina/pdf/pdf_cfdi_ordinaria/contenido', $data2, true);
+        //**************************************** footer 1 ********************************************************
+        $data3['pie_pagina'] = "";
+        $footer = $this->load->view('admin/nomina/pdf/pdf_cfdi_ordinaria/footer', $data3, true);
+        $mpdf->SetHTMLFooter($footer);
+
+        /****************************************** imprmir pagina ********************************************************/
+        $mpdf->WriteHTML($html);
+        //$mpdf->AddPage();
+        ob_clean();
+        $mpdf->Output('cfdi.pdf', "I");
+        //**********************************************************************************
+        //    FIN   PDF
+        //**********************************************************************************
     }
 
 }
