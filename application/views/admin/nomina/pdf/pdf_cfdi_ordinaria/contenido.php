@@ -227,58 +227,27 @@
 <!-- ************************************************************************ -->
 <!-- CELLO DIGITAL DEL CFDI -->
 <!-- ************************************************************************ -->
-<?php
-    $cadena = $dataCFDI['selloDigitalCFDI'];
-    $tamañoCadena = strlen($cadena);
-    $ciclos = $tamañoCadena / 140; //140 = cantidad de caracteres q se mostrará en una linea
-    $residuo = $tamañoCadena % 140;
-    $ciclosX = intval($ciclos);
-
-    if ($residuo > 0) {
-        $ciclosX += 1;
-    }
- ?>
-<table class="tabla-color margen-arriba" style="float:left; margin:10px 0 0 0; word-wrap: break-word; width:100%;font-size: 20px">
-    <tbody>
-        <tr>
-            <th>Sello digital del CFDI</th>
-        </tr>
-        <tr>
-            <td>
-            <?php echo $dataCFDI['selloDigitalCFDI']; ?>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<p style="background-color:#f2f2f2; font-size: 10px; font-weight:bold; margin-bottom: 0">
+    Sello digital del CFDI
+</p>
+<p style="overflow-wrap: break-word; font-size: 9px; margin-top: 0">
+    <?php echo $dataCFDI['selloDigitalCFDI']; ?>
+</p>
 <!-- ************************************************************************ -->
 <!-- CELLO DEL SAT -->
 <!-- ************************************************************************ -->
-<table class="tabla-color margen-arriba" style="font-size: 12px;" width="100%">
-    <tbody>
-        <tr>
-            <th>Sello del SAT</th>
-        </tr>
-        <tr>
-            <td style="overflow-wrap: break-word;">
-            <?php echo $dataCFDI['selloDelSAT']; ?>
-            </td>
-        </tr>
-        
-    </tbody>
-</table>
+<p style="background-color:#f2f2f2; font-size: 10px; font-weight:bold; margin-bottom: 0">
+    Sello del SAT
+</p>
+<p style="overflow-wrap: break-word; font-size: 9px; margin-top: 0">
+    <?php echo $dataCFDI['selloDelSAT']; ?>
+</p>
 <!-- ************************************************************************ -->
 <!-- CELLO DEL SAT -->
 <!-- ************************************************************************ -->
-<table class="tabla-color margen-arriba" style="font-size: 12px;" width="100%">
-    <tbody>
-        <tr>
-            <th>Cadena original del complemento del certificado digital del SAT</th>
-        </tr>
-        <tr>
-            <td style="overflow-wrap: break-word;">
-            <?php echo $dataCFDI['cadenaOriginalComplemtoSAT']; ?>
-            </td>
-        </tr>
-        
-    </tbody>
-</table>
+<p style="background-color:#f2f2f2; font-size: 10px; font-weight:bold; margin-bottom: 0">
+    Cadena original del complemento del certificado digital del SAT
+</p>
+<p style="overflow-wrap: break-word; font-size: 9px; margin-top: 0">
+    <?php echo $dataCFDI['cadenaOriginalComplemtoSAT']; ?>
+</p>

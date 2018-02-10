@@ -1,3 +1,12 @@
+<?php if (isset($reporteExcel)): ?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+    </head>
+    <body>
+<?php endif ?>
 <style type='text/css'>
 
 .tabla-color tr:nth-child(odd) {
@@ -13,6 +22,10 @@
 
 .txt-negrita{
     font:bold 12px;
+}
+
+.oculto{
+    display: none;
 }
 
 </style>
@@ -50,7 +63,7 @@
         $totalesAporta[] = $totalApor;
     }
 ?>
-<table class="tabla-color" id="" style="font-size: 12px;" width="100%" >
+<table class="tabla-color <?php if(isset($reporteExcel)){ echo "oculto";} ?>" id="" style="font-size: 12px;" width="100%" >
     <thead>
         <tr class="warning">
             <th COLSPAN="2" class="text-center">CONCEPTOS</th>
@@ -176,198 +189,17 @@
         </tr>
     </tbody>
 </table>
-<!-- <table class="tabla-color margen-arriba" id="" style="font-size: 12px;" width="100%">
-    <thead>
-        <tr class="warning">
-            <?php for ($i=0; $i < $divicionClicoSegundaTabla ; $i++) { ?>
-                <th><?php echo $componentes[$i + $divicionClicoPrimeraTabla]->clave; ?></th>
-            <?php } ?>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                <table>
-                  <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Importe</th>
-                  </tr>
-                  <tr>
-                    <td>001</td>
-                    <td>Sueldo base</td>
-                    <td>3000</td>
-                  </tr>
-                  <tr>
-                    <td>002</td>
-                    <td>Apoyo vivienda</td>
-                    <td>200</td>
-                  </tr>
-                  <tr>
-                    <td>003</td>
-                    <td>Canasta básica</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>004</td>
-                    <td>Quinquenio</td>
-                    <td>400</td>
-                  </tr>
-                </table>
-            </td>
-            <td>
-                <table>
-                  <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Importe</th>
-                  </tr>
-                  <tr>
-                    <td>001</td>
-                    <td>Sueldo base</td>
-                    <td>3000</td>
-                  </tr>
-                  <tr>
-                    <td>002</td>
-                    <td>Apoyo vivienda</td>
-                    <td>200</td>
-                  </tr>
-                  <tr>
-                    <td>003</td>
-                    <td>Canasta básica</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>004</td>
-                    <td>Quinquenio</td>
-                    <td>400</td>
-                  </tr>
-                </table>
-            </td>
-            <td>
-                <table>
-                  <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Importe</th>
-                  </tr>
-                  <tr>
-                    <td>001</td>
-                    <td>Sueldo base</td>
-                    <td>3000</td>
-                  </tr>
-                  <tr>
-                    <td>002</td>
-                    <td>Apoyo vivienda</td>
-                    <td>200</td>
-                  </tr>
-                  <tr>
-                    <td>003</td>
-                    <td>Canasta básica</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>004</td>
-                    <td>Quinquenio</td>
-                    <td>400</td>
-                  </tr>
-                </table>
-            </td>
-            <td>
-                <table>
-                  <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Importe</th>
-                  </tr>
-                  <tr>
-                    <td>001</td>
-                    <td>Sueldo base</td>
-                    <td>3000</td>
-                  </tr>
-                  <tr>
-                    <td>002</td>
-                    <td>Apoyo vivienda</td>
-                    <td>200</td>
-                  </tr>
-                  <tr>
-                    <td>003</td>
-                    <td>Canasta básica</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>004</td>
-                    <td>Quinquenio</td>
-                    <td>400</td>
-                  </tr>
-                </table>
-            </td>
-            <td>
-                <table>
-                  <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Importe</th>
-                  </tr>
-                  <tr>
-                    <td>001</td>
-                    <td>Sueldo base</td>
-                    <td>3000</td>
-                  </tr>
-                  <tr>
-                    <td>002</td>
-                    <td>Apoyo vivienda</td>
-                    <td>200</td>
-                  </tr>
-                  <tr>
-                    <td>003</td>
-                    <td>Canasta básica</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>004</td>
-                    <td>Quinquenio</td>
-                    <td>400</td>
-                  </tr>
-                </table>
-            </td>
-            <td>
-                <table>
-                  <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Importe</th>
-                  </tr>
-                  <tr>
-                    <td>001</td>
-                    <td>Sueldo base</td>
-                    <td>3000</td>
-                  </tr>
-                  <tr>
-                    <td>002</td>
-                    <td>Apoyo vivienda</td>
-                    <td>200</td>
-                  </tr>
-                  <tr>
-                    <td>003</td>
-                    <td>Canasta básica</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>004</td>
-                    <td>Quinquenio</td>
-                    <td>400</td>
-                  </tr>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-    <!-- <tfoot>
-        <tr>
-         <th class="text-right" COLSPAN="2">TOTAL</th>
-         <th class="text-right"> $ <?php echo number_format($totalPer,2); ?> </th>
-        </tr>
-    </tfoot>
-</table> -->
+
+<?php if (isset($reporteExcel)): ?>
+    <script type="text/javascript">
+        closeCurrentWindow();
+        function closeCurrentWindow()
+        {
+          window.close();
+        }
+    </script>
+    </body>
+</html>
+<?php endif ?>
 
 

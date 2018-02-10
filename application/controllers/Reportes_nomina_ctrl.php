@@ -79,32 +79,37 @@ class Reportes_nomina_ctrl extends CI_Controller {
 		$conceptosDeducciones = $this->input->post("deduccion");
 		$conceptosAportaciones = $this->input->post("aportacion");
 		
+        $reporteExcel = 1; //Si la  variables es igual a 1 entonces se va a imprimir excel
         //**********************************************************************************
         //       PDF
         //**********************************************************************************
         $this->load->library('m_pdf');
-        if ($componenteRp == -1) {
-            $mpdf = new \Mpdf\Mpdf([
-            'mode' => 'utf-8',
-            'margin_top' => 40,
-            //'format' => [279.4, 215.9], 
-            'format' => [216,350], 
-            'orientation' => 'L'
-            // 'margin_bottom' => 25,
-            // 'margin_header' => 16,
-            // 'margin_footer' => 13
-            ]);
-        }else{
-            $mpdf = new \Mpdf\Mpdf([
-            'mode' => 'utf-8',
-            'margin_top' => 45
-            ]);
+        if ($reporteExcel != 1) {
+            if ($componenteRp == -1) {
+                $mpdf = new \Mpdf\Mpdf([
+                'mode' => 'utf-8',
+                'margin_top' => 40,
+                //'format' => [279.4, 215.9], 
+                'format' => [216,350], 
+                'orientation' => 'L'
+                // 'margin_bottom' => 25,
+                // 'margin_header' => 16,
+                // 'margin_footer' => 13
+                ]);
+            }else{
+                $mpdf = new \Mpdf\Mpdf([
+                'mode' => 'utf-8',
+                'margin_top' => 45
+                ]);
+            }
         }
-        
-        /**************************************** Hoja de estilos ****************************************************/
-        //$stylesheet = file_get_contents('assets/css/pdf/pdf.css');
-        $stylesheet = file_get_contents('assets/css/bootstrap.min.css');
-        $mpdf->WriteHTML($stylesheet, 1); 
+
+        if ($reporteExcel != 1) {
+            /**************************************** Hoja de estilos ****************************************************/
+            //$stylesheet = file_get_contents('assets/css/pdf/pdf.css');
+            $stylesheet = file_get_contents('assets/css/bootstrap.min.css');
+            $mpdf->WriteHTML($stylesheet, 1); 
+        }
         /******************************************** head pdf ******************************************************/
         //SI el $componenteRp == -1 SE VA A HACER UN REPORTE DONDE SE ENGLOBA TODOS LOS COMPONENTES
         //SI $tipo == 0 EL REPORTE SERÁ POR MES
@@ -138,8 +143,12 @@ class Reportes_nomina_ctrl extends CI_Controller {
         }else{
             $data['header_pdf'] = $this->Reportes_nomina_Model->informacionNomina($id_nomina);
         }
-        $head               = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/header', $data, true);
-        $mpdf->SetHTMLHeader($head);
+
+        if ($reporteExcel != 1) {
+            $head               = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/header', $data, true);
+            $mpdf->SetHTMLHeader($head);
+        }
+        
         // /***************************************** contenido pdf ****************************************************/
         if ($componenteRp == -1 & $tipo == 0) {
             $data2["componentes"] = $this->Reportes_nomina_Model->getComponentes();
@@ -170,26 +179,33 @@ class Reportes_nomina_ctrl extends CI_Controller {
     		$data2["totalesDeducciones"] = $this->Reportes_nomina_Model->sumaPorConceptoDeducciones($id_nomina, $conceptosDeducciones,$tipo,$mes,$anio);
     		$data2["totalesAportaciones"] = $this->Reportes_nomina_Model->sumaPorConceptoAportacion($id_nomina, $conceptosAportaciones,$tipo,$mes,$anio);
         }
-        $data2['header_pdf'] = $data['header_pdf'];
-        if ($componenteRp == -1) {
+        //$data2['header_pdf'] = $data['header_pdf'];
+
+        if ($reporteExcel == 1) {
+            $data2['reporteExcel'] = true;
+            $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenidoHorizontal', $data2);
+        }else if ($componenteRp == -1) {
             $html = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenidoHorizontal', $data2, true);
         }else{
            $html = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenido', $data2, true); 
         }
-        
-        //**************************************** footer 1 ********************************************************
-        $data3['pie_pagina'] = "";
-        $footer = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/footer', $data3, true);
-        $mpdf->SetHTMLFooter($footer);
 
-        /****************************************** imprmir pagina ********************************************************/
-        $mpdf->WriteHTML($html);
-        //$mpdf->AddPage();
-        ob_clean();
-        $mpdf->Output('Nomina_ordinaria.pdf', "I");
-        //**********************************************************************************
-        //    FIN   PDF
-        //**********************************************************************************
+        if ($reporteExcel != 1) {
+            //**************************************** footer 1 ********************************************************
+            $data3['pie_pagina'] = "";
+            $footer = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/footer', $data3, true);
+            $mpdf->SetHTMLFooter($footer);
+
+            /****************************************** imprmir pagina ********************************************************/
+            $mpdf->WriteHTML($html);
+            //$mpdf->AddPage();
+            ob_clean();
+            $mpdf->Output('Nomina_ordinaria.pdf', "I");
+            //**********************************************************************************
+            //    FIN   PDF
+            //**********************************************************************************
+        }
+        
     }
 	public function getAllPeriodosPercepcionMes(){
 
@@ -212,5 +228,3 @@ class Reportes_nomina_ctrl extends CI_Controller {
 
 }
 
-/* End of file Reportes_nomina_ctrl.php */
-/* Location: ./application/controllers/Reportes_nomina_ctrl.php */

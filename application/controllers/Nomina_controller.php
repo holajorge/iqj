@@ -454,7 +454,7 @@ class Nomina_controller extends CI_Controller {
         echo json_encode($result);
     }
 
-    public function crearTimbre(){
+    public function timbrarNomina(){
 
         error_reporting(0);
         $id_empleado = $_GET["id_emp"];
@@ -489,8 +489,8 @@ class Nomina_controller extends CI_Controller {
 
         //$datos['factura']['descuento'] = '0.00';
         //$datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
-        $datos['factura']['fecha_expedicion'] = "2018-02-06T19:50:53";
-        $datos['factura']['folio'] = '163';
+        $datos['factura']['fecha_expedicion'] = "2018-02-07T19:50:53";
+        $datos['factura']['folio'] = '170';
         $datos['factura']['forma_pago'] = '01';
         $datos['factura']['LugarExpedicion'] = '45079';
         $datos['factura']['metodo_pago'] = 'PUE';
