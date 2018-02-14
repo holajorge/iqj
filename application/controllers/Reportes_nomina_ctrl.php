@@ -78,8 +78,9 @@ class Reportes_nomina_ctrl extends CI_Controller {
 		$conceptosPercepciones = $this->input->post("percepcion");
 		$conceptosDeducciones = $this->input->post("deduccion");
 		$conceptosAportaciones = $this->input->post("aportacion");
+        $reporteExcel = $this->input->post("reporteExcel");
 		
-        $reporteExcel = 1; //Si la  variables es igual a 1 entonces se va a imprimir excel
+        //$reporteExcel = 1; //Si la  variables es igual a 1 entonces se va a imprimir excel
         //**********************************************************************************
         //       PDF
         //**********************************************************************************
@@ -111,7 +112,7 @@ class Reportes_nomina_ctrl extends CI_Controller {
             $mpdf->WriteHTML($stylesheet, 1); 
         }
         /******************************************** head pdf ******************************************************/
-        //SI el $componenteRp == -1 SE VA A HACER UN REPORTE DONDE SE ENGLOBA TODOS LOS COMPONENTES
+        //SI el $componenteRp == -1 SE VA A HACER UN REPORTE DONDE SE ENGLOBAN TODOS LOS COMPONENTES
         //SI $tipo == 0 EL REPORTE SERÁ POR MES
         if ($componenteRp == -1 & $tipo == 0) {
            $nombre_reporte = "REPORTE POR COMPONENTES";
@@ -183,6 +184,7 @@ class Reportes_nomina_ctrl extends CI_Controller {
 
         if ($reporteExcel == 1) {
             $data2['reporteExcel'] = true;
+            $data2['headerExcel'] =  $data;
             $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenidoHorizontal', $data2);
         }else if ($componenteRp == -1) {
             $html = $this->load->view('admin/nomina/reportes/pdfTotalPorConcepto/contenidoHorizontal', $data2, true);

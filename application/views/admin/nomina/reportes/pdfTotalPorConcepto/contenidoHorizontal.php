@@ -30,6 +30,15 @@
 
 </style>
 <?php 
+    //SE OBTIENE LA FECHA ACTUAL
+    $mesRep = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+    $D=date("d");
+    $M=date("m");
+    $Y=date("Y");
+    setlocale(LC_TIME, 'spanish');  
+    $nombre=strftime("%B",mktime(0, 0, 0, $M+1, 0 ,0)); 
+    $mes= strtoupper ($nombre );
+    //SE CALCULA DINÁMICAMENTE EL TAMAÑP DE LA TABLA
     $x = count($componentes); //TAMAÑO DEL ARREGLO DE COMPONENTES QUE DEVUELVE LA BASE DE DATOS
     $residuo = $x % 2;
     $divicion = $x / 2;
@@ -63,8 +72,49 @@
         $totalesAporta[] = $totalApor;
     }
 ?>
-<table class="tabla-color <?php if(isset($reporteExcel)){ echo "oculto";} ?>" id="" style="font-size: 12px;" width="100%" >
+<table class="tabla-color <?php if(isset($reporteExcel)){ echo "oculto";} ?>" id="table2excel" style="font-size: 12px;" width="100%" >
     <thead>
+        <!-- En caso de que sea un reporte en EXCEL
+        Se imprime un header en la tabla para mostrar la información del reporte -->
+        <?php if (isset($reporteExcel)): ?>
+            <?php
+                $col1y3 = intval(($x/3));
+                $res =  ($x + 2) % 3;
+                $celdaCentro = intval(($x/3)) + $res;
+            ?>
+            <tr>
+                <td colspan="<?php echo ($col1y3); ?>" class="text-center">
+                    <img style="vertical-align: top" src="<?php echo base_url(); ?>assets/img/logo/juventud.png" width="150" />
+                </td>
+                <td colspan="<?php echo (($celdaCentro)); ?>" class="text-center">
+                    GOBIERNO DEL ESTADO DE QUINTANA ROO <br>
+                    INSTITUTO QUINTANARROENSE DE LA JUVENTUD <br>
+                    DEVENGADO DE NÓMINA POR CONCEPTO <br>
+                    <?php if (isset($headerExcel['header_pdf'])): ?>
+                        <?php echo "PERIODO ".$headerExcel['header_pdf'][0]->periodo_quinquenal; ?>
+                         DEL <?php echo $headerExcel['header_pdf'][0]->periodo_inicio; ?> AL <?php echo $headerExcel['header_pdf'][0]->periodo_fin; ?>
+                        <br>
+                        <?php echo $headerExcel['header_pdf_comp']; ?>
+                    <?php endif ?>
+                    <?php if (isset($headerExcel['header_pdf1'])): ?>
+                        <?php  $mesReporte = $headerExcel['header_pdf1']['mes']; ?>
+                        <?php echo $mesRep[$mesReporte - 1]; ?> DE
+                        <?php  echo $headerExcel['header_pdf1']['anio']; ?>
+                    <?php endif ?>
+                </td>
+                <td colspan="<?php echo ($col1y3); ?>" class="text-center">
+                    <?php echo $D." DE ".$mes." DE ".$Y; ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="<?php echo ($x+2); ?>"></td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="<?php echo ($x); ?>">COMPONENTES</td>
+            </tr>
+        <?php endif ?>
+        <!-- Se imprime las celdas de encabezado de los componentes -->
         <tr class="warning">
             <th COLSPAN="2" class="text-center">CONCEPTOS</th>
             <?php for ($i=0; $i < $x ; $i++) { ?>
@@ -191,12 +241,23 @@
 </table>
 
 <?php if (isset($reporteExcel)): ?>
+    <script src="<?php echo base_url('assets/js/jquery-3.2.1.min.js'); ?> "></script>
+    <script src="<?php echo base_url('assets/js/plugins/jquery2excel/jquery.table2excel.min.js');?>"></script>
     <script type="text/javascript">
-        closeCurrentWindow();
-        function closeCurrentWindow()
-        {
-          window.close();
-        }
+        $(function() {
+            $("#table2excel").table2excel({
+                exclude: ".noExl",
+                name: "Excel Document Name",
+                filename: "ReporteDeNomina" + new Date().toISOString().replace(/[\-\:\.]/g, ""),
+                fileext: ".xls",
+                exclude_img: false,
+                exclude_links: true,
+                exclude_inputs: true
+            });
+        });
+        $(function() {
+              window.close();  
+        });
     </script>
     </body>
 </html>

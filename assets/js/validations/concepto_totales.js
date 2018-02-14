@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+$("#btnPrintExcel").hide();
 $("#guardad_conceptos").hide();
 var checked = false;
 var checkedDed = false;
@@ -26,6 +26,11 @@ function serach_yaer(anio){
 
 function selc_componente(id_comp){
 	document.getElementById("inputComponente").value = id_comp;
+	if (id_comp == -1) {
+		$("#btnPrintExcel").show();
+	}else{
+		$("#btnPrintExcel").hide();
+	}
 }
 function serach_periodo(tipo){
 
@@ -346,6 +351,14 @@ function seleccionarTodoApor(){
 		checkedApor = false;
 	}
 	
+}
+
+function print_excel_o_pdf(excel){
+	if (excel) {
+		document.getElementById("id_reporteExcel").value = 1;
+	}else{
+		document.getElementById("id_reporteExcel").value = 0;
+	}
 }
 
 function btnImprimirReporte(){

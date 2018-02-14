@@ -462,8 +462,9 @@ class Nomina_controller extends CI_Controller {
 
         $empleado = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
 
-        //$percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
-        //$data2['deducciones'] = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
+        $percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
+        $deducciones = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
+
         $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
 
         date_default_timezone_set('America/Cancun');
@@ -476,8 +477,8 @@ class Nomina_controller extends CI_Controller {
         $datos['complemento'] = 'nomina12';
 
         $datos['version_cfdi'] = '3.3';
-        $datos['cfdi']='./assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_11.xml';
-        $datos['xml_debug']='./assets/cfdi/timbrados/debug_ejemplo_cfdi33_nomina12_prueba_11.xml';
+        $datos['cfdi']='./assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_01.xml';
+        $datos['xml_debug']='./assets/cfdi/timbrados/debug_ejemplo_cfdi33_nomina12_prueba_01.xml';
 
         $datos['PAC']['usuario'] = 'DEMO700101XXX';
         $datos['PAC']['pass'] = 'DEMO700101XXX';
@@ -489,8 +490,8 @@ class Nomina_controller extends CI_Controller {
 
         //$datos['factura']['descuento'] = '0.00';
         //$datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
-        $datos['factura']['fecha_expedicion'] = "2018-02-07T19:50:53";
-        $datos['factura']['folio'] = '170';
+        $datos['factura']['fecha_expedicion'] = "2018-02-12T19:50:53";
+        $datos['factura']['folio'] = '113';
         $datos['factura']['forma_pago'] = '01';
         $datos['factura']['LugarExpedicion'] = '45079';
         $datos['factura']['metodo_pago'] = 'PUE';
@@ -508,7 +509,7 @@ class Nomina_controller extends CI_Controller {
         $datos['factura']['RegimenFiscal'] = '601';
 
         $datos['emisor']['rfc'] = 'LAN7008173R5'; //RFC DE PRUEBA
-        $datos['emisor']['nombre'] = 'ACCEM SERVICIOS EMPRESARIALES SC';  // EMPRESA DE PRUEBA
+        $datos['emisor']['nombre'] = 'INSTITUTO QUINTANARROENSE DE LA JUVENTUD';  // EMPRESA DE PRUEBA
         //Se puede registrar la CURP del empleador (emisor) del comprobante de nómina cuando 
         //se trate de una persona física.
         //En el caso de personas morales, éstas no cuentan con CURP, por lo tanto no se debe
@@ -522,16 +523,18 @@ class Nomina_controller extends CI_Controller {
 
         $datos['conceptos'][0]['cantidad'] = '1.00';
         $datos['conceptos'][0]['descripcion'] = "Págo de nómina";
-        $datos['conceptos'][0]['valorunitario'] = '100.00';
-        $datos['conceptos'][0]['importe'] = '100.00';
+        $datos['conceptos'][0]['valorunitario'] = '100.00'; //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+        $datos['conceptos'][0]['importe'] = '100.00'; //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
         $datos['conceptos'][0]['ClaveUnidad'] = 'ACT';
 
         // Obligatorios
+        $diasPagados = $this->calcularDiasPagados('2016-10-01','2016-10-15') + 1;
         $datos['nomina12']['TipoNomina'] = 'O'; //O = ORDINARIA - E = EXTRAORDINARIA
         $datos['nomina12']['FechaPago'] = '2016-10-31';
         $datos['nomina12']['FechaInicialPago'] = '2016-10-16';
         $datos['nomina12']['FechaFinalPago'] = '2016-10-31';
-        $datos['nomina12']['NumDiasPagados'] = '15';
+        $datos['nomina12']['NumDiasPagados'] = $diasPagados;
+
         // Opcionales
         // $datos['nomina12']['TotalPercepciones'] = '10500.05';
         // $datos['nomina12']['TotalDeducciones'] = '11234.09';
@@ -539,8 +542,8 @@ class Nomina_controller extends CI_Controller {
 
         // SUB NODOS OPCIONALES DE NOMINA [Emisor, Percepciones, Deducciones, OtrosPagos, Incapacidades]
         // Nodo Emisor, OPCIONALES
-        $datos['nomina12']['Emisor']['RegistroPatronal'] = '5525665412';
-        $datos['nomina12']['Emisor']['RfcPatronOrigen'] = 'AAA010101AAA';
+        $datos['nomina12']['Emisor']['RegistroPatronal'] = '5525665412'; //Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+        $datos['nomina12']['Emisor']['RfcPatronOrigen'] = 'AAA010101AAA'; // VERIFICAR
 
         // SUB NODOS OBLIGATORIOS DE NOMINA [Receptor]
         // Obligatorios de Receptor
@@ -572,9 +575,19 @@ class Nomina_controller extends CI_Controller {
 
         // Totales Opcionales
         //$datos['nomina12']['Percepciones']['TotalSueldos'] = '10500.05';
+        $x = 0;
+        foreach ($percepciones as $percepcion) {
+            // Agregar Percepciones (Todos obligatorios)
+            $datos['nomina12']['Percepciones'][$x]['TipoPercepcion'] = $percepcion->indicador;
+            $datos['nomina12']['Percepciones'][$x]['Clave'] = $percepcion->indicador; //VERIFICAR
+            $datos['nomina12']['Percepciones'][$x]['Concepto'] = $percepcion->nombre;
+            $datos['nomina12']['Percepciones'][$x]['ImporteGravado'] = $percepcion->importe;
+            $datos['nomina12']['Percepciones'][$x]['ImporteExento'] = '0.00'; // VERIFICAR -----
+            $x++;
+        }
 
         // Agregar Percepciones (Todos obligatorios)
-        $datos['nomina12']['Percepciones'][0]['TipoPercepcion'] = '001';
+        /*$datos['nomina12']['Percepciones'][0]['TipoPercepcion'] = '001';
         $datos['nomina12']['Percepciones'][0]['Clave'] = '001'; //VERIFICAR
         $datos['nomina12']['Percepciones'][0]['Concepto'] = 'Sueldos, Salarios Rayas y Jornales';
         $datos['nomina12']['Percepciones'][0]['ImporteGravado'] = '6250.05';
@@ -590,8 +603,8 @@ class Nomina_controller extends CI_Controller {
         $datos['nomina12']['Percepciones'][2]['Clave'] = '013';
         $datos['nomina12']['Percepciones'][2]['Concepto'] = 'Premios por puntualidad';
         $datos['nomina12']['Percepciones'][2]['ImporteGravado'] = '625.00';
-        $datos['nomina12']['Percepciones'][2]['ImporteExento'] = '0.00';
-
+        $datos['nomina12']['Percepciones'][2]['ImporteExento'] = '0.00'; */
+//----------------------------------------------------------------------------------------------
         // $datos['nomina12']['Percepciones'][3]['TipoPercepcion'] = '045';
         // $datos['nomina12']['Percepciones'][3]['Clave'] = '045';
         // $datos['nomina12']['Percepciones'][3]['Concepto'] = 'Premios por puntualidad';
@@ -606,8 +619,15 @@ class Nomina_controller extends CI_Controller {
         // NODO DEDUCCIONES
         // $datos['nomina12']['Deducciones']['TotalOtrasDeducciones'] = '179.34'; // Opcional
         // $datos['nomina12']['Deducciones']['TotalImpuestosRetenidos'] = '1054.75'; // Opcional
-
-        $datos['nomina12']['Deducciones'][0]['TipoDeduccion'] = '002';
+        $j = 0;
+        foreach ($deducciones as $deduccion) {
+            $datos['nomina12']['Deducciones'][$j]['TipoDeduccion'] = $deduccion->indicador;
+            $datos['nomina12']['Deducciones'][$j]['Clave'] = $deduccion->indicador;
+            $datos['nomina12']['Deducciones'][$j]['Concepto'] = $deduccion->nombre;
+            $datos['nomina12']['Deducciones'][$j]['Importe'] = $deduccion->importe;
+            $j++;
+        }
+        /*$datos['nomina12']['Deducciones'][0]['TipoDeduccion'] = '002';
         $datos['nomina12']['Deducciones'][0]['Clave'] = '001';
         $datos['nomina12']['Deducciones'][0]['Concepto'] = 'ISR';
         $datos['nomina12']['Deducciones'][0]['Importe'] = '1054.75';
@@ -620,7 +640,7 @@ class Nomina_controller extends CI_Controller {
         $datos['nomina12']['Deducciones'][2]['TipoDeduccion'] = '005';
         $datos['nomina12']['Deducciones'][2]['Clave'] = '015';
         $datos['nomina12']['Deducciones'][2]['Concepto'] = 'Aportaciones a Fondo de vivienda';
-        $datos['nomina12']['Deducciones'][2]['Importe'] = '300.00';
+        $datos['nomina12']['Deducciones'][2]['Importe'] = '300.00';*/
 
         $res = mf_genera_cfdi($datos);
 
@@ -761,6 +781,15 @@ class Nomina_controller extends CI_Controller {
         //**********************************************************************************
         //    FIN   PDF
         //**********************************************************************************
+    }
+
+    public function calcularDiasPagados($fInicial,$fFinal){
+        date_default_timezone_set('America/Cancun');
+        $date1 = new DateTime($fInicial);
+        $date2 = new DateTime($fFinal);
+        $diff = $date1->diff($date2);
+        
+        return $diff->days;
     }
 
     public function prueba_pdf_timbrado(){
