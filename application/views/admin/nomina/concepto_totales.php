@@ -41,6 +41,7 @@
     <!-- Table result seach periodos -->
     <div class="row">
         <form id="formTotalConcepts" method="POST" action="<?php echo base_url('Reportes_nomina_ctrl/reporteNominaPorConcepto');?>" target="_blank">
+            <input type="hidden" name="reporteExcel" id="id_reporteExcel" value="0">
             <input type="hidden" name="id_nomina" id="id_nomina">
             <input type="hidden" name="tipo" id="tipo">
             <input type="hidden" name="anio" id="anioo">
@@ -56,7 +57,9 @@
                 
             </div>
             <div class="col-lg-12"  id="guardad_conceptos">
-                <button class="btn btn-primary pull-right btn-lg" type="submit"><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>
+                <button class="btn btn-success pull-right btn-lg" type="submit" onclick="print_excel_o_pdf(false)"><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>
+
+                <button class="btn btn-primary pull-right btn-lg" id="btnPrintExcel" onclick="print_excel_o_pdf(true)"> Excel </button>
             </div>
         </form>
     </div>

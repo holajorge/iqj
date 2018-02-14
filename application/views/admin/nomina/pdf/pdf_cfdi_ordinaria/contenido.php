@@ -93,15 +93,15 @@
 <!-- PERCEPCIONES-->
 <!-- ************************************************************************ -->
 <?php  $total_percepciones = floatval($dataCFDI['datosNomina']['TotalPercepciones']); ?>
-<table class="tabla-color" id="" style="font-size: 10px;" width="100%">
+<table class="tabla-color" id="" style="font-size: 10px; float:left;" width="49%">
     <thead>
         <tr>
             <th COLSPAN="3" class="text-center success">PERCEPCIONES</th>
         </tr>
         <tr class="warning">                    
-            <th width="15%">CÓDIGO</th>
-            <th width="70%">DESCRIPCIÓN</th>
-            <th class="text-right" width="15%">IMPORTE</th>
+            <th width="5%">CÓDIGO</th>
+            <th width="36%">DESCRIPCIÓN</th>
+            <th class="text-right" width="7%">IMPORTE</th>
         </tr>
     </thead>
     <tbody>
@@ -125,15 +125,15 @@
 <!-- DEDUCCIONES -->
 <!-- ************************************************************************ -->
 <?php $total_deduccion = floatval($dataCFDI['datosNomina']['TotalDeducciones']); ?>
-<table class="tabla-color margen-arriba" id="" style="font-size: 10px;" width="100%">
+<table class="tabla-color margen-arriba" id="" style="font-size: 10px; float:left;" width="49%">
     <thead>
         <tr>
             <th COLSPAN="3" class="text-center success">DEDUCCIONES</th>
         </tr>
         <tr class="warning">                    
-            <th width="15%">CÓDIGO</th>
-            <th width="70%">DESCRIPCIÓN</th>
-            <th class="text-right" width="15%">IMPORTE</th>
+            <th width="5%">CÓDIGO</th>
+            <th width="36%">DESCRIPCIÓN</th>
+            <th class="text-right" width="7%">IMPORTE</th>
         </tr>
     </thead>
     <tbody>
@@ -222,7 +222,7 @@
 <!-- CÓDIGO QR -->
 <!-- ************************************************************************ -->
 <div class="img-QR">
-    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_11.png" alt="">
+    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_01.png" alt="">
 </div>
 <!-- ************************************************************************ -->
 <!-- CELLO DIGITAL DEL CFDI -->
