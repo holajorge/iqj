@@ -177,7 +177,7 @@
                     <li <?php  if (isset($active)) {     if ($active == "usuarios") {  echo "class='active'";   }}  ?>>
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">Usuarios</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
-                            <li <?php  if (isset($active)) {   if ($active1 == "lista_usuarios") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('User_ctrl/list'); ?>">Lista de Usuarios</a></li>
+                            <li <?php  if (isset($active)) {   if ($active1 == "lista_usuarios") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('User_ctrl/lista'); ?>">Lista de Usuarios</a></li>
                             <li <?php  if (isset($active)) {   if ($active1 == "registro") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('User_ctrl/create'); ?>">Alta Usuario</a></li>
                         </ul>
                     </li>
