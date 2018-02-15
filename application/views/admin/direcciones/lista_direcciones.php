@@ -23,7 +23,7 @@
                                             <?php else: ?>
                                                 <button type="button" class="btn btn-success btn-rounded" onclick="habilitarDireccion('<?php echo $direccion->id_direccion ?>', '<?php echo $direccion->nombre ?>')"><span class="fa fa-heart"></span> Habilitar </button>
                                             <?php endif ?>                                        
-                                            <button class="btn btn-info" onclick="editDireccion('<?php echo $direccion->id_direccion ?>')" data-toggle="modal" data-target="#editarDireccion"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
+                                            <button class="btn btn-info btn-rounded" onclick="editDireccion('<?php echo $direccion->id_direccion ?>')" data-toggle="modal" data-target="#editarDireccion"><span class="glyphicon glyphicon-edit"></span> Editar</button>
                                         </td>                                    
                                     </tr>                                
                                 <?php endforeach ?>
@@ -51,7 +51,7 @@
         <div class="modal-body">
             <input type="hidden" name="id" id="idEditar" value="">
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <label for="nombre">Nombre Dirección</label>
                         <input type="text" name="nombre" id="nombreEditar" class="form-control input-lg" tabindex="1">

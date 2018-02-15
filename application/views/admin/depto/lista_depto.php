@@ -7,7 +7,7 @@
                   <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables-example" id="tabla_lista_empleados">
                             <thead>
-                                <tr>                                    
+                                <tr>
                                     <th>Nombre</th>  
                                     <th>Direccion</th>                                     
                                     <th class="text-center">Acciones</th>   
@@ -55,13 +55,13 @@
         
             <input type="hidden" name="id" id="idEditar" value="">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group ">
                             <label for="nombre">Nombre Departamento</label>
                             <input type="text" name="nombre" id="nombreEditar" class="form-control input-lg" tabindex="1">
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
                             <label for="puesto">Direccion</label>
                             <select class="form-control input-lg" id="direccionEditarID" name="direccion">                               

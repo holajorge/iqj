@@ -5,18 +5,22 @@
 				<h2>Registro de Empleados</small></h2>
 				<hr class="colorgraph">
 				<div class="row">	
-						<div class="col-sm-4 col-md-4">
+						<div class="col-sm-2 col-md-2">
 								<label for="num_plaza">Num. Plaza</label>
 		                        <input type="number" name="no_plaza" id="num_plaza" class="form-control " tabindex="1">		                        
 						</div>		
-						<div class="col-sm-4 col-md-4">
+						<div class="col-sm-2 col-md-2">
 								<label for="horas">HORAS</label>
 		                        <input type="text" name="horas" id="horas" class="form-control " tabindex="2">
-						</div>	
+						</div>
 						<div class="col-sm-4 col-md-4">
 								<label for="nss">NSS</label>
 		                        <input type="text" name="nss" id="nss" class="form-control " tabindex="3">
-						</div>							
+						</div>
+						<div class="col-sm-4 col-md-4">
+							<label for="tarjeta">No. Tarjeta</label>
+							<input type="text" name="tarjeta" id="tarjeta" class="form-control " tabindex="3">
+						</div>
 						<div class=" col-sm-6 col-md-6">							
 								<label for="nombre">Nombre</label>								
 		                        <input type="text" name="nombre" id="nombre" class="form-control" tabindex="4">								
@@ -106,4 +110,3 @@
 	
 	
 
-	

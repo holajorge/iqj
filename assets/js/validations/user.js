@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 
 function asignarUser(id){
-
+  
 	var rfc=document.getElementById("rfc"+id).innerHTML;  
 	var nombre=document.getElementById("nombre"+id).innerHTML;
 	var apelldio=document.getElementById("ap_paterno"+id).innerHTML;  
@@ -19,7 +19,7 @@ function asignarUser(id){
 }
 
 function saveAltaUser(){	
-
+  
 	$("#formAltaUser").validate({
 
       rules: {
@@ -40,44 +40,43 @@ function saveAltaUser(){
 			    var confirmar = $("#cpassword").val();
           var re = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$/;
           if (re.test(pass) ) {
-              console.log("si es admitido");
+              if (pass == confirmar) {
+                var l = $("#ladda_btn_altaUser").ladda();
+                l.ladda('start'); 
+                $.ajax({
+                  type: "POST",
+                  url:baseURL + "User_ctrl/createUserType",
+                  data: {id_empleado:id_empleado, id_usuario: id_usuario, password: pass},
+                  success: function(respuesta) {
+                    var obj = JSON.parse(respuesta);
+                      if (obj.resultado === true) {   
+
+                          $("#formAltaUser")[0].reset();                      
+                          $("#AltaUser").modal('hide'); 
+                           //Mensaje de operación realizada con éxito
+                            setTimeout(function() {
+                                toastr.options = {
+                                    closeButton: true,
+                                    progressBar: true,
+                                    showMethod: 'slideDown',
+                                    timeOut: 4000
+                                };
+                            l.ladda('stop');
+                            toastr.success('Usuario Creado Correctamente', 'DATOS GUARDADOS');    
+                            setTimeout(function() {                    
+                              window.location.href = baseURL + "User_ctrl/create";
+                            }, 1300);               
+                        }, 1300);                                        
+                      }
+                  } 
+                });
+              }else{
+                swal("Upps..!", "LAS CONTRASEÑAS NO COICIDEN! :( ", "error");
+              }
           }else{
             swal("Upps..!", "La Contrasela debe tener como minimo 8 caracteres y maximo de 16, una letra Mayúscula, una minúscula y números :( ", "error");
               return false;
-          }
-	      	if (pass == confirmar) {
-	      		var l = $("#ladda_btn_altaUser").ladda();
-        		l.ladda('start'); 
-		        $.ajax({
-		            type: "POST",
-		            url:baseURL + "User_ctrl/createUserType",
-		            data: {id_empleado:id_empleado, id_usuario: id_usuario, password: pass},
-		            success: function(respuesta) {
-		              var obj = JSON.parse(respuesta);
-		                if (obj.resultado === true) { 	
-
-		                	  $("#formAltaUser")[0].reset();   		                
-			                  $("#AltaUser").modal('hide'); 
-			                   //Mensaje de operación realizada con éxito
-			                    setTimeout(function() {
-			                        toastr.options = {
-			                            closeButton: true,
-			                            progressBar: true,
-			                            showMethod: 'slideDown',
-			                            timeOut: 4000
-			                        };
-			                    l.ladda('stop');
-			                    toastr.success('Usuario Creado Correctamente', 'DATOS GUARDADOS');    
-                          setTimeout(function() {                    
-                            window.location.href = baseURL + "User_ctrl/create";
-                          }, 1300);               
-			                }, 1300);			                		               
-		                }
-		            } 
-		        });
-	        }else{
-	        	swal("Upps..!", "LAS CONTRASEÑAS NO COICIDEN! :( ", "error");
-	        }
+          }	      	
       }
     });
 }
@@ -104,37 +103,43 @@ function changePassword(){
       },
       submitHandler: function(){
       		var pass = $("#pass").val();
-			var confirmar = $("#confirmPassword").val();
-
-	      	if (pass == confirmar) {	   
-	      		var l = $("#btn_cambiarPassword").ladda();
-        		l.ladda('start');   	 	
-		        $.ajax({
-		            type: "POST",
-		            url:baseURL + "User_ctrl/changePasswordUser",
-		            data: {password: pass},
-		            success: function(respuesta) {
-		              var obj = JSON.parse(respuesta);
-		                if (obj.resultado === true) {                      
-		                  l.ladda('stop'); 
-			                  $("#formChangePassUser")[0].reset(); 
-			                   //Mensaje de operación realizada con éxito
-			                    setTimeout(function() {
-			                        toastr.options = {
-			                            closeButton: true,
-			                            progressBar: true,
-			                            showMethod: 'slideDown',
-			                            timeOut: 4000
-			                        };
-			                    l.ladda('stop');
-			                    toastr.success('Su Contraseña fue Cambiada Corectamente', 'DATOS GUARDADOS');                   
-			                }, 1300);
-		                }
-		            } 
-		        });
-	        }else{
-	        	swal("Upps..!", "LAS CONTRASEÑAS NO COICIDEN! :( ", "error");
-	        }
+			    var confirmar = $("#confirmPassword").val();
+          var re = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$/;
+          if (re.test(pass) ) {
+              if (pass == confirmar) {     
+                  var l = $("#btn_cambiarPassword").ladda();
+                  l.ladda('start');       
+                  $.ajax({
+                      type: "POST",
+                      url:baseURL + "User_ctrl/changePasswordUser",
+                      data: {password: pass},
+                      success: function(respuesta) {
+                        var obj = JSON.parse(respuesta);
+                          if (obj.resultado === true) {                      
+                            l.ladda('stop'); 
+                              $("#formChangePassUser")[0].reset(); 
+                               //Mensaje de operación realizada con éxito
+                                setTimeout(function() {
+                                    toastr.options = {
+                                        closeButton: true,
+                                        progressBar: true,
+                                        showMethod: 'slideDown',
+                                        timeOut: 4000
+                                    };
+                                l.ladda('stop');
+                                toastr.success('Su Contraseña fue Cambiada Corectamente', 'DATOS GUARDADOS');   
+                                $("#showCambioPassword").css('display', 'none');                
+                            }, 1300);
+                          }
+                      } 
+                  });
+              }else{
+                swal("Upps..!", "LAS CONTRASEÑAS NO COICIDEN! :( ", "error");
+              }
+          }else{
+            swal("Upps..!", "La Contrasela debe tener como minimo 8 caracteres y maximo de 16, una letra Mayúscula, una minúscula y números :( ", "error");
+              return false;
+          }	      	
       }
     });
 }

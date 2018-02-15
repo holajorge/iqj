@@ -491,7 +491,7 @@ class Nomina_controller extends CI_Controller {
         //$datos['factura']['descuento'] = '0.00';
         //$datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
         $datos['factura']['fecha_expedicion'] = "2018-02-12T19:50:53";
-        $datos['factura']['folio'] = '113';
+        $datos['factura']['folio'] = '177';
         $datos['factura']['forma_pago'] = '01';
         $datos['factura']['LugarExpedicion'] = '45079';
         $datos['factura']['metodo_pago'] = 'PUE';
@@ -651,7 +651,7 @@ class Nomina_controller extends CI_Controller {
         {
             $valor=htmlentities($valor);
             $valor=str_replace('&lt;br/&gt;','<br/>',$valor);
-            //echo "<b>[$variable]=</b>$valor<hr>";
+            // echo "<b>[$variable]=</b>$valor<hr>";
         }
         //print_r($res);
 

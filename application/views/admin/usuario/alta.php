@@ -30,7 +30,7 @@
                                         <td><label  id="puesto"><?php echo $user->puesto?></label></td>
                                         <td><label  id="rfc<?php echo $user->id_empleado ?>"><?php echo $user->rfc?></label></td>
                                         <td class="text-center">
-                                            <button class="btn btn-info" onclick="asignarUser('<?php echo $user->id_empleado ?>')" data-toggle="modal" data-target="#AltaUser"><span class="fa fa-user"></span> ALTA</button>                                                               
+                                            <button class="btn btn-info" data-backdrop="static" data-keyboard="false" onclick="asignarUser('<?php echo $user->id_empleado ?>')" data-toggle="modal" data-target="#AltaUser"><span class="fa fa-user"></span> ALTA</button>                                                               
                                         </td>
                                     </tr>                                
                                 <?php endforeach ?>

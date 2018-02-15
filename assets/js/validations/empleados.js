@@ -5,13 +5,14 @@ $(document).ready(function() {
 });
 
 function saveEmPloye(){
-    $("#form_crear_empleado").validate({
+	$("#form_crear_empleado").validate({
 
         rules: {
             no_plaza: { required: true, number: true},
-            nombre: { required: true, maxlength: 60, },
+            nombre: { required: true, maxlength: 60 },
             horas: { required: true },
             nss: {required: true},
+			tarjeta: {required: true, number:true, minlength: 15},
             ap_paterno: { required: true},            
             fecha_nacimiento: { required: true, date: true},
             fecha_ingreso: { required: true, date: true},            
@@ -21,12 +22,13 @@ function saveEmPloye(){
             id_depto: { required: true},
             id_puesto: { required: true},     
             id_tipo_trabajador: { required: true},    
-            componente: { required: true},     
+            componente: { required: true},
         },        
         messages: {
             horas: "Horas Necesarias",
             no_plaza: "Numero Necesario",
             nss: "numero de suguro social necesario",
+			tarjeta: "Numero de Tarjeta necesario",
             nombre: "Debe ingresar su Nombre.",  
             ap_paterno: "Apellido Necesario.",            
             fecha_nacimiento: "Debe ingresar Fecha Nacimiento.",  
@@ -42,11 +44,12 @@ function saveEmPloye(){
         },
         submitHandler: function(){    
             var dataString = $("#form_crear_empleado").serialize();
+
             var l = $("#btn_guardar_empleado").ladda();
             l.ladda('start');
             $.ajax({
                 type: "POST",
-                url:baseURL + "empleado_controller/guardar_empleado",
+                url:baseURL + "Empleado_controller/guardar_empleado",
                 data: dataString,
                 success: function(respuesta) {
                   var obj = JSON.parse(respuesta);
@@ -78,18 +81,24 @@ function saveEditEmploye(){
         rules: {
             no_plaza: { required: true, number: true},
             horas: { required: true },
+			nss: {required: true},
+			tarjeta: {required: true, number:true, minlength: 15},
             nombre: { required: true },            
             ap_paterno: { required: true},
-            ap_materno: { required: true},
             fecha_nacimiento: { required: true, date: true},
             fecha_ingreso: { required: true, date: true},            
             curp: {required: true},
             rfc: {required: true},            
-            no_empleado: { required: true},             
-        },        
+            no_empleado: { required: true},
+			id_depto:  { required: true},
+			id_puesto:  { required: true},
+			id_tipo_trabajador:  { required: true}
+		},
         messages: {
             horas: "Horas Necesarias",
             no_plaza: "Numero Necesario",
+			nss: "numero de suguro social necesario",
+			tarjeta: "Numero de Tarjeta necesario",
             nombre: "Debe ingresar su Nombre.",  
             ap_paterno: "Apellido Necesario.",
             fecha_nacimiento: "Debe ingresar Fecha Nacimiento.",  
@@ -100,7 +109,7 @@ function saveEditEmploye(){
             no_empleado: "ingrese numero Empleado",
             id_depto: "Debe seleccionar Depto.",
             id_puesto: "Debe seleccionar Puesto.",     
-            id_tipo_trabajador: "Debe seleccionar Tipo.",        
+            id_tipo_trabajador: "Debe seleccionar Tipo."
         },
         submitHandler: function(){    
             var dataString = $("#form_edit_empleado").serialize();
@@ -198,7 +207,7 @@ function habilitarEmpleado(id, nombre, paterno){
     });
 }
 
-function editEmpleado(id, depto, puesto, trabajdor, componente ){    
+function editEmpleado(id, depto, puesto, trabajdor, componente ){
     var no_plaza=document.getElementById("no_plaza"+id).innerHTML;    
     var horas=document.getElementById("horas"+id).innerHTML;
     var nss=document.getElementById("nss"+id).innerHTML;
@@ -209,9 +218,10 @@ function editEmpleado(id, depto, puesto, trabajdor, componente ){
     var fecha_ingreso=document.getElementById("fecha_ingreso"+id).innerHTML;        
     var rfc=document.getElementById("rfc"+id).innerHTML;
     var no_empleado=document.getElementById("no_empleado"+id).innerHTML;
-    var curp=document.getElementById("curp"+id).innerHTML;   
+    var curp=document.getElementById("curp"+id).innerHTML;
+	var tarjeta=document.getElementById("tarjeta"+id).innerHTML;
 
-    document.getElementById("idEditar").innerHTML=id+"";
+	document.getElementById("idEditar").innerHTML=id+"";
     document.getElementById("idEditar").value=id;              
     document.getElementById("num_plazaEdit").value=no_plaza;
     document.getElementById("horasEdit").value=horas;
@@ -223,7 +233,8 @@ function editEmpleado(id, depto, puesto, trabajdor, componente ){
     document.getElementById("fecha_ingresoEdit").value=fecha_ingreso;    
     document.getElementById("rfcEdit").value=rfc;
     document.getElementById("curpEdit").value=curp;
-    document.getElementById("no_empleadoEdit").value=no_empleado;   
+    document.getElementById("no_empleadoEdit").value=no_empleado;
+	document.getElementById("tarjetaEdit").value=tarjeta;
 
     var html = "";
     var html1 = "";
