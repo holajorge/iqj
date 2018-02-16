@@ -435,7 +435,88 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
+    public function getAllPercepciones(){
+		$query = $this->db->query("SELECT * FROM cat_percepciones");
 
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+	public function getAllDeducciones(){
+		$query = $this->db->query("SELECT * FROM cat_deducciones");
+
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+	public function getAllAportaciones(){
+
+		$query = $this->db->query("SELECT * FROM cat_aportaciones");
+
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+	public function getAllEmployee($fecha,$indicador, $id_nomina){
+		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc
+									FROM cat_empleados, 
+											empleadosxpercepciones,
+											cat_percepciones,
+											tab_nomina
+									WHERE empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+											AND empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+											AND empleadosxpercepciones.id_nomina = tab_nomina.id_nomina											
+											AND YEAR(tab_nomina.periodo_inicio) = '".$fecha."'
+											AND empleadosxpercepciones.id_percepcion = '".$indicador."'
+											AND empleadosxpercepciones.id_nomina = '".$id_nomina."' ");
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+	public function getAllEmployeeDeduccion($fecha,$indicador, $id_nomina){
+		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc
+									FROM cat_empleados, 
+											empleadosxdeducciones,
+											cat_deducciones,
+											tab_nomina
+									WHERE empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+											AND empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+											AND empleadosxdeducciones.id_nomina = tab_nomina.id_nomina											
+											AND YEAR(tab_nomina.periodo_inicio) = '".$fecha."'
+											AND empleadosxdeducciones.id_deduccion = '".$indicador."'
+											AND empleadosxdeducciones.id_nomina = '".$id_nomina."' ");
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+	public function getAllEmployeeAportacion($fecha,$indicador, $id_nomina){
+		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc
+									FROM cat_empleados, 
+											empleadosxaportaciones,
+											cat_aportaciones,
+											tab_nomina
+									WHERE empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+											AND empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+											AND empleadosxaportaciones.id_nomina = tab_nomina.id_nomina											
+											AND YEAR(tab_nomina.periodo_inicio) = '".$fecha."'
+											AND empleadosxaportaciones.id_aportacion = '".$indicador."'
+											AND empleadosxaportaciones.id_nomina = '".$id_nomina."' ");
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
 }
 
 /* End of file Reportes_nomina_Model.php */

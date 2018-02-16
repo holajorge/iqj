@@ -227,6 +227,96 @@ class Reportes_nomina_ctrl extends CI_Controller {
         }
         echo json_encode($result);
 	}
+	//********************************************************************************
+	//CONSULTA DE EMPLEADOS POR CONCEPTO ALL METTHOD
+	//********************************************************************************
+	public function consultaspd(){
+		$this->load->view('global_view/header');
+		$datos["years"] = $this->Reportes_nomina_Model->gelAllYear();
+		$datos["componentes"] = $this->Reportes_nomina_Model->getComponentes();
+		$this->load->view('admin/nomina/consultaPD', $datos);
+		$this->load->view('global_view/foother');
+	}
+	public function getAllPerecepcionAjax(){
 
+		$query = $this->Reportes_nomina_Model->getAllPercepciones();
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['percepciones'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	public function getAllDeduccionAjax(){
+		$query = $this->Reportes_nomina_Model->getAllDeducciones();
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['deducciones'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	public function getAllAportacionesAjax(){
+		$query = $this->Reportes_nomina_Model->getAllAportaciones();
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['aportaciones'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	public function getAllEmpleadosConsultaAjax(){
+		$fecha = $this->input->post('anio');
+		$indicador = $this->input->post('indicador');
+
+		$id_nomina = $this->input->post('id_nomina');
+
+		$query = $this->Reportes_nomina_Model->getAllEmployee($fecha,$indicador, $id_nomina);
+
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['employees'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	public function getAllEmpleadosConsultaDeduccionAjax(){
+		$fecha = $this->input->post('anio');
+		$indicador = $this->input->post('indicador');
+
+		$id_nomina = $this->input->post('id_nomina');
+
+		$query = $this->Reportes_nomina_Model->getAllEmployeeDeduccion($fecha,$indicador, $id_nomina);
+
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['employees'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	public function getAllEmpleadosConsultaAportacionAjax(){
+		$fecha = $this->input->post('anio');
+		$indicador = $this->input->post('indicador');
+		$id_nomina = $this->input->post('id_nomina');
+
+		$query = $this->Reportes_nomina_Model->getAllEmployeeAportacion($fecha,$indicador, $id_nomina);
+
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['employees'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	//********************************************************************************
+	// FIN DE LOS METODOS PARA CONSULTA DE EMPLEADOS POR CONSULTA
+	//********************************************************************************
 }
 

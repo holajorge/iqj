@@ -108,6 +108,8 @@
     <script src="<?php echo base_url('assets/js/validations/user.js'); ?>"></script>
      <!-- js para los compoenentes -->
     <script src="<?php echo base_url('assets/js/validations/componentes.js'); ?>"></script>
+	<!-- js para los Consulta DE EMPLEADOS POR CONCEPTO -->
+	<script src="<?php echo base_url('assets/js/validations/consultas_pd.js'); ?>"></script>
 
 </body>
 </html>
