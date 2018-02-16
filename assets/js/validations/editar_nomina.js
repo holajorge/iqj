@@ -5,7 +5,7 @@ $(document).ready(function() {
     calc_aportaciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
     calcular_liquido();
 });
-
+var anio = 2018;
 //******************************************************************************
 //SE VERIFICA QUE LA NÓMINA SELECCIONADA NO EXISTA EN LA BASE DE DATOS
 //******************************************************************************
@@ -53,6 +53,11 @@ function mostrar_per_quinquenal_edit(id_nomina){
         html += "<input type='hidden' id='id_per_q_nomina' value='"+ id_per_q +"'>";
         html += "Periodo "+per_q+": del "+ per_q_inicio +" al "+ per_q_fin;
     $("#txt_per_quinq").html(html);
+
+    //se guarda en el DOM el año en que se realiza la nómina
+    var arrayDeCadenas = per_q_inicio.split("-");
+    var anioNomina = arrayDeCadenas[0];
+    document.getElementById('anioNomina').value = anioNomina;
 }
 // ***********************************************************************************
 // AGREGAR LAS PERCEPCIONES QUE QUE HACEN FALTA
@@ -172,8 +177,15 @@ function calc_deducciones_por_percepcion(sueldoConfianzaMasQuinquenio1, sueldoCo
             var impuesto = 0;
             switch(parseInt(id)) {
                 case 1:
-                    var isr = calcularIsr(4);
-                    document.getElementById("id_ded_"+id).value = isr.toFixed(2);
+                    //Si el año es mayor que 2017 entonces se calculará el ISR con la formula
+                    //de lo contrario el campo ISR quedará abierto con valor de 0.00
+                    var anioNominaIsr = document.getElementById('anioNomina').value;
+                    if (parseInt(anioNominaIsr) > anio) {
+                        var isr = calcularIsr(4);
+                        document.getElementById("id_ded_"+id).value = isr.toFixed(2);
+                    }else{
+                        document.getElementById("id_ded_"+id).value = 0.00;
+                    }
                     break;
                 case 2:
                     impuesto = (sueldoConfianzaMasQuinquenio1 * 3.375) / 100;
@@ -246,8 +258,18 @@ function lista_deducciones_edit(){
 						    cell2_codigo.innerHTML = obj.deducciones[l].indicador;
 						    cell3_desc.innerHTML = obj.deducciones[l].nombre;
 						    if (id_deduccion >= 1 & id_deduccion <= 7) {
-						    	cell4_importe.innerHTML = "<input type='number' style='text-align: right;' id='id_ded_"+id_deduccion+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled> ";
-                                //html += "<td>" + "<input type='number' id='id_ded_"+id_d+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled> "+"</td>"; 
+                                //Si el año es mayor a 2017 entonces el campo ISR quedará como disabled
+                                //De lo contrario el campo ISR quedará abierto
+                                var anioNominaIsr = document.getElementById('anioNomina').value;
+                                if (parseInt(anioNominaIsr) > anio) {
+                                    cell4_importe.innerHTML = "<input type='number' style='text-align: right;' id='id_ded_"+id_deduccion+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled> ";  
+                                }else{
+                                    if (id_deduccion == 1) {
+                                        cell4_importe.innerHTML = "<input type='number' style='text-align: right;' id='id_ded_"+id_deduccion+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion'> ";  
+                                    }else{
+                                        cell4_importe.innerHTML = "<input type='number' style='text-align: right;' id='id_ded_"+id_deduccion+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled> ";  
+                                    }
+                                }
                             }else{
                             	cell4_importe.innerHTML = "<input type='number' style='text-align: right;' id='id_ded_"+id_deduccion+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion'> ";
                                 //html += "<td>" + "<input type='number' id='id_ded_"+id_d+"' onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion'> "+"</td>";
@@ -328,7 +350,16 @@ function lista_aportaciones_edit(){
 						    cell2_codigo.innerHTML = obj.aportaciones[l].indicador;
 						    cell3_desc.innerHTML = obj.aportaciones[l].nombre;
 						    if (id_aportacion > 0 & id_aportacion <= 9) {
-						    	cell4_importe.innerHTML = "<input style='text-align: right;' type='number' id='id_apor_"+id_aportacion+"' onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled> ";
+                                var anioNominaIsr = document.getElementById('anioNomina').value;
+                                if (parseInt(anioNominaIsr) > anio) {
+						    	    cell4_importe.innerHTML = "<input style='text-align: right;' type='number' id='id_apor_"+id_aportacion+"' onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled> ";
+                                }else{
+                                    if (id_aportacion == 9) {
+                                        cell4_importe.innerHTML = "<input style='text-align: right;' type='number' id='id_apor_"+id_aportacion+"' onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion'> ";
+                                    }else{
+                                        cell4_importe.innerHTML = "<input style='text-align: right;' type='number' id='id_apor_"+id_aportacion+"' onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled> ";
+                                    }
+                                }
                             }else{
                                //  if (id_aportacion == idSubsidioSalario) {
                                //      cell4_importe.innerHTML = "<input style='text-align: right;' type='number' id='id_apor_"+id_aportacion+"' onkeyup='calc_total_aportaciones();calcular_liquido();' onchange='calc_total_aportaciones();calcular_liquido();' name='importe_aportacion' class='importe_aportacion'> ";

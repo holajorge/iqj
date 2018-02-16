@@ -32,7 +32,7 @@ function selc_componente(id_comp){
 		$("#btnPrintExcel").hide();
 	}
 }
-function serach_periodo(tipo){
+function serach_periodo(tipo,viewConceptosTotales){
 
 	$("#table_percepciones").empty();
 	$("#table_deducciones").empty();
@@ -51,7 +51,11 @@ function serach_periodo(tipo){
                 if (obj.resultado === true) { 
                 	var num_fila = 1;
                 	html += "<h3>Seleccione el Periodo</h3>";
-                	html += "<select class='form-control input-lg' id='periodo' name='periodo' onchange='serach_porMes(value);'>";
+                	if (viewConceptosTotales) {
+	                	html += "<select class='form-control input-lg' id='periodo' name='periodo' onchange='serach_porMes(value);'>";	
+                	}else{
+                	    html += "<select class='form-control input-lg' id='periodo' name='periodo' onchange='generarReporteExcelMes(value);'>";	
+                	}
                 	html += "<option value='' selected disabled hidden >Seleccione  el Mes</option>";
 	                for (l in obj.meses) {
 	                    var id = obj.meses[l].id_nomina;
@@ -77,7 +81,11 @@ function serach_periodo(tipo){
                 if (obj.resultado === true) { 
                 	var num_fila = 1;
                 	html += "<h3>Seleccione el Periodo</h3>";
-                	html += "<select class='form-control input-lg' id='periodoQuinsena' name='tipo' onchange='serach_porQuinsena(value);'>";
+                	if (viewConceptosTotales) {
+	                	html += "<select class='form-control input-lg' id='periodoQuinsena' name='tipo' onchange='serach_porQuinsena(value);'>";
+                	}else{
+                	   html += "<select class='form-control input-lg' id='periodoQuinsena' name='tipo' onchange='generarReporteExcelQuincena(value);'>";
+                	}
                 	html += "<option value='' selected disabled hidden >Seleccione  Periodo Quincenal</option>";
 	                for (l in obj.periodos) {
 	                    var id = obj.periodos[l].id_nomina;
@@ -102,7 +110,6 @@ function serach_porMes(mes){
 	checkedApor = false;
 	document.getElementById("mess").value=mes; 
 	var tipo = document.getElementById("mes").value;
-	console.log(tipo);
 	var anio = document.getElementById("anio").value;
 	
 	document.getElementById("anioo").value=anio;
@@ -204,7 +211,6 @@ function serach_porQuinsena(id_nomina){
 	checkedApor = false;
 	document.getElementById("id_nomina").value=id_nomina; 
 	var tipo = document.getElementById("mes").value;
-	console.log(tipo);
 	document.getElementById("tipo").value=tipo;
 	var html = "";
 	var html1 = "";
@@ -363,5 +369,23 @@ function print_excel_o_pdf(excel){
 
 function btnImprimirReporte(){
 
+}
+//************************************************************************************
+//VISTA empleados_por_conceptos
+//************************************************************************************
+function generarReporteExcelMes(id_nomina){
+	console.log("generarReporteExcelMes");
+	document.getElementById("id_nomina").value=id_nomina; 
+	var tipo = document.getElementById("mes").value;
+	document.getElementById("tipo").value=tipo;
+	$( "#formReporteEmpConceptos").submit();
+}
+
+function generarReporteExcelQuincena(id_nomina){
+	console.log("generarReporteExcelQuincena");
+	document.getElementById("id_nomina").value=id_nomina; 
+	var tipo = document.getElementById("mes").value;
+	document.getElementById("tipo").value=tipo;
+	$( "#formReporteEmpConceptos").submit();
 }
 

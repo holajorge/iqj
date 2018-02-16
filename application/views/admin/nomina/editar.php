@@ -1,3 +1,4 @@
+<?php $anio = 2018; ?>
 <!-- <div class="wrapper wrapper-content animated fadeInRight"> -->
 <div class="row border-bottom white-bg dashboard-header">
 	<div class="col-lg-12">
@@ -58,6 +59,11 @@
 						    	<!-- SE VERIFICA CUAL ES EL PERIDO QUINQUENAL QUE TIENE EL EMPLEADO -->
 						    	<?php if ($period->id_nomina == $id_nomina): ?>
 						    		<?php $periodo_quinquenal = "PERIODO ".$period->periodo_quinquenal.": DEL ".$period->periodo_inicio." AL ".$period->periodo_fin; ?>
+						    		<?php 
+						    			$porciones = explode("-", $period->periodo_inicio);
+						    			$anioNom = $porciones[0];
+						    		 ?>
+						    		<input type="hidden" id="anioNomina" value=" <?php echo($anioNom); ?> ">
 						    		
 						    	<?php endif ?>
 						    	<!-- SE IMPRIME LA LISTA PARA EDITAR EL PERIODO QUINQUENAL -->
@@ -159,7 +165,18 @@
 					  		<td><?php echo $deduccion->nombre; ?> </td>
 					  		<td>
 					  			<?php if ($deduccion->id_deduccion >= 1 & $deduccion->id_deduccion <= 7){ ?>
-					  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled>
+					  				<!-- Si el año es mayor a 2017 entonces el campo ISR quedará como disabled
+                                		 De lo contrario el campo ISR quedará abierto -->
+
+					  				<?php if (intval($anioNom) > $anio): ?>
+						  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled>
+					  				<?php else: ?>
+					  					<?php if ($deduccion->id_deduccion == 1): ?>
+							  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion'>					  					
+					  					<?php else: ?>
+							  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion' disabled>					  					
+					  					<?php endif ?>
+					  				<?php endif ?>
 					  			<?php }else{ ?>
 					  				<input type="number" style='text-align: right;' id='id_ded_<?php echo $deduccion->id_deduccion; ?>' value="<?php echo $deduccion->importe; ?>" onkeyup='calc_total_deducciones()' onchange='calc_total_deducciones()' name='importe_deduccion' class='importe_deduccion'>
 					  			<?php } ?>
@@ -212,7 +229,15 @@
 									  		<td><?php echo $aportacion->nombre; ?> </td>
 									  		<td>
 									  			<?php if ($aportacion->id_aportacion > 0 & $aportacion->id_aportacion <= 9){ ?>
-									  				<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled>
+													<?php if (intval($anioNom) > $anio): ?>
+									  					<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled>
+									  				<?php else: ?>
+														<?php if ($aportacion->id_aportacion == 9): ?>
+															<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion'>
+														<?php else: ?>
+															<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion' disabled>
+														<?php endif ?>
+									  				<?php endif ?>
 									  			<?php }else{ ?>
 													<input type="number" style='text-align: right;' id='id_apor_<?php echo $aportacion->id_aportacion; ?>' value="<?php echo $aportacion->importe; ?>" onkeyup='calc_total_aportaciones()' onchange='calc_total_aportaciones()' name='importe_aportacion' class='importe_aportacion'>
 									  			<?php } ?>

@@ -54,6 +54,7 @@ function serach_periodo_c(tipo){
 		});
 	}else{
 		$("#periodo").html("");
+		$("#peridosdiv").css('display', 'block');
 		$("#consultaPDA").css('display', 'none');
 		$("#tipoConsultaPDA").hide();
 		$("#puntadoEmpleados").css('display', 'none');

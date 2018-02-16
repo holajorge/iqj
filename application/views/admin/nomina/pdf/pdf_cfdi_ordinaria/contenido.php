@@ -89,69 +89,78 @@
     </tbody>
 </table>
 
-<!-- ************************************************************************ -->
-<!-- PERCEPCIONES-->
-<!-- ************************************************************************ -->
-<?php  $total_percepciones = floatval($dataCFDI['datosNomina']['TotalPercepciones']); ?>
-<table class="tabla-color" id="" style="font-size: 10px; float:left;" width="49%">
-    <thead>
-        <tr>
-            <th COLSPAN="3" class="text-center success">PERCEPCIONES</th>
-        </tr>
-        <tr class="warning">                    
-            <th width="5%">CÓDIGO</th>
-            <th width="36%">DESCRIPCIÓN</th>
-            <th class="text-right" width="7%">IMPORTE</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php for ($i=0; $i < count($dataCFDI['percepciones']); $i++) { ?>
-            <tr>
-                <td > <?php echo $dataCFDI['percepciones'][$i]['Clave']; ?> </td>
-                <td > <?php echo $dataCFDI['percepciones'][$i]['Concepto']; ?> </td>
-                <td class="text-right"> $<?php echo number_format(floatval($dataCFDI['percepciones'][$i]['ImporteGravado']),2); ?> 
-                </td>
-            </tr>
-        <?php } ?>
-    </tbody>
-    <tfoot>
-        <tr>
-         <th class="text-right" COLSPAN="2">TOTAL</th>
-         <th class="text-right"> $<?php echo number_format(floatval($dataCFDI['datosNomina']['TotalPercepciones']),2); ?> </th>
-        </tr>
-    </tfoot>
-</table>
-<!-- ************************************************************************ -->
-<!-- DEDUCCIONES -->
-<!-- ************************************************************************ -->
-<?php $total_deduccion = floatval($dataCFDI['datosNomina']['TotalDeducciones']); ?>
-<table class="tabla-color margen-arriba" id="" style="font-size: 10px; float:left;" width="49%">
-    <thead>
-        <tr>
-            <th COLSPAN="3" class="text-center success">DEDUCCIONES</th>
-        </tr>
-        <tr class="warning">                    
-            <th width="5%">CÓDIGO</th>
-            <th width="36%">DESCRIPCIÓN</th>
-            <th class="text-right" width="7%">IMPORTE</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php for ($i=0; $i < count($dataCFDI['deducciones']); $i++) { ?>
-            <tr>
-                <td > <?php echo $dataCFDI['deducciones'][$i]['Clave']; ?> </td>
-                <td > <?php echo $dataCFDI['deducciones'][$i]['Concepto']; ?> </td>
-                <td class="text-right"> $<?php echo number_format(floatval($dataCFDI['deducciones'][$i]['Importe']),2); ?> 
-                </td>
-            </tr>
-        <?php } ?>
-    </tbody>
-    <tfoot>
-        <tr>
-         <th class="text-right" COLSPAN="2">TOTAL</th>
-         <th class="text-right"> $<?php echo number_format(floatval($dataCFDI['datosNomina']['TotalDeducciones']),2); ?> </th>
-        </tr>
-    </tfoot>
+
+<table width="100%">
+    <tr>
+        <td width="50%">
+            <!-- ************************************************************************ -->
+            <!-- PERCEPCIONES-->
+            <!-- ************************************************************************ -->
+            <?php  $total_percepciones = floatval($dataCFDI['datosNomina']['TotalPercepciones']); ?>
+            <table class="tabla-color" id="" style="font-size: 10px; float:left;" width="95%">
+                <thead>
+                    <tr>
+                        <th COLSPAN="3" class="text-center success">PERCEPCIONES</th>
+                    </tr>
+                    <tr class="warning">                    
+                        <th width="15%">CÓDIGO</th>
+                        <th width="70%">DESCRIPCIÓN</th>
+                        <th class="text-right" width="15%">IMPORTE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php for ($i=0; $i < count($dataCFDI['percepciones']); $i++) { ?>
+                        <tr>
+                            <td > <?php echo $dataCFDI['percepciones'][$i]['Clave']; ?> </td>
+                            <td > <?php echo $dataCFDI['percepciones'][$i]['Concepto']; ?> </td>
+                            <td class="text-right"> $<?php echo number_format(floatval($dataCFDI['percepciones'][$i]['ImporteGravado']),2); ?> 
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                     <th class="text-right" COLSPAN="2">TOTAL</th>
+                     <th class="text-right"> $<?php echo number_format(floatval($dataCFDI['datosNomina']['TotalPercepciones']),2); ?> </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+        <td width="50%">
+            <!-- ************************************************************************ -->
+            <!-- DEDUCCIONES -->
+            <!-- ************************************************************************ -->
+            <?php $total_deduccion = floatval($dataCFDI['datosNomina']['TotalDeducciones']); ?>
+            <table class="tabla-color" id="" style="font-size: 10px; float:left;" width="100%">
+                <thead>
+                    <tr>
+                        <th COLSPAN="3" class="text-center success">DEDUCCIONES</th>
+                    </tr>
+                    <tr class="warning">                    
+                        <th width="15%">CÓDIGO</th>
+                        <th width="70%">DESCRIPCIÓN</th>
+                        <th class="text-right" width="15%">IMPORTE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php for ($i=0; $i < count($dataCFDI['deducciones']); $i++) { ?>
+                        <tr>
+                            <td > <?php echo $dataCFDI['deducciones'][$i]['Clave']; ?> </td>
+                            <td > <?php echo $dataCFDI['deducciones'][$i]['Concepto']; ?> </td>
+                            <td class="text-right"> $<?php echo number_format(floatval($dataCFDI['deducciones'][$i]['Importe']),2); ?> 
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                     <th class="text-right" COLSPAN="2">TOTAL</th>
+                     <th class="text-right"> $<?php echo number_format(floatval($dataCFDI['datosNomina']['TotalDeducciones']),2); ?> </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
 </table>
 <!-- ************************************************************************ -->
 <!-- APORTACIONES -->
@@ -222,7 +231,7 @@
 <!-- CÓDIGO QR -->
 <!-- ************************************************************************ -->
 <div class="img-QR">
-    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ejemplo_cfdi33_nomina12_prueba_01.png" alt="">
+    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ <?php echo $nombreArchivoXML.".png"; ?>" alt="">
 </div>
 <!-- ************************************************************************ -->
 <!-- CELLO DIGITAL DEL CFDI -->

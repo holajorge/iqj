@@ -436,14 +436,50 @@ class Reportes_nomina_Model extends CI_Model {
       }
     }
     public function getAllPercepciones(){
-		$query = $this->db->query("SELECT * FROM cat_percepciones");
-
-		if ($query->num_rows() > 0) {
+    $query = $this->db->query("SELECT * FROM cat_percepciones");
+    if ($query->num_rows() > 0) {
 			return $query->result();
 		} else {
 			return false;
 		}
 	}
+    //*****************************************************************************************
+    //vista empleados_por_conceptos
+    //*****************************************************************************************
+    public function obtenerEmpleadosEnNomina($id_nomina){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
+                                FROM cat_empleados
+                                INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                                INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                WHERE tab_nomina.id_nomina = ".$id_nomina." 
+                                GROUP BY cat_empleados.id_empleado  
+                                ORDER BY cat_empleados.id_empleado ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerPercepcionesPorEmpleado($id_nomina, $id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
+                              FROM cat_empleados
+                              INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                              INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                              INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                              WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado."
+                              ORDER BY cat_percepciones.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+
 	public function getAllDeducciones(){
 		$query = $this->db->query("SELECT * FROM cat_deducciones");
 

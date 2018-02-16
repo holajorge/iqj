@@ -64,6 +64,19 @@ class Reportes_nomina_ctrl extends CI_Controller {
         }
         echo json_encode($result);
 	}
+    //********************************************************************************
+    //SE CALCULA EL TOTAL DE LOS CONSEPTOS DE LA NÓMINA SELECCIONADA
+    //********************************************************************************
+    public function reporteEmpleadosPorConcepto(){
+        $id_nomina = $this->input->post("id_nomina");
+        $empleadosEnNomina = $this->Reportes_nomina_Model->obtenerEmpleadosEnNomina($id_nomina);
+
+        //SE AGREGAN LOS EMPLEADOS EN UN ARREGLO
+        foreach ($empleadosEnNomina as $key) {
+           $percepciones[] = $this->Reportes_nomina_Model->obtnerPercepcionesPorEmpleado($id_nomina, $key->id_empleado);
+        }
+        var_dump($percepciones);
+    }
 
 	//********************************************************************************
 	//SE CALCULA EL TOTAL DE LOS CONSEPTOS DE LA NÓMINA SELECCIONADA
@@ -318,5 +331,15 @@ class Reportes_nomina_ctrl extends CI_Controller {
 	//********************************************************************************
 	// FIN DE LOS METODOS PARA CONSULTA DE EMPLEADOS POR CONSULTA
 	//********************************************************************************
+    //*****************************************************************************************************
+    //EMPLEADOS POR CONCEPTS
+    //*****************************************************************************************************
+    public function empleados_conceptos(){
+            $this->load->view('global_view/header');    
+            $datos["years"] = $this->Reportes_nomina_Model->gelAllYear();
+            $this->load->view('admin/nomina/empleados_por_conceptos', $datos);
+            $this->load->view('global_view/foother');
+    }
+
 }
 

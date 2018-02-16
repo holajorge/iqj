@@ -97,7 +97,10 @@
 								</div>
 					    	</div>
 				    	</div>
-				    	<h2 class="text-center"> <strong id="txt_per_quinq">  </strong></h2>
+				    	<h2 class="text-center">
+				    		<input type="hidden" id='anioNomina'> 
+							<strong id="txt_per_quinq">  </strong>
+				    	</h2>
 				    	<!-- **************************************************** -->
 						<!-- tablas del detalle de nómina -->
 						<!-- **************************************************** -->
