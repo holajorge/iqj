@@ -10,7 +10,7 @@
                             <table class="table table-striped table-bordered table-hover dataTables-example" id="tabla_lista_empleados">
                                 <thead>
                                     <tr>
-                                        <th>Numero</th>  
+                                        <th>No. Empleado</th>  
                                         <th>Nombre</th>
                                         <th>Apellido</th>                                       
                                         <th>RFC</th>  
@@ -22,14 +22,14 @@
                                     <?php foreach ($users as  $user): ?> 
                                         <tr class="gradeA"> 
                                             <td><label  id="numero<?php echo $user->id_empleadoxusuario ?>"><?php echo  $user->no_empleado ?></label></td> 
-                                            <td><label  id="ap_paterno<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->ap_paterno?></label></td>
                                             <td><label  id="nombre<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->nombre?></label></td>
+                                            <td><label  id="ap_paterno<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->ap_paterno?></label></td>                                            
                                             <td><label  id="rfc<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->rfc?></label></td>
                                              <td class="text-center">
                                                 <?php if ($user->status == 1): ?>
-                                                    <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
+                                                    <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>', '<?php echo $user->id_empleado ?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
                                                 <?php else: ?>
-                                                    <button type="button" class="btn btn-success btn-rounded" onclick="habilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>')"><span class="fa fa-heart"></span> Habilitar </button>
+                                                    <button type="button" class="btn btn-success btn-rounded" onclick="habilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>', '<?php echo $user->id_empleado ?>')"><span class="fa fa-heart"></span> Habilitar </button>
                                                 <?php endif ?>
                                                     <!-- <button type="button" class="btn btn-info btn-rounded" onclick="editDepto('<?php echo $user->id_empleadoxusuario ?>')" data-toggle="modal" data-target="#editarUser"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                             -->
                                             </td> 

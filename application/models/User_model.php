@@ -46,7 +46,8 @@ class User_model extends CI_Model {
 								   WHERE cat_tipo_trabajador.id_tipo_trabajador = cat_empleados.id_tipo_trabajador
 								   		 AND cat_depto.id_depto = cat_empleados.id_depto
 								   		 AND cat_puestos.id_puesto = cat_empleados.id_puesto
-								   		 AND cat_empleados.status = 1 ");
+								   		 AND cat_empleados.status = 1 
+								   		 AND cat_empleados.usuario = 0");
 								   
 	    if ($query->num_rows() > 0) {
 	        return $query->result();
@@ -81,19 +82,33 @@ class User_model extends CI_Model {
     return $this->db->update('empleadosxusuario', $cambio);
 	}  
 
-	public function saveUserType($alta){
+	public function saveUserType($alta, $id_empleado, $usuario){
+				$this->db->where('id_empleado', $id_empleado);
+				$this->db->update('cat_empleados', $usuario);
 		return $this->db->insert('empleadosxusuario', $alta);
 	}
 
-	public function deshabilitarUsuario($id){
+	public function deshabilitarUsuario($id, $id_empleado){
+
+		
+		$usuarioDeshabilitar = array('usuario' => 0);
+
+			$this->db->where('id_empleado', $id_empleado);
+			$this->db->update('cat_empleados', $usuarioDeshabilitar);
 
 		$deshabilitar = array('status' => 0);
-               $this->db->where('id_empleadoxusuario', $id);
+            $this->db->where('id_empleadoxusuario', $id);
    		return $this->db->update('empleadosxusuario', $deshabilitar);
 	}
-	public function habilitarUsuario($id){
-		
+	public function habilitarUsuario($id, $id_empleado){
+
+		$usuariohabilitar = array('usuario' => 1);
+
+			$this->db->where('id_empleado', $id_empleado);
+			$this->db->update('cat_empleados', $usuariohabilitar);
+
 		$habilitar = array('status' => 1);
+
               $this->db->where('id_empleadoxusuario', $id);
       return  $this->db->update('empleadosxusuario', $habilitar);
 	}

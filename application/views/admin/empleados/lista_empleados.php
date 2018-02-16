@@ -11,6 +11,7 @@
                                     <th>NO. PLAZA</th>
                                     <th>HORAS</th>
                                     <th>NSS</th>
+									<th>TARJETA</th>
                                     <th>NOMBRE</th>
                                     <th>AP. PATERNO</th>
                                     <th>AP. MATERNO</th>
@@ -32,7 +33,8 @@
                                     <tr class="gradeX">
                                         <td><label  id="no_plaza<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->no_plaza ?></label></td>
                                         <td><label  id="horas<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->horas ?></label></td>  
-                                        <td><label  id="nss<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->nss ?></label></td>  
+                                        <td><label  id="nss<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->nss ?></label></td>
+										<td><label  id="tarjeta<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->no_tarjeta ?></label></td>
                                         <td><label  id="nombre_emp<?php echo $empleado->id_empleado ?>"><?php echo $empleado->nombre_emp?></label></td> 
                                         <td><label  id="ap_paterno<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->ap_paterno ?></label></td> 
                                         <td><label  id="ap_materno<?php echo $empleado->id_empleado ?>"><?php echo $empleado->ap_materno?></label></td> 
@@ -77,68 +79,72 @@
         <div class="modal-body">        
                 <input type="hidden" name="id" id="idEditar" value="">
                 <div class="row">
-                        <div class="col-sm-4 col-md-4">
+                        <div class="col-sm-2 col-md-2">
                                 <label for="num_plaza">Num. Plaza</label>
-                                <input type="number" name="no_plaza" id="num_plazaEdit" class="form-control input-lg" tabindex="1">                             
+                                <input type="number" name="no_plaza" id="num_plazaEdit" class="form-control" tabindex="1">
                         </div>
-                        <div class="col-sm-4 col-md-4">
+                        <div class="col-sm-2 col-md-2">
                                 <label for="horas">HORAS</label>
-                                <input type="text" name="horas" id="horasEdit" class="form-control input-lg" tabindex="2">
-                        </div> 
-                        <div class="col-sm-4 col-md-4">
-                                <label for="nss">NSS</label>
-                                <input type="text" name="nss" id="nssEdit" class="form-control input-lg" tabindex="2">
+                                <input type="text" name="horas" id="horasEdit" class="form-control" tabindex="2">
                         </div>
+						<div class="col-sm-4 col-md-4">
+							<label for="tarjeta">No. Tarjeta</label>
+							<input type="text" name="tarjeta" id="tarjetaEdit" class="form-control " tabindex="3">
+						</div>
+						<div class="col-sm-4 col-md-4">
+							<label for="nss">NSS</label>
+							<input type="text" name="nss" id="nssEdit" class="form-control " tabindex="2">
+						</div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="nombre">Nombre</label>                              
-                                <input type="text" name="nombre" id="nombreEdit" class="form-control input-lg" tabindex="3">                                
+                                <input type="text" name="nombre" id="nombreEdit" class="form-control" tabindex="3">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="ape_paterno">Apellido Paterno</label>
-                                <input type="text" name="ap_paterno" id="ap_paternoEdit" class="form-control input-lg" tabindex="4">                                
+                                <input type="text" name="ap_paterno" id="ap_paternoEdit" class="form-control " tabindex="4">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="ape_materno">Apellido Materno</label>
-                                <input type="text" name="ap_materno" id="ap_maternoEdit" class="form-control input-lg" tabindex="5">                                
+                                <input type="text" name="ap_materno" id="ap_maternoEdit" class="form-control" tabindex="5">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                                <input type="date" name="fecha_nacimiento" id="fecha_nacimientoEdit" class="form-control input-lg" tabindex="6">                                                    
+                                <input type="date" name="fecha_nacimiento" id="fecha_nacimientoEdit" class="form-control" tabindex="6">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="fecha_ingreso">Fecha de Ingreso</label>
-                                <input type="date" name="fecha_ingreso" id="fecha_ingresoEdit" class="form-control input-lg" tabindex="7">                              
+                                <input type="date" name="fecha_ingreso" id="fecha_ingresoEdit" class="form-control" tabindex="7">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="curp">CURP</label>
-                                <input type="text" onblur="validarCrpEdit(this)" name="curp" id="curpEdit" class="form-control input-lg" tabindex="8" >                                           
+                                <input type="text" onblur="validarCrpEdit(this)" name="curp" id="curpEdit" class="form-control" tabindex="8" >
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="rfc">RFC</label>
-                                <input type="text" name="rfc" onblur="ValidaRfcEdit(this.value)" id="rfcEdit" class="form-control input-lg" tabindex="9">
+                                <input type="text" name="rfc" onblur="ValidaRfcEdit(this.value)" id="rfcEdit" class="form-control" tabindex="9">
                         </div>
                         <div class=" col-sm-6 col-md-6 ">
                                 <label for="no_empleado">Num. Empleado</label>
-                                <input type="text" name="no_empleado" id="no_empleadoEdit" class="form-control input-lg" tabindex="10">                         
+                                <input type="text" name="no_empleado" id="no_empleadoEdit" class="form-control " tabindex="10">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="deptoEdit">Departamento</label>
-                            <select class="form-control input-lg" name="depto" tabindex="11" id="deptoID">                                                                    
+                            <select class="form-control " name="depto" tabindex="11" id="deptoID">
                             </select>
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="puesto">Puesto</label>
-                            <select class="form-control input-lg" name="puesto" tabindex="12" id="puestoID">                                
+                            <select class="form-control " name="puesto" tabindex="12" id="puestoID">
                             </select>
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="tipo_trabajador">Tipo Empleado</label>
-                            <select class="form-control input-lg" name="tipo_trabajador" tabindex="13" id="trabajadorID">                                                                
+                            <select class="form-control " name="tipo_trabajador" tabindex="13" id="trabajadorID">
                             </select>
                         </div> 
                         <div class=" col-sm-6 col-md-6">
                             <label for="componenteEmpleado">Componente</label>
-                            <select class="form-control input-lg" name="componente" tabindex="14" id="componenteID">                                                                    
+                            <select class="form-control " name="componente" tabindex="14" id="componenteID">
                             </select>
                         </div>
                 </div>

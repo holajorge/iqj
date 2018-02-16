@@ -88,6 +88,7 @@ class Empleado_controller extends CI_Controller {
         $no_plaza = $this->input->post("no_plaza");
         $horas = $this->input->post("horas");
         $nss = $this->input->post("nss");
+		$no_tarjeta = $this->input->post("tarjeta");
         $nombre = $this->input->post("nombre");
         $ap_paterno = $this->input->post("ap_paterno");
         $ap_materno = $this->input->post("ap_materno");
@@ -105,6 +106,7 @@ class Empleado_controller extends CI_Controller {
                     'no_plaza' => $no_plaza, 
                     'nombre' => $nombre,
                     'nss' => $nss,
+                    'no_tarjeta' => $no_tarjeta,
                     'ap_paterno' => $ap_paterno,
                     'ap_materno' => $ap_materno,
                     'fecha_nacimiento' => $fecha_nacimiento,
@@ -135,6 +137,7 @@ class Empleado_controller extends CI_Controller {
         $no_plaza = $this->input->post("no_plaza");
         $horas = $this->input->post("horas");
         $nss = $this->input->post("nss");
+		$no_tarjeta = $this->input->post("tarjeta");
         $nombre = $this->input->post("nombre");
         $ap_paterno = $this->input->post("ap_paterno");
         $ap_materno = $this->input->post("ap_materno");
@@ -152,6 +155,7 @@ class Empleado_controller extends CI_Controller {
             'no_plaza' => $no_plaza, 
             'horas' => $horas,
             'nss' => $nss,
+			'no_tarjeta' => $no_tarjeta,
             'nombre' => $nombre,
             'ap_paterno' => $ap_paterno,
             'ap_materno' => $ap_materno,

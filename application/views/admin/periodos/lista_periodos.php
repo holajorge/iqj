@@ -21,9 +21,8 @@
                                         <td><label  id="periodo_inicio<?php echo $periodo->id_nomina ?>"><?php echo  $periodo->periodo_inicio ?></label></td> 
                                         <td><label  id="periodo_fin<?php echo $periodo->id_nomina ?>"><?php echo $periodo->periodo_fin?></label></td>  
                                         <td><label  id="periodo_quinquenal<?php echo $periodo->id_nomina ?>"><?php echo $periodo->periodo_quinquenal?></label></td>  
-                                        <td class="text-center">                                            
-                                            <!-- <button type="button" class="btn btn-danger" onclick="deletePercepcion('<?php echo $periodo->id_nomina ?>', '<?php echo $periodo->periodo_quinquenal ?>')"><span class="fa fa-times"></span> deshabilitar</button>                                   -->
-                                            <button class="btn btn-info" onclick="editPeriodo('<?php echo $periodo->id_nomina ?>')" data-toggle="modal" data-target="#editarPeriodo"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
+                                        <td class="text-center">
+                                            <button class="btn btn-info btn-rounded" onclick="editPeriodo('<?php echo $periodo->id_nomina ?>')" data-toggle="modal" data-target="#editarPeriodo"><span class="glyphicon glyphicon-edit"></span> Editar</button>
                                         </td>                                    
                                     </tr>                                
                                 <?php endforeach ?>

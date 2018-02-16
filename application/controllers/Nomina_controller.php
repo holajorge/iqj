@@ -707,7 +707,7 @@ class Nomina_controller extends CI_Controller {
         {
             $valor=htmlentities($valor);
             $valor=str_replace('&lt;br/&gt;','<br/>',$valor);
-            //echo "<b>[$variable]=</b>$valor<hr>";
+            // echo "<b>[$variable]=</b>$valor<hr>";
         }
         //print_r($res);
         $codigoError = $res['codigo_mf_numero'];
