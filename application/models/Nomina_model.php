@@ -120,7 +120,7 @@ class Nomina_model extends CI_Model {
 
       $query = $this->db->query("SELECT ce.id_empleado, exe.id_concepto_extraordinario, ce.no_plaza,ce.horas, ce.rfc, ce.curp, ce.nombre  AS nombre_emp, 
                                   ce.ap_paterno,  ce.ap_materno, ce.fecha_nacimiento, ce.fecha_ingreso, cd.nombre as 'depto', cp.nombre as 'puesto' , 
-                                  exe.importe, exe.isr , exe.id_extraordinario,
+                                  exe.importe, exe.isr , exe.subsidio, exe.id_extraordinario,
                                   cpex.nombre as conseptoextra 
                                 FROM cat_concepto_extraordinario  cpex, cat_empleados ce, empleadosxextraoudinaria exe,  cat_depto cd, cat_puestos cp
                                 WHERE cp.id_puesto=ce.id_puesto 

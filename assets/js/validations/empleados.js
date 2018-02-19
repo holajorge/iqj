@@ -197,7 +197,7 @@ function habilitarEmpleado(id, nombre, paterno){
               success: function () {
                 swal("Hecho!", "EMPLEADO HABILITADO CORRECTAMENTE!", "success");
                 setTimeout(function() {
-                  window.location.href = baseURL+"Empleado_controller/lista_empleado";
+                  window.location.href = baseURL+"Empleado_controller/lista_deshabilitados";
                 }, 2000);
               },
               error: function (xhr, ajaxOptions, thrownError) {

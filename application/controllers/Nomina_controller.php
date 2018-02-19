@@ -199,7 +199,8 @@ class Nomina_controller extends CI_Controller {
             'id_empleado'                 => $this->input->post("id"), 
             'id_concepto_extraordinario'  => $this->input->post("dia"), 
             'importe'                     => $this->input->post("importe"), 
-            'isr'                         => $this->input->post("isr"), 
+            'isr'                         => $this->input->post("isr"),
+			'subsidio'                         => $this->input->post("subsidio"),
         );
         
         $query = $this->Nomina_model->insertNominaExtraordinaria($nominaExtraordinaria);
@@ -217,7 +218,8 @@ class Nomina_controller extends CI_Controller {
             'id_empleado'                 => $this->input->post("id"), 
             'id_concepto_extraordinario'  => $this->input->post("dia"), 
             'importe'                     => $this->input->post("importe"), 
-            'isr'                         => $this->input->post("isr"), 
+            'isr'                         => $this->input->post("isr"),
+			'subsidio'                    => $this->input->post("subsidio"),
         );
         
         $query = $this->Nomina_model->editNominaExtraordinaria($id_extraordinario,$editNominaExtraordinaria);

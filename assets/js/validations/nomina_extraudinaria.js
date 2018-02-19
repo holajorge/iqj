@@ -111,12 +111,12 @@ function insetaNominaExtaordinaria(){
       rules: {
         dia: {required: true},
         importe: { required: true, number: true },
-        isr: { required: true, number: true },            
+
       },        
       messages: {
         dia: "Seleccione un elemento",
         importe: "Cantidad de importe necesario",
-        isr: "Cantidad de ISR Necesario",            
+
       },
       submitHandler: function(){    
         var dataString = $("#guardaExtraordinario").serialize();
@@ -186,7 +186,7 @@ function serach_nominaExtraordinaria(id){
                             html += "<td><label id='rfc"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].rfc + "</label></td>";
                             html += "<td><label id='curp"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].curp + "</label></td>";
                             html += "<td>";
-                            html += "<button type='button' class='btn btn-primary' onclick='editEmpleExtraordinaria("+obj.empleado[l].id_empleado+", "+obj.empleado[l].importe+", "+obj.empleado[l].isr+", "+obj.empleado[l].id_concepto_extraordinario+", "+obj.empleado[l].id_extraordinario+")'  data-toggle='modal' data-target='#editExtraordinaria' ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
+                            html += "<button type='button' class='btn btn-primary' onclick='editEmpleExtraordinaria("+obj.empleado[l].id_empleado+", "+obj.empleado[l].importe+", "+obj.empleado[l].isr+",  "+obj.empleado[l].subsidio+" , "+obj.empleado[l].id_concepto_extraordinario+", "+obj.empleado[l].id_extraordinario+")'  data-toggle='modal' data-target='#editExtraordinaria' ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
                             html += "<button type='button' class='btn btn-success' onclick='printDetalleExtraudinaria("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_concepto_extraordinario +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
                              html += "</td>";
                         html += "</tr>";
@@ -204,7 +204,7 @@ function serach_nominaExtraordinaria(id){
     });
 }
 
-function editEmpleExtraordinaria(id, importe, isr, nombreExtraa, id_extraordinario){
+function editEmpleExtraordinaria(id, importe, isr, subsidio, nombreExtraa, id_extraordinario){
 
     console.log(nombreExtraa);
      $("#dia").html("");
@@ -234,6 +234,7 @@ function editEmpleExtraordinaria(id, importe, isr, nombreExtraa, id_extraordinar
     document.getElementById("importeEdit").value=importe;
     document.getElementById("isrEdit").value=isr;
     document.getElementById("idEditarExtra").value=id_extraordinario;
+	document.getElementById("subsidio").value=subsidio;
 
     $.ajax({
             type: "POST",
@@ -265,13 +266,11 @@ function edit_extraordinaria(){
 
         rules: {
             dia: {required: true},
-            importe: { required: true, number: true },
-            isr: { required: true, number: true },            
+            importe: { required: true, number: true }
         },        
         messages: {
             dia: "Seleccione un consepto",
-            importe: "Cantidad de importe necesario",
-            isr: "Cantidad de ISR Necesario",            
+            importe: "Cantidad de importe necesario"
         },
         submitHandler: function(){    
            var dataString = $("#form_edit_extraordinaria").serialize();

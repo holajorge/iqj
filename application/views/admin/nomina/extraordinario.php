@@ -93,27 +93,31 @@
             <div class=" m-b-sm ">
                 <input type="hidden" id="idEditarExtra" name="idExtra" >
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group" id="reloadExtra">
-                            <!-- <a class="btn btn-info  input-sm pull-right" data-toggle="modal" data-target="#crearExtraordinario"><span class="glyphicon  glyphicon-plus"></span> Crear Nuevo</a>   -->                                           
-                            <label for="depto">Seleccionar Concepto Extraordinaria</label>
-                            <select class="form-control input-lg" id="dia" name="dia" tabindex="1">                                
-                                
+                            <label for="depto">Seleccione Concepto Extraordinaria</label>
+                            <select class="form-control inline" id="dia" name="dia" tabindex="1">
                             </select>
                         </div>
                     </div>  
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group" id="reloadExtra">
                             <label for="depto">Importe</label>
-                            <input type="number" class="form-control input-lg" id="importeEdit" name="importe">
+                            <input type="number" class="form-control" id="importeEdit" name="importe">
                         </div>
                     </div>  
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group" id="reloadExtra">
                             <label for="depto">ISR</label>
-                            <input type="number" class="form-control input-lg" id="isrEdit" name="isr">
+                            <input type="number" class="form-control" id="isrEdit" name="isr">
                         </div>
-                    </div>                              
+                    </div>
+					<div class="col-lg-2">
+						<div class="form-group" >
+							<label for="subsidio">COMPENSACIÓN</label>
+							<input type="number" class="form-control " name="subsidio" id="subsidio">
+						</div>
+					</div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">                                              
