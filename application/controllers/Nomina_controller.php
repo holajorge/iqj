@@ -473,7 +473,6 @@ class Nomina_controller extends CI_Controller {
             $totalPer += $per->importe;
         }
         //---------------------------------------------------------------------------------------------
-
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL TOTAL DE LAS DEDUCCIONES
         $totalDed = 0;
@@ -488,7 +487,6 @@ class Nomina_controller extends CI_Controller {
             }
         }
         //---------------------------------------------------------------------------------------------
-
         //---------------------------------------------------------------------------------------------
         //Se verifica que si existe compenzación para agregar el nodo de otros pagos
         $compenzacion = false;
@@ -499,23 +497,91 @@ class Nomina_controller extends CI_Controller {
             }
         }
         //---------------------------------------------------------------------------------------------
-        
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL TOTAL DE DÍAS PAGADOS
         $diasPagados = $this->calcularDiasPagados($empleado[0]->periodo_inicio,$empleado[0]->periodo_fin) + 1;
         //---------------------------------------------------------------------------------------------
-
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL TotalGravado
         $totalGravado =  $this->calcularTotalParaFormula($percepciones,4);
         //---------------------------------------------------------------------------------------------
-
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL SalarioDiarioIntegrado
         $SalarioDiarioIntegrado =  $this->calcularTotalParaFormula($percepciones,5) / $diasPagados;
         //---------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+        //SE CALCULAN LOS TOTALES DE LAS PERCEPCIONES
+        //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
+        $array = array("022", "023", "025", "039" , "044");
+        $existeTotalSueldos = false;
+        $totalSueldos = 0;
 
-        
+        $arrayPerSeparacion = array("022", "023", "025");
+        $existeSeparacion = false;
+        $TotalSeparacionIndemnizacion = 0;
+
+        $arrayJubilacionPR = array("039", "044");
+        $existeJubilacionPR = false;
+        $totalJubilacionPensionRetiro = 0;
+
+        $arrayTotalUnaExhibicion = array("039");
+        $existeTotalUnaExhibicion = false;
+        $totalUnaExhibicion = 0;
+
+        $arrayTotalUnaExhibicion044 = array("044");
+        $existeTotalUnaExhibicion044 = false;
+        $totalUnaExhibicion044 = 0;
+
+        $x = 0;
+        foreach ($percepciones as $percepcion) {
+            $clavePer = $percepcion->indicador;
+            //--------------------------------------------------------------------------------------------
+            //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
+            if (!in_array($clavePer, $array)) {
+                $existeTotalSueldos = true;
+                $totalSueldos += $percepcion->importe;
+            }
+            //--------------------------------------------------------------------------------------------
+            /*Si se registraron las claves tipo percepción "022" (Prima por Antigüedad), "023" (Pagos
+            por separación), "025" (Indemnizaciones), debe existir el campo
+            TotalSeparacionIndemnizacion y la información de los datos de
+            SeparacionIndemnizacion.*/
+            if (in_array($clavePer, $arrayPerSeparacion)) {
+                $TotalSeparacionIndemnizacion += $percepcion->importe; 
+                $existeSeparacion = true;
+            }
+            //--------------------------------------------------------------------------------------------
+            /*Si se registraron las claves tipo percepción "039" (Jubilaciones, pensiones o haberes de
+            retiro en una exhibición) y "044" (Jubilaciones, pensiones o haberes de retiro en
+            parcialidades), debe existir el campo TotalJubilacionPensionRetiro y la información de
+            los datos de JubilacionPensionRetiro.*/
+            if (in_array($clavePer, $arrayJubilacionPR)) {
+                $totalJubilacionPensionRetiro += $percepcion->importe; 
+                $existeJubilacionPR = true;
+            }
+            //---------------------------------------------------------------------------------------------
+            /*Si se registró la CLAVE TipoPercepcion '039' (Jubilaciones, pensiones o haberes de retiro
+            en una exhibición) debe existir el campo TotalUnaExhibicion y no deben existir los
+            campos TotalParcialidad, MontoDiario*/
+            if (in_array($clavePer, $arrayTotalUnaExhibicion)) {
+                $totalUnaExhibicion += $percepcion->importe; 
+                $existeTotalUnaExhibicion = true;
+            }
+            //---------------------------------------------------------------------------------------------
+            /*Si se registró la clave TipoPercepcion "044" (Jubilaciones, pensiones o haberes de retiro
+            en parcialidades) no debe existir el campo TotalUnaExhibicion y deben existir los
+            campos TotalParcialidad, MontoDiario.*/
+            if (in_array($clavePer, $arrayTotalUnaExhibicion044)) {
+                $totalUnaExhibicion044 += $percepcion->importe; 
+                $existeTotalUnaExhibicion044 = true;
+            }
+
+
+        }
+        //---------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------
+        //SE CALCULA EL TOTAL DE LAS PERCEPCIONES
+        $totalPercepciones = $totalSueldos + $TotalSeparacionIndemnizacion + $totalJubilacionPensionRetiro;
 
         date_default_timezone_set('America/Cancun');
 
@@ -540,9 +606,10 @@ class Nomina_controller extends CI_Controller {
         $datos['conf']['cer'] = './assets/cfdi/certificados/lan7008173r5.cer.pem';
         $datos['conf']['key'] = './assets/cfdi/certificados/lan7008173r5.key.pem';
         $datos['conf']['pass'] = '12345678a';
-
         $datos['factura']['Descuento'] = $totalDed;
-        $datos['factura']['fecha_expedicion'] = date('Y-m-d\TH:i:s', time() - 120);
+        //var_dump(time() - 120);
+        $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * 60) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
+        $datos['factura']['fecha_expedicion'] = $fecha_expedicion;
         $datos['factura']['folio'] = $empleado[0]->no_empleado;
         $datos['factura']['forma_pago'] = '99';
         $datos['factura']['LugarExpedicion'] = '77000';
@@ -576,11 +643,11 @@ class Nomina_controller extends CI_Controller {
 
         $datos['conceptos'][0]['cantidad'] = '1';
         $datos['conceptos'][0]['descripcion'] = "Pago de nómina";
-        $datos['conceptos'][0]['valorunitario'] = $totalPer + $importeCompenzacion; //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
-        $datos['conceptos'][0]['importe'] = $totalPer + $importeCompenzacion; //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+        $datos['conceptos'][0]['valorunitario'] = $totalPercepciones + $importeCompenzacion; //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+        $datos['conceptos'][0]['importe'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
         $datos['conceptos'][0]['ClaveUnidad'] = 'ACT';
         $datos['conceptos'][0]['ClaveProdServ'] = '84111505';
-        $datos['conceptos'][0]['Descuento'] = $totalDed;
+        $datos['conceptos'][0]['Descuento'] = $totalDed; //var_dump($totalDed); die();
 
         // Obligatorios
         $datos['nomina12']['TipoNomina'] = 'O'; //O = ORDINARIA - E = EXTRAORDINARIA
@@ -590,7 +657,7 @@ class Nomina_controller extends CI_Controller {
  /*-*/  $datos['nomina12']['NumDiasPagados'] = $diasPagados;
 
         // Opcionales
-        $datos['nomina12']['TotalPercepciones'] = $totalPer;
+        $datos['nomina12']['TotalPercepciones'] = $totalPercepciones;
         $datos['nomina12']['TotalDeducciones'] = $totalDed;
         //En caso de existir compenzación debe existir el campo TotalOtrosPagos
         if ($compenzacion) {
@@ -627,17 +694,17 @@ class Nomina_controller extends CI_Controller {
         //die();
         $datos['nomina12']['Receptor']['RiesgoPuesto'] = '2'; // 2 = clase II  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         //$datos['nomina12']['Receptor']['SalarioBaseCotApor'] = '435.50';
- /*-*/  $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = number_format($SalarioDiarioIntegrado,2);
+        //var_dump(round($SalarioDiarioIntegrado, 2)); die();
+ /*-*/  $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = round($SalarioDiarioIntegrado, 2);
 
         // NODO PERCEPCIONES
         // Totales Obligatorios
         $datos['nomina12']['Percepciones']['TotalGravado'] = $totalGravado;
- /*-*/  $datos['nomina12']['Percepciones']['TotalExento'] = $totalPer - $totalGravado;
+ /*-*/  $datos['nomina12']['Percepciones']['TotalExento'] = $totalPercepciones - $totalGravado;
 
-        //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
-        $array = array("022", "023", "025", "039" , "044");
-        $existeTotalSueldos = false; 
         $x = 0;
+        $totImpgravado = 0;
+        $totImpExento = 0;
         foreach ($percepciones as $percepcion) {
             $clavePer = $percepcion->indicador;
             // Agregar Percepciones (Todos obligatorios)
@@ -647,25 +714,40 @@ class Nomina_controller extends CI_Controller {
             //SE VERIFICA QUE EL CONCEPTO SEA GRAVADO O EXCENTO
             $importeGravado = $this->verificarSiGravadoOexcento($percepcion->formula);
             if ($importeGravado) {
+                $totImpgravado += $percepcion->importe;;
                $datos['nomina12']['Percepciones'][$x]['ImporteGravado'] = $percepcion->importe;
                $datos['nomina12']['Percepciones'][$x]['ImporteExento'] = "0.00";
             }else{
+                $totImpExento += $percepcion->importe;
                 $datos['nomina12']['Percepciones'][$x]['ImporteGravado'] = "0.00";
                 $datos['nomina12']['Percepciones'][$x]['ImporteExento'] = $percepcion->importe; // VERIFICAR -----
             }
-            //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
-            if (!in_array($clavePer, $array)) {
-                $existeTotalSueldos = true;
-            }
-         
             $x++;
-
         }
         // Totales Opcionales
         if ($existeTotalSueldos) {
- /*-*/      $datos['nomina12']['Percepciones']['TotalSueldos'] = $totalPer;
+ /*-*/      $datos['nomina12']['Percepciones']['TotalSueldos'] = $totalSueldos;
+        }
+        //Nodo:SeparacionIndemnizacion
+        if ($existeSeparacion) {
+            $datos['nomina12']['Percepciones']['TotalSeparacionIndemnizacion'] = $TotalSeparacionIndemnizacion;
+            var_dump($TotalSeparacionIndemnizacion);
+            var_dump("ImporteGravado ". $totImpgravado);
+            var_dump("ImporteExento ". $totImpExento);
         }
 
+        if ($existeJubilacionPR) {
+            $datos['nomina12']['Percepciones']['TotalJubilacionPensionRetiro'] = $totalJubilacionPensionRetiro;
+        }
+
+        if ($existeTotalUnaExhibicion) {
+            $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] = $totalUnaExhibicion;
+        }
+
+        
+        if ($existeTotalUnaExhibicion044) {
+            $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] = $totalUnaExhibicion;
+        }
 
         // Acciones o Titulos en Percepciones (Todos obligatorios)
         //$datos['nomina12']['Percepciones'][3]['AccionesOTitulos']['ValorMercado'] = '1000.00'; //En este nodo se pueden expresar los ingresos por acciones o titulos valor que representen bienes. 
@@ -675,7 +757,7 @@ class Nomina_controller extends CI_Controller {
         // NODO DEDUCCIONES
         $datos['nomina12']['Deducciones']['TotalOtrasDeducciones'] = $TotalOtrasDed; // Opcional
         //SE VALIDA QUE EL EMPLEADO TENGA ISR
-        if ($compenzacion) {
+        if (!$compenzacion) {
             $datos['nomina12']['Deducciones']['TotalImpuestosRetenidos'] = $TotalImpuestosReten; // Opcional
         }
         

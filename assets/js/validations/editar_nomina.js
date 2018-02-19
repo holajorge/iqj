@@ -316,6 +316,7 @@ function calc_total_deducciones(){
 // AGREGAR LAS APORTACIONES QUE QUE HACEN FALTA
 // ***********************************************************************************
 function lista_aportaciones_edit(){
+        console.log("calculando.....");
         var data=verificarConceptosExistentes("id_tab_apor");
         var idSubsidioSalario = 9;
     $.ajax({
@@ -397,6 +398,8 @@ function calc_total_aportaciones(){
         }
     }
     $("#total_aportaciones").html(total_aportaciones.toFixed(2));
+    //calcular liquido;
+    calcular_liquido();
 }
 // ***********************************************************************************
 // VERIFICAR CUALES CONCEPTOS YA ESTÁN EN LAS TABLAS

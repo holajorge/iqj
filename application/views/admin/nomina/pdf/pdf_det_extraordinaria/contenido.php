@@ -67,7 +67,13 @@
         <tr class="warning">                    
             <th style="font-size: 15px;">CODIGO</th>            
             <th class="text-center" style="font-size: 15px;">IMPORTE</th>
-            <th class="text-right" style="font-size: 15px;">ISR</th>
+            <th class="text-right" style="font-size: 15px;">
+                <?php if ($detalles[0]->isr > 0): ?>
+                    ISR
+                <?php else: ?>
+                    COMPENSACIÓN
+                <?php endif ?>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -77,11 +83,19 @@
             <tr>
                 <td width="15%" > <?php echo $fila->no_plaza; ?> </td>
                 <td width="70%" class="text-right"> $<?php echo number_format($fila->importe,2); ?> </td>
-                <td width="15%" class="text-right"> $<?php echo number_format($fila->isr,2); ?></td> 
+                <td width="15%" class="text-right">
+                    <?php if ($fila->isr > 0): ?>
+                        $<?php echo number_format($fila->isr,2); ?>
+                    <?php else: ?>
+                        $<?php echo number_format($fila->subsidio,2); ?>
+                    <?php endif ?> 
+                    
+                        
+                </td> 
                 
             </tr>
          <?php $menosIsr += $fila->isr; ?>           
-        <?php $total_extraordinaria += $fila->importe; ?>        
+        <?php $total_extraordinaria += $fila->importe;?>        
         <?php } ?>
     </tbody>
     <tfoot>
@@ -97,7 +111,13 @@
 <!-- Imprimir Líquido -->
 <!-- ************************************************************************ -->
 
-<?php $liquido = $total_extraordinaria - $menosIsr ?>
+<?php 
+    if ($detalles[0]->isr > 0){
+        $liquido = $total_extraordinaria - $menosIsr;  
+    }else{
+        $liquido = $total_extraordinaria + $detalles[0]->subsidio;
+    }
+?>
 <h5 class="text-right"> <strong> Líquido: $<?php echo number_format($liquido,2); ?> </strong></h5>
 <!-- ************************************************************************ -->
 <!-- ÁREA DE FIRMAS -->

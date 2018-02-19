@@ -251,7 +251,7 @@ class Nomina_model extends CI_Model {
   //***************************************************************************
   public function extraordinaria_nomina($id_empleado, $id_extraordinario){
 
-    $query = $this->db->query("SELECT cat_empleados.no_plaza, empleadosxextraoudinaria.importe, empleadosxextraoudinaria.isr, 
+    $query = $this->db->query("SELECT cat_empleados.no_plaza, empleadosxextraoudinaria.importe, empleadosxextraoudinaria.isr,empleadosxextraoudinaria.subsidio, 
                                       cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno
                                 FROM empleadosxextraoudinaria, cat_empleados, cat_concepto_extraordinario
                                 WHERE cat_empleados.id_empleado = empleadosxextraoudinaria.id_empleado
