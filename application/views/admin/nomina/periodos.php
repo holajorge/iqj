@@ -33,11 +33,23 @@
             <input type="hidden" id="id_emp" name="id_emp">
             <input type="hidden" id="id_nom" name="id_nom">
             <h3>Origen del recurso</h3>
-            <select class="form-control input-lg" name="origenRecurso" id="componente">
+            <select class="form-control input-lg" name="origenRecurso" id="componente" onchange="validarOrigenRecurso(value);">
                 <option value="IP" >IP - Ingresos Propios</option>
                 <option value="IF" >IF - Ingresos Federales</option>
                 <option value="IM"> IM - Ingresos Mixtos</option>
             </select>
+            <div id="inputRecursoPropioOculto">
+                <div class="form-group">
+                  <label for="montoRecursoPropio">Monto Recurso Propio</label>
+                  <input type="number" class="form-control" id="montoRecursoPropio" name="montoRecursoPropio">
+                </div>
+                <p style="text-align: justify;">
+                    Cuando se señale que el origen del recurso es por <strong>ingresos mixtos</strong>, se debe registrar únicamente el importe bruto de los ingresos propios, incluyendo el total de ingresos gravados y exentos. 
+                </p>
+                <p style="text-align: justify;">
+                   El valor de este dato debe ser menor que la suma de los campos TotalPercepciones y TotalOtrosPagos (Líquido). 
+                </p>
+            </div>
         </form>
       </div>
       <div class="modal-footer">

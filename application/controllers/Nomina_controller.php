@@ -462,7 +462,7 @@ class Nomina_controller extends CI_Controller {
         $id_empleado = $_GET["id_emp"];
         $id_nomina = $_GET["id_nom"];        
         $OrigenRecurso = $_GET["origenRecurso"];
-        $MontoRecursoPropio = 0;
+        $MontoRecursoPropio = $_GET["montoRecursoPropio"];
         $empleado = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
 
         $percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
@@ -496,14 +496,16 @@ class Nomina_controller extends CI_Controller {
         $importeCompenzacion = 0;
         foreach ($data2['aportaciones'] as $apor) {
             if ($apor->id_aportacion == 9) {
-                $compenzacion = true;
-                $importeCompenzacion = $apor->importe;
+                $compenzacion = true; 
+                //$importeCompenzacion = $apor->importe;
+                $importeCompenzacion = 0;
             }
         }
         //---------------------------------------------------------------------------------------------
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL TOTAL DE DÍAS PAGADOS
-        $diasPagados = $this->calcularDiasPagados($empleado[0]->periodo_inicio,$empleado[0]->periodo_fin) + 1;
+        //$diasPagados = $this->calcularDiasPagados($empleado[0]->periodo_inicio,$empleado[0]->periodo_fin) + 1;
+          $diasPagados = 15;
         //---------------------------------------------------------------------------------------------
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL TotalGravado
@@ -586,7 +588,6 @@ class Nomina_controller extends CI_Controller {
         //----------------------------------------------------------------------------------------------
         //SE CALCULA EL TOTAL DE LAS PERCEPCIONES
         $totalPercepciones = $totalSueldos + $TotalSeparacionIndemnizacion + $totalJubilacionPensionRetiro;
-        var_dump("Total percepciones: ".$totalPercepciones);
         date_default_timezone_set('America/Cancun');
 
         require_once('./assets/cfdi/sdk2.php');
@@ -610,8 +611,7 @@ class Nomina_controller extends CI_Controller {
         $datos['conf']['cer'] = './assets/cfdi/certificados/lan7008173r5.cer.pem';
         $datos['conf']['key'] = './assets/cfdi/certificados/lan7008173r5.key.pem';
         $datos['conf']['pass'] = '12345678a';
-        $datos['factura']['Descuento'] = $totalDed;
-        //var_dump(time() - 120);
+        $datos['factura']['Descuento'] = number_format(($totalDed), 2, '.', '');
         $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * 60) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
         $datos['factura']['fecha_expedicion'] = $fecha_expedicion;
         $datos['factura']['folio'] = $empleado[0]->no_empleado;
@@ -620,10 +620,10 @@ class Nomina_controller extends CI_Controller {
         $datos['factura']['metodo_pago'] = 'PUE';
         $datos['factura']['moneda'] = 'MXN';
         $datos['factura']['serie'] = $empleado[0]->no_empleado."-".$empleado[0]->periodo_quinquenal; //Es el número de serie que utiliza el contribuyente para control interno de su información. 
-        $datos['factura']['subtotal'] = $totalPer;
+        $datos['factura']['subtotal'] = number_format(($totalPer), 2, '.', '');
         //$datos['factura']['tipocambio'] = '1.0'; //Este campo no debe existir. 
         $datos['factura']['tipocomprobante'] = 'N';
-        $datos['factura']['total'] = $totalPer - $totalDed;
+        $datos['factura']['total'] = number_format(($totalPer - $totalDed), 2, '.', '');
 
         /*$datos['CfdisRelacionados']['TipoRelacion'] = '01';
         $datos['CfdisRelacionados']['UUID'][0]='A39DA66B-52CA-49E3-879B-5C05185B0EF7';*/
@@ -648,12 +648,11 @@ class Nomina_controller extends CI_Controller {
         $datos['conceptos'][0]['cantidad'] = '1';
         $datos['conceptos'][0]['descripcion'] = "Pago de nómina";
         $datos['conceptos'][0]['valorunitario'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
-        var_dump("Total importe: ". ($totalPercepciones + $importeCompenzacion));
         //$datos['conceptos'][0]['importe'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
         $datos['conceptos'][0]['importe'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
         $datos['conceptos'][0]['ClaveUnidad'] = 'ACT';
         $datos['conceptos'][0]['ClaveProdServ'] = '84111505';
-        $datos['conceptos'][0]['Descuento'] = $totalDed; //var_dump($totalDed); die();
+        $datos['conceptos'][0]['Descuento'] = number_format(($totalDed), 2, '.', '');
 
         // Obligatorios
         $datos['nomina12']['TipoNomina'] = 'O'; //O = ORDINARIA - E = EXTRAORDINARIA
@@ -663,11 +662,11 @@ class Nomina_controller extends CI_Controller {
  /*-*/  $datos['nomina12']['NumDiasPagados'] = $diasPagados;
 
         // Opcionales
-        $datos['nomina12']['TotalPercepciones'] = $totalPercepciones;
-        $datos['nomina12']['TotalDeducciones'] = $totalDed;
+        $datos['nomina12']['TotalPercepciones'] = number_format(($totalPercepciones), 2, '.', '');
+        $datos['nomina12']['TotalDeducciones'] = number_format(($totalDed), 2, '.', ''); 
         //En caso de existir compenzación debe existir el campo TotalOtrosPagos
         if ($compenzacion) {
- /*-*/      $datos['nomina12']['TotalOtrosPagos'] = $importeCompenzacion;
+ /*-*/      //$datos['nomina12']['TotalOtrosPagos'] = number_format(($importeCompenzacion), 2, '.', ''); 
         }
 
 
@@ -679,8 +678,8 @@ class Nomina_controller extends CI_Controller {
         //NODO: EntidadSNCF;
         $datos['nomina12']['EntidadSNCF']['OrigenRecurso'] = $OrigenRecurso;
 
-        if ($OrigenRecurso == "IM" ) { die();
-            $datos['nomina12']['EntidadSNCF']['MontoRecursoPropio'] = $MontoRecursoPropio;
+        if ($OrigenRecurso == "IM" ) {
+            $datos['nomina12']['EntidadSNCF']['MontoRecursoPropio'] =number_format(($MontoRecursoPropio), 2, '.', ''); 
         }
 //------------------------------------------------------------------------------------------
         // SUB NODOS OBLIGATORIOS DE NOMINA [Receptor]
@@ -688,32 +687,33 @@ class Nomina_controller extends CI_Controller {
         $datos['nomina12']['Receptor']['ClaveEntFed'] = 'ROO';
         $datos['nomina12']['Receptor']['Curp'] = $empleado[0]->curp;
         $datos['nomina12']['Receptor']['NumEmpleado'] = $empleado[0]->no_empleado;
+        $datos['nomina12']['Receptor']['Departamento'] = $empleado[0]->depto;
         $datos['nomina12']['Receptor']['PeriodicidadPago'] = '04'; //CLAVE 04 = QUINCENAL
  /*-*/  $datos['nomina12']['Receptor']['TipoContrato'] = '01'; // 01 = Contrato de trabajo por tiempo indeterminado
+        $datos['nomina12']['Receptor']['Sindicalizado'] = $empleado[0]->sindicalizado;
         $datos['nomina12']['Receptor']['TipoRegimen'] = '02'; // 02 = sueldos
+        $datos['nomina12']['Receptor']['TipoJornada'] = '01'; // 01 = diurna
 
         // Opcionales de Receptor
        
         $datos['nomina12']['Receptor']['Antiguedad'] = $this->calcularAntiguedad($empleado[0]->fecha_ingreso,$empleado[0]->periodo_fin); //VERIFICAR ------------- w = semanas Por excepción, este dato no aplica cuando ...
         $datos['nomina12']['Receptor']['Banco'] = '014'; // 014 = SANTANDER VERIFICAR -------------
- /*-*/  $datos['nomina12']['Receptor']['CuentaBancaria'] = '1234567890'; //leer abajo
+ /*-*/  $datos['nomina12']['Receptor']['CuentaBancaria'] = $empleado[0]->no_tarjeta; //leer abajo
         /*Si el valor de este campo contiene una cuenta CLABE (18 posiciones), no debe existir el
         campo Banco, este dato será objeto de validación por el SAT o el proveedor de
         certificación de CFDI, se debe confirmar que el dígito de control es correcto.*/
         $datos['nomina12']['Receptor']['FechaInicioRelLaboral'] = $empleado[0]->fecha_ingreso; // Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         $datos['nomina12']['Receptor']['NumSeguridadSocial'] = $empleado[0]->nss;
         $datos['nomina12']['Receptor']['Puesto'] = $empleado[0]->puesto;
-        //var_dump($empleado[0]->nss);
         //die();
-        $datos['nomina12']['Receptor']['RiesgoPuesto'] = '2'; // 2 = clase II  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+/*_*/   $datos['nomina12']['Receptor']['RiesgoPuesto'] = '2'; // 2 = clase II  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         //$datos['nomina12']['Receptor']['SalarioBaseCotApor'] = '435.50';
-        //var_dump(round($SalarioDiarioIntegrado, 2)); die();
- /*-*/  $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = round($SalarioDiarioIntegrado, 2);
+ /*-*/  $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = number_format((round($SalarioDiarioIntegrado, 2)), 2, '.', '');
 
         // NODO PERCEPCIONES
         // Totales Obligatorios
-        $datos['nomina12']['Percepciones']['TotalGravado'] = $totalGravado;
- /*-*/  $datos['nomina12']['Percepciones']['TotalExento'] = $totalPercepciones - $totalGravado;
+        $datos['nomina12']['Percepciones']['TotalGravado'] =  number_format(($totalGravado), 2, '.', ''); 
+ /*-*/  $datos['nomina12']['Percepciones']['TotalExento'] =  number_format(($totalPercepciones - $totalGravado), 2, '.', '');
 
         $x = 0;
         $totImpgravado = 0;
@@ -728,44 +728,44 @@ class Nomina_controller extends CI_Controller {
             $importeGravado = $this->verificarSiGravadoOexcento($percepcion->formula);
             if ($importeGravado) {
                 $totImpgravado += $percepcion->importe;;
-               $datos['nomina12']['Percepciones'][$x]['ImporteGravado'] = $percepcion->importe;
+               $datos['nomina12']['Percepciones'][$x]['ImporteGravado'] =number_format(($percepcion->importe), 2, '.', ''); 
                $datos['nomina12']['Percepciones'][$x]['ImporteExento'] = "0.00";
             }else{
                 $totImpExento += $percepcion->importe;
                 $datos['nomina12']['Percepciones'][$x]['ImporteGravado'] = "0.00";
-                $datos['nomina12']['Percepciones'][$x]['ImporteExento'] = $percepcion->importe; // VERIFICAR -----
+                $datos['nomina12']['Percepciones'][$x]['ImporteExento'] = number_format(($percepcion->importe), 2, '.', '');  // VERIFICAR -----
             }
             $x++;
         }
         //NODO OTROS PAGOS
         if ($compenzacion) {
-           $datos['nomina12']['SubsidioAlEmpleo']['SubsidioCausado'] = $importeCompenzacion;
+           $datos['nomina12']['SubsidioAlEmpleo']['SubsidioCausado'] = number_format(($importeCompenzacion), 2, '.', ''); 
            $datos['nomina12']['OtroPago'][0]['Clave'] = "002"; // 002 = Subsidio para el empleo (efectivamente entregado al trabajador).
            $datos['nomina12']['OtroPago'][0]['Concepto'] = "Subsidio Al Empleo";
-           $datos['nomina12']['OtroPago'][0]['Importe'] = $importeCompenzacio;
+           $datos['nomina12']['OtroPago'][0]['Importe'] = number_format(($importeCompenzacion), 2, '.', '');
            $datos['nomina12']['OtroPago'][0]['TipoOtroPago'] = "002";
 
         }
         // Totales Opcionales
         if ($existeTotalSueldos) {
- /*-*/      $datos['nomina12']['Percepciones']['TotalSueldos'] = $totalSueldos;
+ /*-*/      $datos['nomina12']['Percepciones']['TotalSueldos'] = number_format(($totalSueldos), 2, '.', '');
         }
         //Nodo:SeparacionIndemnizacion
         if ($existeSeparacion) {
-            $datos['nomina12']['Percepciones']['TotalSeparacionIndemnizacion'] = $TotalSeparacionIndemnizacion;
+            $datos['nomina12']['Percepciones']['TotalSeparacionIndemnizacion'] =number_format(($TotalSeparacionIndemnizacion), 2, '.', ''); 
         }
 
         if ($existeJubilacionPR) {
-            $datos['nomina12']['Percepciones']['TotalJubilacionPensionRetiro'] = $totalJubilacionPensionRetiro;
+            $datos['nomina12']['Percepciones']['TotalJubilacionPensionRetiro'] =number_format(($totalJubilacionPensionRetiro), 2, '.', ''); 
         }
 
         if ($existeTotalUnaExhibicion) {
-            $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] = $totalUnaExhibicion;
+            $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] =number_format(($totalUnaExhibicion), 2, '.', ''); 
         }
 
         
         if ($existeTotalUnaExhibicion044) {
-            $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] = $totalUnaExhibicion;
+            $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] =number_format(($totalUnaExhibicion), 2, '.', ''); 
         }
 
         // Acciones o Titulos en Percepciones (Todos obligatorios)
@@ -774,10 +774,10 @@ class Nomina_controller extends CI_Controller {
         //$datos['nomina12']['Percepciones'][3]['AccionesOTitulos']['PrecioAlOtorgarse'] = '2000.00';
 
         // NODO DEDUCCIONES
-        $datos['nomina12']['Deducciones']['TotalOtrasDeducciones'] = $TotalOtrasDed; // Opcional
+        $datos['nomina12']['Deducciones']['TotalOtrasDeducciones'] = number_format(($TotalOtrasDed), 2, '.', ''); // Opcional
         //SE VALIDA QUE EL EMPLEADO TENGA ISR
         if (!$compenzacion) {
-            $datos['nomina12']['Deducciones']['TotalImpuestosRetenidos'] = $TotalImpuestosReten; // Opcional
+            $datos['nomina12']['Deducciones']['TotalImpuestosRetenidos'] = number_format(($TotalImpuestosReten), 2, '.', ''); // Opcional
         }
         
         $j = 0;
@@ -785,7 +785,7 @@ class Nomina_controller extends CI_Controller {
             $datos['nomina12']['Deducciones'][$j]['TipoDeduccion'] = $deduccion->codigoSat;
             $datos['nomina12']['Deducciones'][$j]['Clave'] = $deduccion->codigoSat;
             $datos['nomina12']['Deducciones'][$j]['Concepto'] = $deduccion->nombre;
-            $datos['nomina12']['Deducciones'][$j]['Importe'] = $deduccion->importe;
+            $datos['nomina12']['Deducciones'][$j]['Importe'] = number_format(($deduccion->importe), 2, '.', ''); 
             $j++;
         }
 
@@ -987,7 +987,6 @@ class Nomina_controller extends CI_Controller {
                 $totslDias = $restoMes1 + $restoMes2;
                 $tiempo .= $totslDias;
                 $tiempo .= "D";
-                //var_dump($totslDias);
 
             }else if(($fecha->m > 1) & ($fecha->y == 0) & ($fecha->d == 0)){
                 $tiempo .= ($fecha->m * 4);

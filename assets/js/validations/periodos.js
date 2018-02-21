@@ -17,7 +17,7 @@ $(document).ready(function() {
       $('#myModalStatusBar').modal('hide')
     });
      // $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
-
+     $("#inputRecursoPropioOculto").hide();
 });
 
 function openModal(){
@@ -137,14 +137,27 @@ function imprimirList(){
 
 }
 
+//SE ABRE EL MODAL PARA TIMBRAR LA NÓMINA
 function timbrarNomina(id_empleado,id_nomina){
+    $("#inputRecursoPropioOculto").hide();
+    $("#formTimbrarNomina")[0].reset();
     document.getElementById("id_emp").value = id_empleado;
     document.getElementById("id_nom").value = id_nomina;
     $('#modalTimbrado').modal('show');
 }
-
+//SE REALIZA EL TIMBRADO DE LA NOMINA
 function generarTimbreNomina(){
     $("#formTimbrarNomina").submit();
+    $('#modalTimbrado').modal('hide');
+}
+
+function validarOrigenRecurso(origenRecurso){
+    console.log("validando origen recursos");
+    if (origenRecurso == "IM") {
+        $("#inputRecursoPropioOculto").show();
+    }else{
+        $("#inputRecursoPropioOculto").hide();
+    }
 }
 
 	
