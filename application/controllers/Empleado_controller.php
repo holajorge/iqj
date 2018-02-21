@@ -150,6 +150,7 @@ class Empleado_controller extends CI_Controller {
         $no_empleado = $this->input->post("no_empleado");               
         $id_tipo_trabajador = $this->input->post("tipo_trabajador");
         $id_componente = $this->input->post("componente");
+		$nivel = $this->input->post("nivel");
 
         $empleado = array(
             'no_plaza' => $no_plaza, 
@@ -168,6 +169,7 @@ class Empleado_controller extends CI_Controller {
             'rfc' => $rfc,                    
             'id_tipo_trabajador' => $id_tipo_trabajador,
             'id_componente' => $id_componente,
+			'nivel' => $nivel
         );
         $query = $this->Empleado_model->updateEmpleado($id_empleado,$empleado);
         if ($query == 1) {

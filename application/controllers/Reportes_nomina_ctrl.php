@@ -284,10 +284,10 @@ class Reportes_nomina_ctrl extends CI_Controller {
 	public function getAllEmpleadosConsultaAjax(){
 		$fecha = $this->input->post('anio');
 		$indicador = $this->input->post('indicador');
-
 		$id_nomina = $this->input->post('id_nomina');
+		$id_componente = $this->input->post('id_componente');
 
-		$query = $this->Reportes_nomina_Model->getAllEmployee($fecha,$indicador, $id_nomina);
+		$query = $this->Reportes_nomina_Model->getAllEmployee($fecha,$indicador, $id_nomina, $id_componente);
 
 		if ($query != false) {
 			$result['resultado'] = true;
@@ -300,10 +300,10 @@ class Reportes_nomina_ctrl extends CI_Controller {
 	public function getAllEmpleadosConsultaDeduccionAjax(){
 		$fecha = $this->input->post('anio');
 		$indicador = $this->input->post('indicador');
-
 		$id_nomina = $this->input->post('id_nomina');
+		$id_componente = $this->input->post('id_componente');
 
-		$query = $this->Reportes_nomina_Model->getAllEmployeeDeduccion($fecha,$indicador, $id_nomina);
+		$query = $this->Reportes_nomina_Model->getAllEmployeeDeduccion($fecha,$indicador, $id_nomina, $id_componente);
 
 		if ($query != false) {
 			$result['resultado'] = true;
@@ -317,12 +317,24 @@ class Reportes_nomina_ctrl extends CI_Controller {
 		$fecha = $this->input->post('anio');
 		$indicador = $this->input->post('indicador');
 		$id_nomina = $this->input->post('id_nomina');
-
-		$query = $this->Reportes_nomina_Model->getAllEmployeeAportacion($fecha,$indicador, $id_nomina);
+		$id_componente = $this->input->post('id_componente');
+		$query = $this->Reportes_nomina_Model->getAllEmployeeAportacion($fecha,$indicador, $id_nomina, $id_componente);
 
 		if ($query != false) {
 			$result['resultado'] = true;
 			$result['employees'] = $query;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
+	}
+	public function getNameComponenteAjax(){
+		$id_componente = $this->input->post('id_componente');
+		$query = $this->Reportes_nomina_Model->getnameComponente($id_componente);
+
+		if ($query != false) {
+			$result['resultado'] = true;
+			$result['nombreComponente'] = $query;
 		} else {
 			$result['resultado'] = false;
 		}

@@ -69,10 +69,10 @@ class Empleado_model extends CI_Model {
         }
    } 
    public function get_lista_empleados(){
-      $this->db->select("cat_empleados.id_empleado, cat_empleados.horas, cat_empleados.nss,cat_empleados.no_tarjeta, cat_empleados.status , cat_empleados.no_empleado, cat_empleados.no_plaza, cat_empleados.nombre AS nombre_emp, 
+      $this->db->select("cat_empleados.id_empleado, cat_empleados.horas, cat_empleados.nss,cat_empleados.no_tarjeta, cat_empleados.nivel as nivelEmpleado, cat_empleados.status , cat_empleados.no_empleado, cat_empleados.no_plaza, cat_empleados.nombre AS nombre_emp, 
                         cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.fecha_nacimiento,  cat_empleados.curp, 
                         cat_empleados.fecha_ingreso, cat_empleados.rfc, cat_depto.id_depto, cat_depto.nombre AS nombre_depto,
-                        cat_puestos.id_puesto, cat_puestos.nivel, cat_puestos.nombre AS nombre_puesto, cat_tipo_trabajador.id_tipo_trabajador,cat_tipo_trabajador.nombre_tipo_trabajador as trabajador,
+                        cat_puestos.id_puesto, cat_puestos.nombre AS nombre_puesto, cat_tipo_trabajador.id_tipo_trabajador,cat_tipo_trabajador.nombre_tipo_trabajador as trabajador,
                         cat_componentes.nombre AS componente ");
 
       $this->db->from("cat_depto");
@@ -83,7 +83,7 @@ class Empleado_model extends CI_Model {
       $this->db->where("cat_empleados.status", 1);
 
       $query = $this->db->get();
-     
+
       if ($query->num_rows() > 0) {
           return $query->result();
       }else{

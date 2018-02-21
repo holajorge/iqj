@@ -12,7 +12,7 @@ function saveEmPloye(){
             nombre: { required: true, maxlength: 60 },
             horas: { required: true },
             nss: {required: true},
-			tarjeta: {required: true, number:true, minlength: 15},
+			//tarjeta: {required: true, number:true, minlength: 15},
             ap_paterno: { required: true},            
             fecha_nacimiento: { required: true, date: true},
             fecha_ingreso: { required: true, date: true},            
@@ -28,7 +28,7 @@ function saveEmPloye(){
             horas: "Horas Necesarias",
             no_plaza: "Numero Necesario",
             nss: "numero de suguro social necesario",
-			tarjeta: "Numero de Tarjeta necesario",
+			//tarjeta: "Numero de Tarjeta necesario",
             nombre: "Debe ingresar su Nombre.",  
             ap_paterno: "Apellido Necesario.",            
             fecha_nacimiento: "Debe ingresar Fecha Nacimiento.",  
@@ -73,6 +73,9 @@ function saveEmPloye(){
         }
     });
 }
+function cancelEditEmployee(){
+	$("#form_edit_empleado")[0].reset();
+}
 
 function saveEditEmploye(){
 
@@ -82,9 +85,10 @@ function saveEditEmploye(){
             no_plaza: { required: true, number: true},
             horas: { required: true },
 			nss: {required: true},
-			tarjeta: {required: true, number:true, minlength: 15},
-            nombre: { required: true },            
-            ap_paterno: { required: true},
+			//tarjeta: {required: true, number:true, minlength: 15},
+            nombre: { required: true },
+			nivel: { required: true },
+			ap_paterno: { required: true},
             fecha_nacimiento: { required: true, date: true},
             fecha_ingreso: { required: true, date: true},            
             curp: {required: true},
@@ -98,9 +102,10 @@ function saveEditEmploye(){
             horas: "Horas Necesarias",
             no_plaza: "Numero Necesario",
 			nss: "numero de suguro social necesario",
-			tarjeta: "Numero de Tarjeta necesario",
-            nombre: "Debe ingresar su Nombre.",  
-            ap_paterno: "Apellido Necesario.",
+			//tarjeta: "Numero de Tarjeta necesario",
+            nombre: "Debe ingresar su Nombre.",
+			nivel: "Debe ingresar el Nivel.",
+			ap_paterno: "Apellido Necesario.",
             fecha_nacimiento: "Debe ingresar Fecha Nacimiento.",  
             fecha_ingreso: "Debe ingresar Fecha Ingeso.",
             curp: "Debe ingresar CURP.",  
@@ -207,7 +212,7 @@ function habilitarEmpleado(id, nombre, paterno){
     });
 }
 
-function editEmpleado(id, depto, puesto, trabajdor, componente ){
+function editEmpleado(id, depto, puesto, trabajdor, componente, nivel ){
     var no_plaza=document.getElementById("no_plaza"+id).innerHTML;    
     var horas=document.getElementById("horas"+id).innerHTML;
     var nss=document.getElementById("nss"+id).innerHTML;
@@ -235,6 +240,7 @@ function editEmpleado(id, depto, puesto, trabajdor, componente ){
     document.getElementById("curpEdit").value=curp;
     document.getElementById("no_empleadoEdit").value=no_empleado;
 	document.getElementById("tarjetaEdit").value=tarjeta;
+	document.getElementById("nivelEdit").value=nivel;
 
     var html = "";
     var html1 = "";

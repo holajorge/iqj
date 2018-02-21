@@ -53,7 +53,7 @@
                                             <?php else: ?>
                                                 <button type="button" class="btn btn-success btn-rounded" onclick="habilitarEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>' )"><span class="fa fa-heart"></span> Habilitar </button>
                                             <?php endif ?>                                              
-                                            <button  type="button" class="btn btn-info btn-rounded" onclick="editEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_depto?>','<?php echo $empleado->nombre_puesto?>','<?php echo $empleado->trabajador?>','<?php echo $empleado->componente?>')" data-toggle="modal" data-target="#editarEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                                               
+                                            <button  type="button" class="btn btn-info btn-rounded" data-backdrop="static" data-keyboard="false" onclick="editEmpleado('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_depto?>','<?php echo $empleado->nombre_puesto?>','<?php echo $empleado->trabajador?>','<?php echo $empleado->componente?>','<?php echo $empleado->nivelEmpleado?>')" data-toggle="modal" data-target="#editarEmpleado"><span class="glyphicon glyphicon-edit"></span> Editar</button>
                                         </td>  
                                     </tr>
                                 <?php endforeach ?>
@@ -87,70 +87,74 @@
                                 <label for="horas">HORAS</label>
                                 <input type="text" name="horas" id="horasEdit" class="form-control" tabindex="2">
                         </div>
-						<div class="col-sm-4 col-md-4">
+						<div class="col-sm-4 col-md-3">
 							<label for="tarjeta">No. Tarjeta</label>
 							<input type="text" name="tarjeta" id="tarjetaEdit" class="form-control " tabindex="3">
 						</div>
-						<div class="col-sm-4 col-md-4">
+						<div class="col-sm-4 col-md-3">
 							<label for="nss">NSS</label>
-							<input type="text" name="nss" id="nssEdit" class="form-control " tabindex="2">
+							<input type="text" name="nss" id="nssEdit" class="form-control " tabindex="4">
+						</div>
+						<div class="col-sm-4 col-md-2">
+							<label for="nss">NIVEL</label>
+							<input type="number" name="nivel" id="nivelEdit" class="form-control " tabindex="5">
 						</div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="nombre">Nombre</label>                              
-                                <input type="text" name="nombre" id="nombreEdit" class="form-control" tabindex="3">
+                                <input type="text" name="nombre" id="nombreEdit" class="form-control" tabindex="6">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="ape_paterno">Apellido Paterno</label>
-                                <input type="text" name="ap_paterno" id="ap_paternoEdit" class="form-control " tabindex="4">
+                                <input type="text" name="ap_paterno" id="ap_paternoEdit" class="form-control " tabindex="7">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="ape_materno">Apellido Materno</label>
-                                <input type="text" name="ap_materno" id="ap_maternoEdit" class="form-control" tabindex="5">
+                                <input type="text" name="ap_materno" id="ap_maternoEdit" class="form-control" tabindex="8">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                                <input type="date" name="fecha_nacimiento" id="fecha_nacimientoEdit" class="form-control" tabindex="6">
+                                <input type="date" name="fecha_nacimiento" id="fecha_nacimientoEdit" class="form-control" tabindex="9">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="fecha_ingreso">Fecha de Ingreso</label>
-                                <input type="date" name="fecha_ingreso" id="fecha_ingresoEdit" class="form-control" tabindex="7">
+                                <input type="date" name="fecha_ingreso" id="fecha_ingresoEdit" class="form-control" tabindex="10">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="curp">CURP</label>
-                                <input type="text" onblur="validarCrpEdit(this)" name="curp" id="curpEdit" class="form-control" tabindex="8" >
+                                <input type="text" onblur="validarCrpEdit(this)" name="curp" id="curpEdit" class="form-control" tabindex="11" >
                         </div>
                         <div class=" col-sm-6 col-md-6">
                                 <label for="rfc">RFC</label>
-                                <input type="text" name="rfc" onblur="ValidaRfcEdit(this.value)" id="rfcEdit" class="form-control" tabindex="9">
+                                <input type="text" name="rfc" onblur="ValidaRfcEdit(this.value)" id="rfcEdit" class="form-control" tabindex="12">
                         </div>
                         <div class=" col-sm-6 col-md-6 ">
                                 <label for="no_empleado">Num. Empleado</label>
-                                <input type="text" name="no_empleado" id="no_empleadoEdit" class="form-control " tabindex="10">
+                                <input type="text" name="no_empleado" id="no_empleadoEdit" class="form-control " tabindex="13">
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="deptoEdit">Departamento</label>
-                            <select class="form-control " name="depto" tabindex="11" id="deptoID">
+                            <select class="form-control " name="depto" tabindex="14" id="deptoID">
                             </select>
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="puesto">Puesto</label>
-                            <select class="form-control " name="puesto" tabindex="12" id="puestoID">
+                            <select class="form-control " name="puesto" tabindex="15" id="puestoID">
                             </select>
                         </div>
                         <div class=" col-sm-6 col-md-6">
                             <label for="tipo_trabajador">Tipo Empleado</label>
-                            <select class="form-control " name="tipo_trabajador" tabindex="13" id="trabajadorID">
+                            <select class="form-control " name="tipo_trabajador" tabindex="16" id="trabajadorID">
                             </select>
                         </div> 
                         <div class=" col-sm-6 col-md-6">
                             <label for="componenteEmpleado">Componente</label>
-                            <select class="form-control " name="componente" tabindex="14" id="componenteID">
+                            <select class="form-control " name="componente" tabindex="17" id="componenteID">
                             </select>
                         </div>
                 </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelEditEmployee()">Cancelar</button>
             <button type="submit" id="btn_save_edit" class="ladda-button btn btn-primary" data-style="expand-left" tabindex="15" onclick="saveEditEmploye()">Guardar Cambios</button>
         </div>
       </div>
