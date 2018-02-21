@@ -373,12 +373,18 @@ function btnImprimirReporte(){
 //************************************************************************************
 //VISTA empleados_por_conceptos
 //************************************************************************************
-function generarReporteExcelMes(id_nomina){
+function generarReporteExcelMes(mes){
+	document.getElementById("mess").value=mes; 
+	var tipo = document.getElementById("mes").value;
+	var anio = document.getElementById("anio").value;
+	
+	document.getElementById("anioo").value=anio;
+	document.getElementById("tipo").value=tipo;
+
 	console.log("generarReporteExcelMes");
 	document.getElementById("id_nomina").value=id_nomina; 
 	var tipo = document.getElementById("mes").value;
 	document.getElementById("tipo").value=tipo;
-	$( "#formReporteEmpConceptos").submit();
 }
 
 function generarReporteExcelQuincena(id_nomina){
@@ -386,6 +392,13 @@ function generarReporteExcelQuincena(id_nomina){
 	document.getElementById("id_nomina").value=id_nomina; 
 	var tipo = document.getElementById("mes").value;
 	document.getElementById("tipo").value=tipo;
+}
+
+function selecccionar_componente(id_comp){
+	document.getElementById("inputComponente").value = id_comp;
+}
+
+function generarReporteSabana(){
 	$( "#formReporteEmpConceptos").submit();
 }
 

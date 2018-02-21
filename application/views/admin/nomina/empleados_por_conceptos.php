@@ -1,28 +1,42 @@
  <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <form id="prueba">
                 <h3>Seleccione Año</h3>
                 <select class="form-control input-lg" name="anio" id="anio" onchange="serach_yaer(value);">
-                    <option value="" selected disabled hidden >Seleccione un Año</option>
+                    <option value="" selected disabled hidden >Selec. un Año</option>
                     <?php foreach ($years as $fecha): ?>
                         <option value="<?php echo $fecha->year ?>"> <?php echo $fecha->year ?></option>
                     <?php endforeach ?>
                 </select>
             </form>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <form id="tipoConsulta">
-                <h3>Seleccione Tipo Consulta</h3>
+                <h3>Tipo Consulta</h3>
                 <select class="form-control input-lg" name="mes" id="mes" onchange="serach_periodo(value,false);">                
                 </select>
             </form>
         </div>
         <div class="col-lg-3" id="peridosdiv">
-            <!-- <h3>Seleccione el Periodo</h3> -->
-            <!-- <select class="form-control input-lg" id="periodo" name="periodo" onchange="serach_conseptos(value);">
-                
-            </select> -->
+      
+        </div>
+        <div class="col-lg-3">
+            <form id="prueba">
+                <h3>Componente (Opcional)</h3>
+                <select class="form-control input-lg" name="componente" id="componente" onchange="selecccionar_componente(value);">
+                    <option value="0" >Ninguno</option>
+                    <?php foreach ($componentes as $componente): ?>
+                        <option value="<?php echo $componente->id_componente ?>"> <?php echo $componente->nombre ?></option>
+                    <?php endforeach ?>
+                </select>
+            </form>
+        </div>
+        <div class="col-lg-2">
+            <form id="">
+                <h3>Reporte Excel</h3>
+                <button id="" onclick="generarReporteSabana()" class="btn btn-primary btn-lg" type="button"><span class="glyphicon glyphicon-cloud-download"></span></button>
+            </form>
         </div>
                 
     </div><br><br>
@@ -34,16 +48,8 @@
             <input type="hidden" name="tipo" id="tipo">
             <input type="hidden" name="anio" id="anioo">
             <input type="hidden" name="mess" id="mess">
-  
-            <div class="col-lg-12"  id="guardad_conceptos">
-                <button class="btn btn-primary pull-right btn-lg" id="btnPrintExcel" onclick="print_excel_o_pdf(true)"> Excel </button>
-            </div>
+            <input type="hidden" name="inputComponente" id="inputComponente" value="0">
         </form>
-    </div>
-    <div class="row">
-        <div class="col-lg-12"  >
-            <button style="display: none" id="guardad_conceptos" class="btn btn-primary pull-right btn-lg" type="submit">GUARDAR</button>
-        </div>
     </div>
 
 </div>

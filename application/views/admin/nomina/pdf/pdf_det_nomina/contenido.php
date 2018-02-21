@@ -47,7 +47,7 @@
        </tr>
        <tr>
             <td> NIVEL:  </td> 
-            <td class="txt-negrita"> <?php echo $header_pdf[0]->nivel; ?></td>
+            <td class="txt-negrita"> <?php echo $header_pdf[0]->nivelEmpleado; ?></td>
             <td> HORAS: </td> 
             <td class="txt-negrita"> <?php echo $header_pdf[0]->horas; ?> hrs. </td> 
        </tr>
