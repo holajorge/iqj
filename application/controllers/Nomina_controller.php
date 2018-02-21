@@ -601,8 +601,8 @@ class Nomina_controller extends CI_Controller {
         $anioExplode = explode("-", $empleado[0]->periodo_inicio);
         $anio = $anioExplode[0];
         $nombreArchivoXML = "cfdi_".$empleado[0]->rfc."_".$anio."_".$empleado[0]->periodo_quinquenal;
-        $datos['cfdi']='./assets/cfdi/timbrados/'.$nombreArchivoXML.".xml";
-        $datos['xml_debug']='./assets/cfdi/timbrados/debug_'.$nombreArchivoXML.".xml";
+        $datos['cfdi']='./assets/cfdi/timbrados/xml/'.$nombreArchivoXML.".xml";
+        $datos['xml_debug']='./assets/cfdi/timbrados/xml/debug_'.$nombreArchivoXML.".xml";
 
         $datos['PAC']['usuario'] = 'DEMO700101XXX';
         $datos['PAC']['pass'] = 'DEMO700101XXX';
@@ -935,7 +935,17 @@ class Nomina_controller extends CI_Controller {
         $mpdf->WriteHTML($html);
         //$mpdf->AddPage();
         ob_clean();
-        $mpdf->Output('cfdi.pdf', "I");
+        $extencion = ".pdf";
+        $mpdf->Output('./assets/cfdi/timbrados/pdf/'.$nombreArchivoXML.$extencion, 'F');
+		$mpdf->Output($nombreArchivoXML.pdf, 'I');
+
+		$query = $this->Nomina_model->insertTimbradoFile($id_empleado, $id_nomina, $nombreArchivoXML);
+		if ($query) {
+			$result['resultado'] = true;
+		} else {
+			$result['resultado'] = false;
+		}
+		echo json_encode($result);
         //**********************************************************************************
         //    FIN   PDF
         //**********************************************************************************
@@ -1078,5 +1088,50 @@ class Nomina_controller extends CI_Controller {
         }
         return $esGravado;
     }
+
+    public function timbradopdf(){
+		$id_empleado = $_GET["id_emp"];
+		$id_nomina = $_GET["id_nom"];
+		$query = $this->Nomina_model->getNameFile($id_nomina,$id_empleado);
+		$exte = ".pdf";
+		$filename = $query[0]->file_name;
+		$filePath = './assets/cfdi/timbrados/pdf/'.$query[0]->file_name.$exte;
+		//var_dump($filePath);die();
+		if(file_exists($filePath)){
+			// Define headers
+			header("Cache-Control: public");
+			header("Content-Description: File Transfer");
+			header("Content-Disposition: attachment; filename=$filename.$exte");
+			header("Content-Type: application/zip");
+			header("Content-Transfer-Encoding: binary");
+			// Read the file
+			readfile($filePath);
+			exit;
+		}else{
+			echo 'NO EXISTE EL ARCHIVO PDF TIMBRADO.';
+		}
+	}
+	public function timbradoxml(){
+		$id_empleado = $_GET["id_emp"];
+		$id_nomina = $_GET["id_nom"];
+		$query = $this->Nomina_model->getNameFile($id_nomina,$id_empleado);
+		$exte = ".xml";
+		$filename = $query[0]->file_name;
+		$filePath = './assets/cfdi/timbrados/xml/'.$query[0]->file_name.$exte;
+		//var_dump($filePath);die();
+		if(file_exists($filePath)){
+			// Define headers
+			header("Cache-Control: public");
+			header("Content-Description: File Transfer");
+			header("Content-Disposition: attachment; filename=$filename.$exte");
+			header("Content-Type: application/zip");
+			header("Content-Transfer-Encoding: binary");
+			// Read the file
+			readfile($filePath);
+			exit;
+		}else{
+			echo 'NO EXISTE EL ARCHIVO PDF TIMBRADO.';
+		}
+	}
 
 }

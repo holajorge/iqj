@@ -85,7 +85,7 @@ function showFormChange(){
 	$("#showCambioPassword").css('display', 'block');
 }
 function cancelAltaUser(){
-	$("#formAltaUser")[0].reset();	
+	$("#formAltaUser")[0].reset();
 }
 function canselarCambioPassword(){
 	$("#formChangePassUser")[0].reset();

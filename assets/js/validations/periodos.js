@@ -51,8 +51,9 @@ function serach_periodos(id){
                     html += "<th>LÍQUIDO</th>";
                     html += "<th>CURP</th>";
                     html += "<th>PUESTO</th>";
-                    html += "<th>ACCIONES</th>";              
-                    html += "</tr>";
+                    html += "<th>ACCIONES</th>";
+                    html += "<th>DESCARGAR</th>";
+					html += "</tr>";
                     html += "</thead>";
                     html += "<tbody>";
                     var num_fila = 1;
@@ -76,10 +77,27 @@ function serach_periodos(id){
                             html += "<td>" + obj.empleado[l].curp + "</td>";
                             html += "<td>" + obj.empleado[l].puesto + "</td>";                        
                             html += "<td>";
-                            html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
+                            html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
                             html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
+<<<<<<< HEAD
+							if(obj.empleado[l].filename) {
+								html += "<label class='text-success'>Empleado Timbrado</label>";
+							}else{
+								html += "<a style='margin:1px 1px' class='btn btn-success' href='" + baseURL + "Nomina_controller/timbrarNomina?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
+							}
+=======
                             html += "<button type='button' style='margin:1px 1px' class='btn btn-success' onclick='timbrarNomina("+obj.empleado[l].id_empleado+"," + obj.empleado[l].id_nomina +")'><span class='fa fa-bullhorn' aria-hidden='true'></span></button>";
+>>>>>>> 862ab9f1993c371c62fcfa847a5ccfa3700bb383
                             html += "</td>";
+							html += "<td>";
+                            if(obj.empleado[l].filename) {
+								html += "<a style='margin:1px 1px; color: white; ' class='btn btn-primary' href='" + baseURL + "Nomina_controller/timbradopdf?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "'><span class='fa fa-file-pdf-o' aria-hidden='true'></span></a>";
+								html += "<a style='margin:1px 1px;color: white; ' class='btn btn-primary' href='" + baseURL + "Nomina_controller/timbradoxml?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "'><span class='fa fa-file-excel-o' aria-hidden='true'></span></a>";
+							}else{
+                            	html += "<label style='color: #97310e'>primero tiene que Timbrar</label>";
+                            	
+							}
+							html += "</td>";
                             html += "</tr>";
                             num_fila ++;
                         }

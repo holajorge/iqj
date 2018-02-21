@@ -26,7 +26,7 @@ class Nomina_model extends CI_Model {
   }
   public function getAllPeriodos(){
 
-    $query = $this->db->query("SELECT * FROM tab_nomina");    
+    $query = $this->db->query("SELECT * FROM tab_nomina");
       if ($query->num_rows() > 0) {
           return $query->result();
       }else{
@@ -59,7 +59,11 @@ class Nomina_model extends CI_Model {
                     INNER JOIN empleadosxpercepciones ON cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
                     INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
                     INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
-                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) as totalPercepciones, (SELECT SUM(empleadosxdeducciones.importe) FROM cat_empleados INNER JOIN empleadosxdeducciones ON cat_empleados.id_empleado = empleadosxdeducciones.id_empleado INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) AS totalDeducciones, (SELECT SUM(empleadosxaportaciones.importe)
+                    WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) as totalPercepciones,
+                    (select cat_empleadosxtimbrados.file_name 
+							from cat_empleadosxtimbrados
+							where cat_empleadosxtimbrados.id_empleado = ce.id_empleado and cat_empleadosxtimbrados.id_nomina = ".$id_nomina.") as filename,
+                    (SELECT SUM(empleadosxdeducciones.importe) FROM cat_empleados INNER JOIN empleadosxdeducciones ON cat_empleados.id_empleado = empleadosxdeducciones.id_empleado INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_empleado = ce.id_empleado) AS totalDeducciones, (SELECT SUM(empleadosxaportaciones.importe)
                     FROM cat_empleados
                     INNER JOIN empleadosxaportaciones ON cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
                     INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
@@ -358,7 +362,7 @@ class Nomina_model extends CI_Model {
       //$this->db->get();
   }
 
-  public function eliminarAportaciones($id_empleado, $id_nomina_editando){
+  public function eliminarAportaciones($id_empleado,  $id_nomina_editando){
       $this->db->where('id_empleado',$id_empleado);
       $this->db->where('id_nomina', $id_nomina_editando);
       $this->db->delete('empleadosxaportaciones');
@@ -394,6 +398,29 @@ class Nomina_model extends CI_Model {
       }else{
           return false;
       }
+  }
+  public function insertTimbradoFile($id_empleado,  $id_nomina, $nombreArchivoXML){
+
+  	$file_name_timbrado = array(
+  		'id_empleado' => $id_empleado,
+		'id_nomina'   => $id_nomina,
+		'file_name'   => $nombreArchivoXML
+	);
+  	return $this->db->insert('cat_empleadosxtimbrados', $file_name_timbrado);
+
+  }
+  public function getNameFile($id_nomina, $id_empleado){
+		$query = $this->db->query("SELECT file_name 
+									FROM cat_empleadosxtimbrados, tab_nomina, cat_empleados
+									WHERE cat_empleados.id_empleado = cat_empleadosxtimbrados.id_empleado
+											AND tab_nomina.id_nomina = cat_empleadosxtimbrados.id_nomina
+											AND cat_empleadosxtimbrados.id_empleado = '".$id_empleado."'
+											AND cat_empleadosxtimbrados.id_nomina = '".$id_nomina."' ");
+	  if ($query->num_rows() > 0) {
+		  return $query->result();
+	  }else{
+		  return false;
+	  }
   }
 
 
