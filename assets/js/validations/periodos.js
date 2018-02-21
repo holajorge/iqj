@@ -78,7 +78,7 @@ function serach_periodos(id){
                             html += "<td>";
                             html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>"; 
                             html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
-                            html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"Nomina_controller/timbrarNomina?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
+                            html += "<button type='button' style='margin:1px 1px' class='btn btn-success' onclick='timbrarNomina("+obj.empleado[l].id_empleado+"," + obj.empleado[l].id_nomina +")'><span class='fa fa-bullhorn' aria-hidden='true'></span></button>";
                             html += "</td>";
                             html += "</tr>";
                             num_fila ++;
@@ -135,6 +135,16 @@ function imprimirList(){
     var id = document.getElementById("periodo").value;
     window.open(baseURL + "Nomina_controller/print_list_employee?id="+id);
 
+}
+
+function timbrarNomina(id_empleado,id_nomina){
+    document.getElementById("id_emp").value = id_empleado;
+    document.getElementById("id_nom").value = id_nomina;
+    $('#modalTimbrado').modal('show');
+}
+
+function generarTimbreNomina(){
+    $("#formTimbrarNomina").submit();
 }
 
 	

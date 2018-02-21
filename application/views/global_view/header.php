@@ -198,6 +198,7 @@
 					<li class="dropdown">
 						<button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Consultas <span class="caret"></span></button>
 						<ul class="dropdown-menu">
+                            <li><a href="<?php echo base_url('Reportes_nomina_ctrl/empleados_conceptos');?>" class="btn btn-default" type="button" role="button" >Sábana Empleados por Conceptos</a></li>
 							<li><a href="<?php echo base_url('Reportes_nomina_ctrl/consultaspd');?>" class="btn btn-default" type="button" role="button" >Empleados en Conceptos</a></li>
 							<li><a href="<?php echo base_url('Reportes_nomina_ctrl/index');?>" class="btn btn-default" type="button" role="button" >Conceptos Totales</a></li>
 						</ul>

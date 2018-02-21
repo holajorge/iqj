@@ -461,7 +461,8 @@ class Nomina_controller extends CI_Controller {
         error_reporting(0);
         $id_empleado = $_GET["id_emp"];
         $id_nomina = $_GET["id_nom"];        
-
+        $OrigenRecurso = $_GET["origenRecurso"];
+        $MontoRecursoPropio = 0;
         $empleado = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
 
         $percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
@@ -492,6 +493,7 @@ class Nomina_controller extends CI_Controller {
         //---------------------------------------------------------------------------------------------
         //Se verifica que si existe compenzación para agregar el nodo de otros pagos
         $compenzacion = false;
+        $importeCompenzacion = 0;
         foreach ($data2['aportaciones'] as $apor) {
             if ($apor->id_aportacion == 9) {
                 $compenzacion = true;
@@ -536,7 +538,7 @@ class Nomina_controller extends CI_Controller {
 
         $x = 0;
         foreach ($percepciones as $percepcion) {
-            $clavePer = $percepcion->indicador;
+            $clavePer = $percepcion->codigoSat;
             //--------------------------------------------------------------------------------------------
             //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
             if (!in_array($clavePer, $array)) {
@@ -584,7 +586,7 @@ class Nomina_controller extends CI_Controller {
         //----------------------------------------------------------------------------------------------
         //SE CALCULA EL TOTAL DE LAS PERCEPCIONES
         $totalPercepciones = $totalSueldos + $TotalSeparacionIndemnizacion + $totalJubilacionPensionRetiro;
-
+        var_dump("Total percepciones: ".$totalPercepciones);
         date_default_timezone_set('America/Cancun');
 
         require_once('./assets/cfdi/sdk2.php');
@@ -613,7 +615,7 @@ class Nomina_controller extends CI_Controller {
         $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * 60) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
         $datos['factura']['fecha_expedicion'] = $fecha_expedicion;
         $datos['factura']['folio'] = $empleado[0]->no_empleado;
-        $datos['factura']['forma_pago'] = '99';
+/*--*/  $datos['factura']['forma_pago'] = '99';
         $datos['factura']['LugarExpedicion'] = '77000';
         $datos['factura']['metodo_pago'] = 'PUE';
         $datos['factura']['moneda'] = 'MXN';
@@ -645,7 +647,9 @@ class Nomina_controller extends CI_Controller {
 
         $datos['conceptos'][0]['cantidad'] = '1';
         $datos['conceptos'][0]['descripcion'] = "Pago de nómina";
-        $datos['conceptos'][0]['valorunitario'] = $totalPercepciones + $importeCompenzacion; //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+        $datos['conceptos'][0]['valorunitario'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+        var_dump("Total importe: ". ($totalPercepciones + $importeCompenzacion));
+        //$datos['conceptos'][0]['importe'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
         $datos['conceptos'][0]['importe'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
         $datos['conceptos'][0]['ClaveUnidad'] = 'ACT';
         $datos['conceptos'][0]['ClaveProdServ'] = '84111505';
@@ -670,8 +674,15 @@ class Nomina_controller extends CI_Controller {
         // SUB NODOS OPCIONALES DE NOMINA [Emisor, Percepciones, Deducciones, OtrosPagos, Incapacidades]
         // Nodo Emisor, OPCIONALES
  /*-*/  $datos['nomina12']['Emisor']['RegistroPatronal'] = '5525665412'; //Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
- /*-*/  $datos['nomina12']['Emisor']['RfcPatronOrigen'] = 'AAA010101AAA'; // VERIFICAR
+ /*-*/  //$datos['nomina12']['Emisor']['RfcPatronOrigen'] = 'AAA010101AAA'; // VERIFICAR
+//-----------------------------------------------------------------------------------------
+        //NODO: EntidadSNCF;
+        $datos['nomina12']['EntidadSNCF']['OrigenRecurso'] = $OrigenRecurso;
 
+        if ($OrigenRecurso == "IM" ) { die();
+            $datos['nomina12']['EntidadSNCF']['MontoRecursoPropio'] = $MontoRecursoPropio;
+        }
+//------------------------------------------------------------------------------------------
         // SUB NODOS OBLIGATORIOS DE NOMINA [Receptor]
         // Obligatorios de Receptor
         $datos['nomina12']['Receptor']['ClaveEntFed'] = 'ROO';
@@ -708,7 +719,7 @@ class Nomina_controller extends CI_Controller {
         $totImpgravado = 0;
         $totImpExento = 0;
         foreach ($percepciones as $percepcion) {
-            $clavePer = $percepcion->indicador;
+            $clavePer = $percepcion->codigoSat;
             // Agregar Percepciones (Todos obligatorios)
             $datos['nomina12']['Percepciones'][$x]['TipoPercepcion'] = $clavePer;
             $datos['nomina12']['Percepciones'][$x]['Clave'] = $clavePer; //VERIFICAR
@@ -726,6 +737,15 @@ class Nomina_controller extends CI_Controller {
             }
             $x++;
         }
+        //NODO OTROS PAGOS
+        if ($compenzacion) {
+           $datos['nomina12']['SubsidioAlEmpleo']['SubsidioCausado'] = $importeCompenzacion;
+           $datos['nomina12']['OtroPago'][0]['Clave'] = "002"; // 002 = Subsidio para el empleo (efectivamente entregado al trabajador).
+           $datos['nomina12']['OtroPago'][0]['Concepto'] = "Subsidio Al Empleo";
+           $datos['nomina12']['OtroPago'][0]['Importe'] = $importeCompenzacio;
+           $datos['nomina12']['OtroPago'][0]['TipoOtroPago'] = "002";
+
+        }
         // Totales Opcionales
         if ($existeTotalSueldos) {
  /*-*/      $datos['nomina12']['Percepciones']['TotalSueldos'] = $totalSueldos;
@@ -733,9 +753,6 @@ class Nomina_controller extends CI_Controller {
         //Nodo:SeparacionIndemnizacion
         if ($existeSeparacion) {
             $datos['nomina12']['Percepciones']['TotalSeparacionIndemnizacion'] = $TotalSeparacionIndemnizacion;
-            var_dump($TotalSeparacionIndemnizacion);
-            var_dump("ImporteGravado ". $totImpgravado);
-            var_dump("ImporteExento ". $totImpExento);
         }
 
         if ($existeJubilacionPR) {
@@ -765,22 +782,14 @@ class Nomina_controller extends CI_Controller {
         
         $j = 0;
         foreach ($deducciones as $deduccion) {
-            $datos['nomina12']['Deducciones'][$j]['TipoDeduccion'] = $deduccion->indicador;
-            $datos['nomina12']['Deducciones'][$j]['Clave'] = $deduccion->indicador;
+            $datos['nomina12']['Deducciones'][$j]['TipoDeduccion'] = $deduccion->codigoSat;
+            $datos['nomina12']['Deducciones'][$j]['Clave'] = $deduccion->codigoSat;
             $datos['nomina12']['Deducciones'][$j]['Concepto'] = $deduccion->nombre;
             $datos['nomina12']['Deducciones'][$j]['Importe'] = $deduccion->importe;
             $j++;
         }
 
-        //NODO OTROS PAGOS
-        if ($compenzacion) {
-           $datos['nomina12']['OtroPago'][0]['SubsidioAlEmpleo']['SubsidioCausado'] = $importeCompenzacion;
-           $datos['nomina12']['OtroPago'][0]['Clave'] = "002"; // 002 = Subsidio para el empleo (efectivamente entregado al trabajador).
-           $datos['nomina12']['OtroPago'][0]['Concepto'] = "Subsidio Al Empleo";
-           $datos['nomina12']['OtroPago'][0]['Importe'] = $importeCompenzacio;
-           $datos['nomina12']['OtroPago'][0]['TipoOtroPago'] = "002";
-
-        }
+        
         
         $res = mf_genera_cfdi($datos);
 

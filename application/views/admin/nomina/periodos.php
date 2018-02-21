@@ -19,3 +19,31 @@
         </div>
     </div>   
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalTimbrado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">TIMBRADO DE NÓMINA</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formTimbrarNomina" method="GET" action="<?php echo base_url('Nomina_controller/timbrarNomina');?>" target="_blank">
+            <input type="hidden" id="id_emp" name="id_emp">
+            <input type="hidden" id="id_nom" name="id_nom">
+            <h3>Origen del recurso</h3>
+            <select class="form-control input-lg" name="origenRecurso" id="componente">
+                <option value="IP" >IP - Ingresos Propios</option>
+                <option value="IF" >IF - Ingresos Federales</option>
+                <option value="IM"> IM - Ingresos Mixtos</option>
+            </select>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
+        <button type="button" class="btn btn-primary" onclick="generarTimbreNomina()">TIMBRAR</button>
+      </div>
+    </div>
+  </div>
+</div>

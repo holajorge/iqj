@@ -78,7 +78,7 @@
        </tr>
        <tr>
             <td class="txt-negrita"> NIVEL:  </td> 
-            <td> <?php echo $header_pdf[0]->nivel; ?> </td>
+            <td> <?php echo $header_pdf[0]->nivelEmpleado; ?> </td>
             <td class="txt-negrita"> HOLAS:  </td> 
             <td><?php echo $header_pdf[0]->horas; ?> </td>
        </tr>
@@ -231,7 +231,7 @@
 <!-- CÓDIGO QR -->
 <!-- ************************************************************************ -->
 <div class="img-QR">
-    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/ <?php echo $nombreArchivoXML.".png"; ?>" alt="">
+    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/<?php echo $nombreArchivoXML.'.png'; ?>" alt="">
 </div>
 <!-- ************************************************************************ -->
 <!-- CELLO DIGITAL DEL CFDI -->

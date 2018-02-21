@@ -182,7 +182,7 @@ class Nomina_model extends CI_Model {
   //***************************************************************************
   public function datos_empleado_nomina($id_empleado, $id_nomina){
 
-    $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.no_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.curp, cat_empleados.no_plaza,  cat_empleados.rfc,cat_empleados.nss, cat_empleados.fecha_ingreso,cat_empleados.horas, cat_puestos.nivel, cat_puestos.nombre as 'puesto',
+    $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.no_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.curp, cat_empleados.no_plaza,  cat_empleados.rfc,cat_empleados.nss, cat_empleados.nivel as 'nivelEmpleado', cat_empleados.fecha_ingreso,cat_empleados.horas, cat_puestos.nombre as 'puesto',
                       cat_depto.nombre as 'depto', cat_empleados.no_empleado, tab_nomina.id_nomina ,tab_nomina.periodo_inicio, tab_nomina.periodo_fin, tab_nomina.periodo_quinquenal, cat_tipo_trabajador.id_tipo_trabajador,cat_tipo_trabajador.nombre_tipo_trabajador as 'trabajador'
                    FROM cat_percepciones, empleadosxpercepciones, tab_nomina,  cat_empleados, cat_puestos, cat_depto, cat_tipo_trabajador
                    WHERE cat_empleados.id_empleado = empleadosxpercepciones.id_empleado 
@@ -272,7 +272,7 @@ class Nomina_model extends CI_Model {
   //***************************************************************************
   public function percepciones_nomina($id_empleado, $id_nomina){
 
-    $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.indicador, cat_percepciones.nombre,  cat_percepciones.formula, empleadosxpercepciones.importe, 
+    $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.indicador,cat_percepciones.codigoSat, cat_percepciones.nombre,  cat_percepciones.formula, empleadosxpercepciones.importe, 
                       cat_empleados.nombre as empleado, cat_empleados.curp, cat_empleados.no_plaza,  cat_empleados.rfc , cat_puestos.nombre as 'puesto',
                       cat_depto.nombre as 'depto', cat_empleados.no_empleado, tab_nomina.periodo_inicio, tab_nomina.periodo_fin, tab_nomina.periodo_quinquenal
                    FROM cat_percepciones, empleadosxpercepciones, tab_nomina,  cat_empleados, cat_puestos, cat_depto
@@ -296,7 +296,7 @@ class Nomina_model extends CI_Model {
   //***************************************************************************
   public function deducciones_nomina($id_empleado, $id_nomina){
 
-    $query = $this->db->query("SELECT cat_deducciones.id_deduccion, cat_deducciones.indicador, cat_deducciones.nombre,empleadosxdeducciones.importe, 
+    $query = $this->db->query("SELECT cat_deducciones.id_deduccion, cat_deducciones.indicador, cat_deducciones.codigoSat,cat_deducciones.nombre,empleadosxdeducciones.importe, 
                       cat_empleados.nombre as empleado, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.curp, cat_empleados.no_plaza,  cat_empleados.rfc , cat_puestos.nombre as 'puesto',
                       cat_depto.nombre as 'depto', cat_empleados.no_empleado, tab_nomina.periodo_inicio, tab_nomina.periodo_fin, tab_nomina.periodo_quinquenal
                    FROM cat_deducciones, empleadosxdeducciones, tab_nomina,  cat_empleados, cat_puestos, cat_depto

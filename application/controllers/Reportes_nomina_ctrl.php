@@ -64,20 +64,6 @@ class Reportes_nomina_ctrl extends CI_Controller {
         }
         echo json_encode($result);
 	}
-    //********************************************************************************
-    //SE CALCULA EL TOTAL DE LOS CONSEPTOS DE LA NÓMINA SELECCIONADA
-    //********************************************************************************
-    public function reporteEmpleadosPorConcepto(){
-        $id_nomina = $this->input->post("id_nomina");
-        $empleadosEnNomina = $this->Reportes_nomina_Model->obtenerEmpleadosEnNomina($id_nomina);
-
-        //SE AGREGAN LOS EMPLEADOS EN UN ARREGLO
-        foreach ($empleadosEnNomina as $key) {
-           $percepciones[] = $this->Reportes_nomina_Model->obtnerPercepcionesPorEmpleado($id_nomina, $key->id_empleado);
-        }
-        var_dump($percepciones);
-    }
-
 	//********************************************************************************
 	//SE CALCULA EL TOTAL DE LOS CONSEPTOS DE LA NÓMINA SELECCIONADA
 	//********************************************************************************
@@ -337,9 +323,193 @@ class Reportes_nomina_ctrl extends CI_Controller {
     public function empleados_conceptos(){
             $this->load->view('global_view/header');    
             $datos["years"] = $this->Reportes_nomina_Model->gelAllYear();
+            $datos["componentes"] = $this->Reportes_nomina_Model->getComponentes(); 
             $this->load->view('admin/nomina/empleados_por_conceptos', $datos);
             $this->load->view('global_view/foother');
     }
+    //********************************************************************************
+    //SE CALCULA EL TOTAL DE LOS CONSEPTOS DE LA NÓMINA SELECCIONADA
+    //********************************************************************************
+    public function reporteEmpleadosPorConcepto(){
+        $id_nomina = $this->input->post("id_nomina");
+        $tipo = $this->input->post("tipo");
+        $mes= $this->input->post("mess");
+        $anio = $this->input->post("anio");
+        $componenteRp = $this->input->post("inputComponente");
+        //SI TIPO = 1 ENTONCES EL REPORTE SE HARÁ POR QUINCENA
+        //SI $componenteRp == 0 significa que no se toma en cuenta el componente
+        if ($tipo == 1 & $componenteRp == 0) {
+            //SE GENERA EL REPORTE POR QUINCENA SIN COMPONENTE
+            $this->reporteSabanaPorQuincena($id_nomina);
+        }else if($tipo == 0 & $componenteRp == 0){
+            //SE GENERA EL REPORTE POR MES SIN COMPONENTE
+            $this->reporteSabanaPorMes($mes,$anio);
+        }else if ($tipo == 1 & $componenteRp > 0) {
+            //SE GENERA EL REPORTE POR QUINCENA Y COMPONENTE
+            $this->reporteSabanaPorQuincenaYComponente($id_nomina,$componenteRp);
+        }else if ($tipo == 0 & $componenteRp > 0) {
+            //SE GENERA EL REPORTE POR QUINCENA Y COMPONENTE
+            $this->reporteSabanaPorMesYComponente($mes,$anio,$componenteRp);
+        }
+    }
+    //********************************************************************************
+    //SE GENERA EL REPORTE EN EXCEL POR DE TODOS LOS EMPLEADOS POR TODOS LOS CONCEPTOS
+    //POR QUINCENA
+    //********************************************************************************
+    public function reporteSabanaPorQuincena($id_nomina){
+        $empleadosEnNomina = $this->Reportes_nomina_Model->obtenerEmpleadosEnNomina($id_nomina);
+        $nombresPercepcionesEnNomina = $this->Reportes_nomina_Model->obtenerNombrePerNomina($id_nomina);
+        $nombresDeduccionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreDedNomina($id_nomina);
+        $nombresAportacionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreAporNomina($id_nomina);
+        //SE VALIDA QUE HAYAN EMPLEADOS EN LA NOMINA SELECCIONADA
+        if ($empleadosEnNomina) {
+            //SE OBTIENEN LOS DATOS DE LAS PERCEPCIONES DE LA NOMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $percepciones[] = $this->Reportes_nomina_Model->obtnerPercepcionesPorEmpleado($id_nomina, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS DEDUCCIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $deducciones[] = $this->Reportes_nomina_Model->obtnerDeduccionesPorEmpleado($id_nomina, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS APORTACIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $aportaciones[] = $this->Reportes_nomina_Model->obtnerAportacionesPorEmpleado($id_nomina, $key->id_empleado);
+            }
+                $data["percepciones"] = $percepciones;
+                $data["nombresPercepcionesEnNomina"] = $nombresPercepcionesEnNomina;
+                $data["deducciones"] = $deducciones;
+                $data["nombresDeduccionesEnNomina"] = $nombresDeduccionesEnNomina;
+                $data["aportaciones"] = $aportaciones;
+                $data["nombresAportacionesEnNomina"] = $nombresAportacionesEnNomina;
+                $data["empleadosEnNomina"] = $empleadosEnNomina;
+                $data["datosNomina"] = $this->Reportes_nomina_Model->informacionNomina($id_nomina);
+                $data["quincena"] = true;
+            $this->load->view('admin/nomina/reportes/pdf_AllEmploye_AllConceptos/contenido_excel',$data);
+            
+        }else{
+            var_dump("No hay información en esta nómina");
+        }
+    }
+    //********************************************************************************
+    //SE GENERA EL REPORTE EN EXCEL POR DE TODOS LOS EMPLEADOS POR TODOS LOS CONCEPTOS
+    //POR MES
+    //********************************************************************************
+    public function reporteSabanaPorMes($mes,$anio){
+        $empleadosEnNomina = $this->Reportes_nomina_Model->obtenerEmpleadosEnNominaMensual($mes,$anio);
+        $nombresPercepcionesEnNomina = $this->Reportes_nomina_Model->obtenerNombrePerNominaMensual($mes,$anio);
+        $nombresDeduccionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreDedNominaMensual($mes,$anio);
+        $nombresAportacionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreAporNominaMensual($mes,$anio);
+        
+            //SE VALIDA QUE HAYAN EMPLEADOS EN LA NOMINA SELECCIONADA
+        if ($empleadosEnNomina) {
+            //SE OBTIENEN LOS DATOS DE LAS PERCEPCIONES DE LA NOMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $percepciones[] = $this->Reportes_nomina_Model->obtnerPercepcionesPorEmpleadoMensual($mes,$anio,$key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS DEDUCCIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $deducciones[] = $this->Reportes_nomina_Model->obtnerDeduccionesPorEmpleadoMensual($mes,$anio, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS APORTACIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $aportaciones[] = $this->Reportes_nomina_Model->obtnerAportacionesPorEmpleadoMensual($mes,$anio, $key->id_empleado);
+            }
+                $data["percepciones"] = $percepciones;
+                $data["nombresPercepcionesEnNomina"] = $nombresPercepcionesEnNomina;
+                $data["deducciones"] = $deducciones;
+                $data["nombresDeduccionesEnNomina"] = $nombresDeduccionesEnNomina;
+                $data["aportaciones"] = $aportaciones;
+                $data["nombresAportacionesEnNomina"] = $nombresAportacionesEnNomina;
+                $data["empleadosEnNomina"] = $empleadosEnNomina;
+                $data["mes"] = $mes;
+                $data["anio"] = $anio;
+                $this->load->view('admin/nomina/reportes/pdf_AllEmploye_AllConceptos/contenido_excel',$data);
+        }else{
+            var_dump("No hay información en esta nómina");
+        }
+    }
+    //********************************************************************************
+    //SE GENERA EL REPORTE EN EXCEL POR DE TODOS LOS EMPLEADOS POR TODOS LOS CONCEPTOS
+    //POR QUINCENA Y COMPONENTE
+    //********************************************************************************
+    public function reporteSabanaPorQuincenaYComponente($id_nomina,$id_componente){
+        $empleadosEnNomina = $this->Reportes_nomina_Model->obtenerEmpleadosEnNominaQuincenaComponente($id_nomina,$id_componente);
+        $nombresPercepcionesEnNomina = $this->Reportes_nomina_Model->obtenerNombrePerNominaQuincenaYcomponente($id_nomina,$id_componente);
+        $nombresDeduccionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreDedNominaQuincenaYcomponente($id_nomina,$id_componente);
+        $nombresAportacionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreAporNominaQuincenaYcomponente($id_nomina,$id_componente);
 
+         //SE VALIDA QUE HAYAN EMPLEADOS EN LA NOMINA SELECCIONADA
+        if ($empleadosEnNomina) {
+            //SE OBTIENEN LOS DATOS DE LAS PERCEPCIONES DE LA NOMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $percepciones[] = $this->Reportes_nomina_Model->obtnerPercepcionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS DEDUCCIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $deducciones[] = $this->Reportes_nomina_Model->obtnerDeduccionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS APORTACIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $aportaciones[] = $this->Reportes_nomina_Model->obtnerAportacionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente, $key->id_empleado);
+            }
+                $comp = $this->Reportes_nomina_Model->getComponenteIndividual($id_componente);
+                $data["percepciones"] = $percepciones;
+                $data["nombresPercepcionesEnNomina"] = $nombresPercepcionesEnNomina;
+                $data["deducciones"] = $deducciones;
+                $data["nombresDeduccionesEnNomina"] = $nombresDeduccionesEnNomina;
+                $data["aportaciones"] = $aportaciones;
+                $data["nombresAportacionesEnNomina"] = $nombresAportacionesEnNomina;
+                $data["empleadosEnNomina"] = $empleadosEnNomina;
+                $data["datosNomina"] = $this->Reportes_nomina_Model->informacionNomina($id_nomina);
+                $data["quincena"] = true;
+                $data["componente"] =$comp[0]->nombre;
+            $this->load->view('admin/nomina/reportes/pdf_AllEmploye_AllConceptos/contenido_excel',$data);
+            
+        }else{
+            var_dump("No hay información en esta nómina");
+        }
+    }
+
+    //********************************************************************************
+    //SE GENERA EL REPORTE EN EXCEL POR DE TODOS LOS EMPLEADOS POR TODOS LOS CONCEPTOS
+    //POR MES Y COMPONENTE
+    //********************************************************************************
+    public function reporteSabanaPorMesYComponente($mes,$anio,$id_componente){
+        $empleadosEnNomina = $this->Reportes_nomina_Model->obtenerEmpleadosEnNominaMensualCompoente($mes,$anio,$id_componente);
+        $nombresPercepcionesEnNomina = $this->Reportes_nomina_Model->obtenerNombrePerNominaMensualComponente($mes,$anio,$id_componente);
+        $nombresDeduccionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreDedNominaMensualComponente($mes,$anio,$id_componente);
+        $nombresAportacionesEnNomina = $this->Reportes_nomina_Model->obtenerNombreAporNominaMensualComponente($mes,$anio,$id_componente);
+        
+         //SE VALIDA QUE HAYAN EMPLEADOS EN LA NOMINA SELECCIONADA
+        if ($empleadosEnNomina) {
+            //SE OBTIENEN LOS DATOS DE LAS PERCEPCIONES DE LA NOMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $percepciones[] = $this->Reportes_nomina_Model-> obtnerPercepcionesPorEmpleadoMensualComponente($mes,$anio,$id_componente, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS DEDUCCIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $deducciones[] = $this->Reportes_nomina_Model->obtnerDeduccionesPorEmpleadoMensualComponente($mes,$anio,$id_componente, $key->id_empleado);
+            }
+            //SE OBTIENEN LOS DATOS DE LAS APORTACIONES DE LA NÓMINA POR EMPLEADO
+            foreach ($empleadosEnNomina as $key) {
+                $aportaciones[] = $this->Reportes_nomina_Model->obtnerAportacionesPorEmpleadoMensualComponente($mes,$anio,$id_componente, $key->id_empleado);
+            }
+                $comp = $this->Reportes_nomina_Model->getComponenteIndividual($id_componente);
+                $data["percepciones"] = $percepciones;
+                $data["nombresPercepcionesEnNomina"] = $nombresPercepcionesEnNomina;
+                $data["deducciones"] = $deducciones;
+                $data["nombresDeduccionesEnNomina"] = $nombresDeduccionesEnNomina;
+                $data["aportaciones"] = $aportaciones;
+                $data["nombresAportacionesEnNomina"] = $nombresAportacionesEnNomina;
+                $data["empleadosEnNomina"] = $empleadosEnNomina;
+                $data["componente"] =$comp[0]->nombre;
+                $data["mes"] = $mes;
+                $data["anio"] = $anio;
+            $this->load->view('admin/nomina/reportes/pdf_AllEmploye_AllConceptos/contenido_excel',$data);
+            
+        }else{
+            var_dump("No hay información en esta nómina");
+        }
+    }
 }
 

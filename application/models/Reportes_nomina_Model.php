@@ -447,7 +447,7 @@ class Reportes_nomina_Model extends CI_Model {
     //vista empleados_por_conceptos
     //*****************************************************************************************
     public function obtenerEmpleadosEnNomina($id_nomina){
-      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                 cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
                                 FROM cat_empleados
                                 INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
@@ -462,15 +462,68 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
+//-----------------------------------------------------------------------------------------------------------------------------------------------------
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS PERCEPCIONES EXISTENTES EN LA NÓMINA SELECCIONADA
+    //*****************************************************************************************
+    public function obtenerNombrePerNomina($id_nomina){
+      $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.nombre, cat_percepciones.indicador
+                                  FROM cat_percepciones
+                                  INNER JOIN empleadosxpercepciones ON cat_percepciones.id_percepcion = empleadosxpercepciones.id_percepcion
+                                  INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina."
+                                  GROUP BY cat_percepciones.id_percepcion
+                                  ORDER BY cat_percepciones.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS DEDUCCIONES EXISTENTES EN LA NÓMINA SELECCIONADA
+    //*****************************************************************************************
+    public function obtenerNombreDedNomina($id_nomina){
+      $query = $this->db->query("SELECT cat_deducciones.id_deduccion, cat_deducciones.nombre, cat_deducciones.indicador
+                                  FROM cat_deducciones
+                                  INNER JOIN empleadosxdeducciones ON cat_deducciones.id_deduccion = empleadosxdeducciones.id_deduccion
+                                  INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina."
+                                  GROUP BY cat_deducciones.id_deduccion
+                                  ORDER BY cat_deducciones.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS APORTACIONES EXISTENTES EN LA NÓMINA SELECCIONADA
+    //*****************************************************************************************
+    public function obtenerNombreAporNomina($id_nomina){
+      $query = $this->db->query("SELECT cat_aportaciones.id_aportacion, cat_aportaciones.nombre, cat_aportaciones.indicador
+                                  FROM cat_aportaciones
+                                  INNER JOIN empleadosxaportaciones ON cat_aportaciones.id_aportacion = empleadosxaportaciones.id_aportacion
+                                  INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina."
+                                  GROUP BY cat_aportaciones.id_aportacion");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
 
     public function obtnerPercepcionesPorEmpleado($id_nomina, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
-                                  cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
+                                  cat_percepciones.id_percepcion, cat_percepciones.indicador,cat_percepciones.nombre as 'nombreConcepto',empleadosxpercepciones.importe
                               FROM cat_empleados
                               INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
                               INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
                               INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
                               WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado."
+                              GROUP BY cat_percepciones.id_percepcion
                               ORDER BY cat_percepciones.id_percepcion ASC");
       if ($query->num_rows() > 0) {
             return $query->result();
@@ -479,8 +532,445 @@ class Reportes_nomina_Model extends CI_Model {
       }
     }
 
+    public function obtnerDeduccionesPorEmpleado($id_nomina, $id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  cat_deducciones.id_deduccion, cat_deducciones.indicador,cat_deducciones.nombre as 'nombreConcepto',empleadosxdeducciones.importe
+                              FROM cat_empleados
+                              INNER JOIN empleadosxdeducciones on cat_empleados.id_empleado = empleadosxdeducciones.id_empleado
+                              INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+                              INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                              WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado."
+                              GROUP BY cat_deducciones.id_deduccion
+                              ORDER BY cat_deducciones.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
 
-	public function getAllDeducciones(){
+    public function obtnerAportacionesPorEmpleado($id_nomina, $id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  cat_aportaciones.id_aportacion, cat_aportaciones.indicador,cat_aportaciones.nombre as 'nombreConcepto',empleadosxaportaciones.importe
+                              FROM cat_empleados
+                              INNER JOIN empleadosxaportaciones on cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                              INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                              INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                              WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado."
+                              GROUP BY cat_aportaciones.id_aportacion");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public function obtenerEmpleadosEnNominaMensual($mes,$anio){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
+                                FROM cat_empleados
+                                INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                                INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." 
+                                GROUP BY cat_empleados.id_empleado  
+                                ORDER BY cat_empleados.id_empleado ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS PERCEPCIONES EXISTENTES EN LA NÓMINA SELECCIONADA "POR MES"
+    //*****************************************************************************************
+    public function obtenerNombrePerNominaMensual($mes,$anio){
+      $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.nombre, cat_percepciones.indicador
+                                  FROM cat_percepciones
+                                  INNER JOIN empleadosxpercepciones ON cat_percepciones.id_percepcion = empleadosxpercepciones.id_percepcion
+                                  INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                  WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."
+                                  GROUP BY cat_percepciones.id_percepcion
+                                  ORDER BY cat_percepciones.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+        //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS DEDUCCIONES EXISTENTES EN LA NÓMINA SELECCIONADA
+    //*****************************************************************************************
+    public function obtenerNombreDedNominaMensual($mes,$anio){
+      $query = $this->db->query("SELECT cat_deducciones.id_deduccion, cat_deducciones.nombre, cat_deducciones.indicador
+                                  FROM cat_deducciones
+                                  INNER JOIN empleadosxdeducciones ON cat_deducciones.id_deduccion = empleadosxdeducciones.id_deduccion
+                                  INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                                  WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."
+                                  GROUP BY cat_deducciones.id_deduccion
+                                  ORDER BY cat_deducciones.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS APORTACIONES EXISTENTES EN LA NÓMINA SELECCIONADA
+    //*****************************************************************************************
+    public function obtenerNombreAporNominaMensual($mes,$anio){
+      $query = $this->db->query("SELECT cat_aportaciones.id_aportacion, cat_aportaciones.nombre, cat_aportaciones.indicador
+                                  FROM cat_aportaciones
+                                  INNER JOIN empleadosxaportaciones ON cat_aportaciones.id_aportacion = empleadosxaportaciones.id_aportacion
+                                  INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                                  WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."
+                                  GROUP BY cat_aportaciones.id_aportacion");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerPercepcionesPorEmpleadoMensual($mes,$anio, $id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  perc.id_percepcion, perc.indicador,perc.nombre as 'nombreConcepto', (SELECT SUM(empleadosxpercepciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxpercepciones ON tab_nomina.id_nomina = empleadosxpercepciones.id_nomina 
+                                       INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                       INNER JOIN cat_empleados ON empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND empleadosxpercepciones.id_percepcion = perc.id_percepcion
+                                       AND cat_empleados.id_empleado = ".$id_empleado.") as 'importe'
+                              FROM cat_empleados
+                              INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                              INNER JOIN cat_percepciones AS perc ON empleadosxpercepciones.id_percepcion = perc.id_percepcion
+                              INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                              WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  and cat_empleados.id_empleado = ".$id_empleado."
+                              GROUP BY perc.id_percepcion
+                              ORDER BY perc.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerDeduccionesPorEmpleadoMensual($mes,$anio, $id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  ded.id_deduccion, ded.indicador,ded.nombre as 'nombreConcepto', (SELECT SUM(empleadosxdeducciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxdeducciones ON tab_nomina.id_nomina = empleadosxdeducciones.id_nomina 
+                                       INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+                                       INNER JOIN cat_empleados ON empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND empleadosxdeducciones.id_deduccion = ded.id_deduccion
+                                       AND cat_empleados.id_empleado = ".$id_empleado.") as 'importe'
+                              FROM cat_empleados
+                              INNER JOIN empleadosxdeducciones on cat_empleados.id_empleado = empleadosxdeducciones.id_empleado
+                              INNER JOIN cat_deducciones AS ded ON empleadosxdeducciones.id_deduccion = ded.id_deduccion
+                              INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                              WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  and cat_empleados.id_empleado = ".$id_empleado."
+                              GROUP BY ded.id_deduccion
+                              ORDER BY ded.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerAportacionesPorEmpleadoMensual($mes,$anio, $id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  apor.id_aportacion, apor.indicador,apor.nombre as 'nombreConcepto', (SELECT SUM(empleadosxaportaciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxaportaciones ON tab_nomina.id_nomina = empleadosxaportaciones.id_nomina 
+                                       INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                                       INNER JOIN cat_empleados ON empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND empleadosxaportaciones.id_aportacion = apor.id_aportacion
+                                       AND cat_empleados.id_empleado = ".$id_empleado.") as 'importe'
+                              FROM cat_empleados
+                              INNER JOIN empleadosxaportaciones on cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                              INNER JOIN cat_aportaciones AS apor ON empleadosxaportaciones.id_aportacion = apor.id_aportacion
+                              INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                              WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  and cat_empleados.id_empleado = ".$id_empleado."
+                              GROUP BY apor.id_aportacion
+                              ORDER BY apor.id_aportacion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public function obtenerEmpleadosEnNominaQuincenaComponente($id_nomina,$id_componente){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
+                                FROM cat_empleados
+                                INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                                INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_componente = ".$id_componente."
+                                GROUP BY cat_empleados.id_empleado  
+                                ORDER BY cat_empleados.id_empleado ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS PERCEPCIONES EXISTENTES EN LA NÓMINA SELECCIONADA POR COMPONENTE
+    //*****************************************************************************************
+    public function obtenerNombrePerNominaQuincenaYcomponente($id_nomina,$id_componente){
+      $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.nombre, cat_percepciones.indicador
+                                  FROM cat_percepciones
+                                  INNER JOIN empleadosxpercepciones ON cat_percepciones.id_percepcion = empleadosxpercepciones.id_percepcion
+                                  INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                  INNER JOIN cat_empleados ON empleadosxpercepciones.id_empleado =  cat_empleados.id_empleado
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_componente = ".$id_componente."
+                                  GROUP BY cat_percepciones.id_percepcion
+                                  ORDER BY cat_percepciones.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS DEDUCCIONES EXISTENTES EN LA NÓMINA SELECCIONADA POR COMPONENTE
+    //*****************************************************************************************
+    public function obtenerNombreDedNominaQuincenaYcomponente($id_nomina,$id_componente){
+      $query = $this->db->query("SELECT cat_deducciones.id_deduccion, cat_deducciones.nombre, cat_deducciones.indicador
+                                  FROM cat_deducciones
+                                  INNER JOIN empleadosxdeducciones ON cat_deducciones.id_deduccion = empleadosxdeducciones.id_deduccion
+                                  INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                                  INNER JOIN cat_empleados ON empleadosxdeducciones.id_empleado =  cat_empleados.id_empleado
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_componente = ".$id_componente."
+                                  GROUP BY cat_deducciones.id_deduccion
+                                  ORDER BY cat_deducciones.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS APORTACIONES EXISTENTES EN LA NÓMINA SELECCIONADA POR COMPONENTE
+    //*****************************************************************************************
+    public function obtenerNombreAporNominaQuincenaYcomponente($id_nomina,$id_componente){
+      $query = $this->db->query("SELECT cat_aportaciones.id_aportacion, cat_aportaciones.nombre, cat_aportaciones.indicador
+                                  FROM cat_aportaciones
+                                  INNER JOIN empleadosxaportaciones ON cat_aportaciones.id_aportacion = empleadosxaportaciones.id_aportacion
+                                  INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                                  INNER JOIN cat_empleados ON empleadosxaportaciones.id_empleado =  cat_empleados.id_empleado
+                                  WHERE tab_nomina.id_nomina = ".$id_nomina." AND cat_empleados.id_componente = ".$id_componente."
+                                  GROUP BY cat_aportaciones.id_aportacion
+                                  ORDER BY cat_aportaciones.id_aportacion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+     public function obtnerPercepcionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente,$id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  cat_percepciones.id_percepcion, cat_percepciones.indicador,cat_percepciones.nombre as 'nombreConcepto',empleadosxpercepciones.importe
+                              FROM cat_empleados
+                              INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                              INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                              INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                              WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado." AND cat_empleados.id_componente = ".$id_componente."
+                              GROUP BY cat_percepciones.id_percepcion
+                              ORDER BY cat_percepciones.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerDeduccionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente,$id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  cat_deducciones.id_deduccion, cat_deducciones.indicador,cat_deducciones.nombre as 'nombreConcepto',empleadosxdeducciones.importe
+                              FROM cat_empleados
+                              INNER JOIN empleadosxdeducciones on cat_empleados.id_empleado = empleadosxdeducciones.id_empleado
+                              INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+                              INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                              WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado." AND cat_empleados.id_componente = ".$id_componente."
+                              GROUP BY cat_deducciones.id_deduccion
+                              ORDER BY cat_deducciones.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+     public function obtnerAportacionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente,$id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  cat_aportaciones.id_aportacion, cat_aportaciones.indicador,cat_aportaciones.nombre as 'nombreConcepto',empleadosxaportaciones.importe
+                              FROM cat_empleados
+                              INNER JOIN empleadosxaportaciones on cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                              INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                              INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                              WHERE tab_nomina.id_nomina = ".$id_nomina."  and cat_empleados.id_empleado = ".$id_empleado." AND cat_empleados.id_componente = ".$id_componente."
+                              GROUP BY cat_aportaciones.id_aportacion
+                              ORDER BY cat_aportaciones.id_aportacion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+//---------------------------------------------------------------------------------------------------------------------------------
+
+  public function obtenerEmpleadosEnNominaMensualCompoente($mes,$anio,$id_componente){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
+                                FROM cat_empleados
+                                INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                                INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."
+                                      AND cat_empleados.id_componente = ".$id_componente." 
+                                GROUP BY cat_empleados.id_empleado  
+                                ORDER BY cat_empleados.id_empleado ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+  }
+
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS PERCEPCIONES EXISTENTES EN LA NÓMINA SELECCIONADA 
+    //"POR MES" Y COMPONENTE
+    //*****************************************************************************************
+    public function obtenerNombrePerNominaMensualComponente($mes,$anio,$id_componente){
+      $query = $this->db->query("SELECT cat_percepciones.id_percepcion, cat_percepciones.nombre, cat_percepciones.indicador
+                                  FROM cat_percepciones
+                                  INNER JOIN empleadosxpercepciones ON cat_percepciones.id_percepcion = empleadosxpercepciones.id_percepcion
+                                  INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                                  INNER JOIN cat_empleados ON empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+                                  WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND cat_empleados.id_componente = ".$id_componente."
+                                  GROUP BY cat_percepciones.id_percepcion
+                                  ORDER BY cat_percepciones.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS DEDUCCIONES EXISTENTES EN LA NÓMINA SELECCIONADA 
+    //"POR MES" Y COMPONENTE
+    //*****************************************************************************************
+    public function obtenerNombreDedNominaMensualComponente($mes,$anio,$id_componente){
+      $query = $this->db->query("SELECT cat_deducciones.id_deduccion, cat_deducciones.nombre, cat_deducciones.indicador
+                                  FROM cat_deducciones
+                                  INNER JOIN empleadosxdeducciones ON cat_deducciones.id_deduccion = empleadosxdeducciones.id_deduccion
+                                  INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                                  INNER JOIN cat_empleados ON empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+                                  WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND cat_empleados.id_componente = ".$id_componente."
+                                  GROUP BY cat_deducciones.id_deduccion
+                                  ORDER BY cat_deducciones.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+    //*****************************************************************************************
+    //SE OBTIENE LA LISTA DE LAS APORTACIONES EXISTENTES EN LA NÓMINA SELECCIONADA 
+    //"POR MES" Y COMPONENTE
+    //*****************************************************************************************
+    public function obtenerNombreAporNominaMensualComponente($mes,$anio,$id_componente){
+      $query = $this->db->query("SELECT cat_aportaciones.id_aportacion, cat_aportaciones.nombre, cat_aportaciones.indicador
+                                  FROM cat_aportaciones
+                                  INNER JOIN empleadosxaportaciones ON cat_aportaciones.id_aportacion = empleadosxaportaciones.id_aportacion
+                                  INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                                  INNER JOIN cat_empleados ON empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+                                  WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND cat_empleados.id_componente = ".$id_componente."
+                                  GROUP BY cat_aportaciones.id_aportacion
+                                  ORDER BY cat_aportaciones.id_aportacion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerPercepcionesPorEmpleadoMensualComponente($mes,$anio,$id_componente,$id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  perc.id_percepcion, perc.indicador,perc.nombre as 'nombreConcepto', (SELECT SUM(empleadosxpercepciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxpercepciones ON tab_nomina.id_nomina = empleadosxpercepciones.id_nomina 
+                                       INNER JOIN cat_percepciones ON empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+                                       INNER JOIN cat_empleados ON empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND empleadosxpercepciones.id_percepcion = perc.id_percepcion
+                                       AND cat_empleados.id_empleado = ".$id_empleado." AND cat_empleados.id_componente = ".$id_componente.") as 'importe'
+                              FROM cat_empleados
+                              INNER JOIN empleadosxpercepciones on cat_empleados.id_empleado = empleadosxpercepciones.id_empleado
+                              INNER JOIN cat_percepciones AS perc ON empleadosxpercepciones.id_percepcion = perc.id_percepcion
+                              INNER JOIN tab_nomina ON empleadosxpercepciones.id_nomina = tab_nomina.id_nomina
+                              WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  and cat_empleados.id_empleado = ".$id_empleado." and cat_empleados.id_componente = ".$id_componente."
+                              GROUP BY perc.id_percepcion
+                              ORDER BY perc.id_percepcion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerDeduccionesPorEmpleadoMensualComponente($mes,$anio,$id_componente,$id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  ded.id_deduccion, ded.indicador,ded.nombre as 'nombreConcepto', (SELECT SUM(empleadosxdeducciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxdeducciones ON tab_nomina.id_nomina = empleadosxdeducciones.id_nomina 
+                                       INNER JOIN cat_deducciones ON empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+                                       INNER JOIN cat_empleados ON empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND empleadosxdeducciones.id_deduccion = ded.id_deduccion
+                                       AND cat_empleados.id_empleado = ".$id_empleado." AND cat_empleados.id_componente = ".$id_componente.") as 'importe'
+                              FROM cat_empleados
+                              INNER JOIN empleadosxdeducciones on cat_empleados.id_empleado = empleadosxdeducciones.id_empleado
+                              INNER JOIN cat_deducciones AS ded ON empleadosxdeducciones.id_deduccion = ded.id_deduccion
+                              INNER JOIN tab_nomina ON empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+                              WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  and cat_empleados.id_empleado = ".$id_empleado." and cat_empleados.id_componente = ".$id_componente."
+                              GROUP BY ded.id_deduccion
+                              ORDER BY ded.id_deduccion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+    public function obtnerAportacionesPorEmpleadoMensualComponente($mes,$anio,$id_componente,$id_empleado){
+      $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
+                                  apor.id_aportacion, apor.indicador,apor.nombre as 'nombreConcepto', (SELECT SUM(empleadosxaportaciones.importe) AS total 
+                                       FROM tab_nomina 
+                                       INNER JOIN empleadosxaportaciones ON tab_nomina.id_nomina = empleadosxaportaciones.id_nomina 
+                                       INNER JOIN cat_aportaciones ON empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+                                       INNER JOIN cat_empleados ON empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+                                       WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio." AND empleadosxaportaciones.id_aportacion = apor.id_aportacion
+                                       AND cat_empleados.id_empleado = ".$id_empleado." AND cat_empleados.id_componente = ".$id_componente.") as 'importe'
+                              FROM cat_empleados
+                              INNER JOIN empleadosxaportaciones on cat_empleados.id_empleado = empleadosxaportaciones.id_empleado
+                              INNER JOIN cat_aportaciones AS apor ON empleadosxaportaciones.id_aportacion = apor.id_aportacion
+                              INNER JOIN tab_nomina ON empleadosxaportaciones.id_nomina = tab_nomina.id_nomina
+                              WHERE MONTH(tab_nomina.periodo_inicio) = ".$mes." AND YEAR(tab_nomina.periodo_inicio) = ".$anio."  and cat_empleados.id_empleado = ".$id_empleado." and cat_empleados.id_componente = ".$id_componente."
+                              GROUP BY apor.id_aportacion
+                              ORDER BY apor.id_aportacion ASC");
+      if ($query->num_rows() > 0) {
+            return $query->result();
+      } else {
+              return false;
+      }
+    }
+
+  public function getAllDeducciones(){
 		$query = $this->db->query("SELECT * FROM cat_deducciones");
 
 		if ($query->num_rows() > 0) {
