@@ -3,7 +3,9 @@ $(document).ready(function() {
     inicalizarDataTable("tabla_lista_empleados");
 
 });
-
+function cancelarRegistro() {
+    $("#form_crear_empleado")[0].reset();
+}
 function saveEmPloye(){
 	$("#form_crear_empleado").validate({
 
@@ -12,6 +14,7 @@ function saveEmPloye(){
             nombre: { required: true, maxlength: 60 },
             horas: { required: true },
             nss: {required: true},
+            nivel: { required: true },
 			//tarjeta: {required: true, number:true, minlength: 15},
             ap_paterno: { required: true},            
             fecha_nacimiento: { required: true, date: true},
@@ -23,12 +26,14 @@ function saveEmPloye(){
             id_puesto: { required: true},     
             id_tipo_trabajador: { required: true},    
             componente: { required: true},
+            sindicalizado: {required: true}
         },        
         messages: {
             horas: "Horas Necesarias",
             no_plaza: "Numero Necesario",
             nss: "numero de suguro social necesario",
 			//tarjeta: "Numero de Tarjeta necesario",
+            nivel: "Debe ingresar el Nivel.",
             nombre: "Debe ingresar su Nombre.",  
             ap_paterno: "Apellido Necesario.",            
             fecha_nacimiento: "Debe ingresar Fecha Nacimiento.",  
@@ -40,7 +45,8 @@ function saveEmPloye(){
             id_depto: "Debe seleccionar Depto.",
             id_puesto: "Debe seleccionar Puesto.",     
             id_tipo_trabajador: "Debe seleccionar Tipo.",  
-            componente: "Debe seleccionar un Componente"      
+            componente: "Debe seleccionar un Componente",
+            sindicalizado: "Si o No"
         },
         submitHandler: function(){    
             var dataString = $("#form_crear_empleado").serialize();
@@ -212,7 +218,7 @@ function habilitarEmpleado(id, nombre, paterno){
     });
 }
 
-function editEmpleado(id, depto, puesto, trabajdor, componente, nivel ){
+function editEmpleado(id, depto, puesto, trabajdor, componente, nivel , sindicalizado){
     var no_plaza=document.getElementById("no_plaza"+id).innerHTML;    
     var horas=document.getElementById("horas"+id).innerHTML;
     var nss=document.getElementById("nss"+id).innerHTML;
@@ -225,7 +231,9 @@ function editEmpleado(id, depto, puesto, trabajdor, componente, nivel ){
     var no_empleado=document.getElementById("no_empleado"+id).innerHTML;
     var curp=document.getElementById("curp"+id).innerHTML;
 	var tarjeta=document.getElementById("tarjeta"+id).innerHTML;
-
+	var correo=document.getElementById("correo"+id).innerHTML;
+    console.log("hola sindicalizado");
+	console.log(sindicalizado);
 	document.getElementById("idEditar").innerHTML=id+"";
     document.getElementById("idEditar").value=id;              
     document.getElementById("num_plazaEdit").value=no_plaza;
@@ -241,16 +249,28 @@ function editEmpleado(id, depto, puesto, trabajdor, componente, nivel ){
     document.getElementById("no_empleadoEdit").value=no_empleado;
 	document.getElementById("tarjetaEdit").value=tarjeta;
 	document.getElementById("nivelEdit").value=nivel;
+	document.getElementById("correoEdit").value=correo;
 
     var html = "";
     var html1 = "";
     var html2 = "";
     var html3 = "";
+    var html4 = ""; //sindicalizado
     $.ajax({
-        type: "POST",
+        type: "GET",
         url:baseURL + "Empleado_controller/getSelected",
         success: function(respuesta) {
           var obj = JSON.parse(respuesta);
+
+            if(sindicalizado === "Si"){
+                html4 += "<option value='Si' selected>Si</option>";
+                html4 += "<option value='No'>No</option>";
+                $("#SindicalizadoID").html(html4);
+            }else{
+                html4 += "<option value='No' selected>No</option>";
+                html4 += "<option value='Si'>Si</option>";
+                $("#SindicalizadoID").html(html4);
+            }
             if (obj.resultado === true) {                      
                               
                 var num_fila = 1;
