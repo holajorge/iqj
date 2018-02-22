@@ -5,7 +5,7 @@ $(document).ready(function() {
     calc_aportaciones_por_percepcion(sueldoConfianzaMasQuinquenio, sueldoConfianza);
     calcular_liquido();
 });
-var anio = 2018;
+var anio = 2016;
 //******************************************************************************
 //SE VERIFICA QUE LA NÓMINA SELECCIONADA NO EXISTA EN LA BASE DE DATOS
 //******************************************************************************

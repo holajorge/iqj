@@ -3,7 +3,7 @@ $(document).ready(function() {
 });
 
 var trabajador_eventual = false;
-var anio = 2018;
+var anio = 2016;
 function tab_det_nomina(id){
     trabajador_eventual = false;
     $("#total_percepcion").html("");
