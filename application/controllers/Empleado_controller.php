@@ -88,6 +88,7 @@ class Empleado_controller extends CI_Controller {
         $no_plaza = $this->input->post("no_plaza");
         $horas = $this->input->post("horas");
         $nss = $this->input->post("nss");
+        $nivel = $this->input->post("nivel");
 		$no_tarjeta = $this->input->post("tarjeta");
         $nombre = $this->input->post("nombre");
         $ap_paterno = $this->input->post("ap_paterno");
@@ -101,11 +102,14 @@ class Empleado_controller extends CI_Controller {
         $rfc = $this->input->post("rfc");        
         $id_tipo_trabajador = $this->input->post("id_tipo_trabajador");
         $id_componente = $this->input->post("componente");
+        $correo = $this->input->post("correo");
+        $sindicalizado = $this->input->post("sindicalizado");
 
         $emplado = array(
                     'no_plaza' => $no_plaza, 
                     'nombre' => $nombre,
                     'nss' => $nss,
+                    'nivel' => $nivel,
                     'no_tarjeta' => $no_tarjeta,
                     'ap_paterno' => $ap_paterno,
                     'ap_materno' => $ap_materno,
@@ -119,6 +123,8 @@ class Empleado_controller extends CI_Controller {
                     'horas' => $horas,
                     'id_tipo_trabajador' => $id_tipo_trabajador,
                     'id_componente' => $id_componente,
+                    'correo' => $correo,
+                    'sindicalizado' => $sindicalizado,
                     'status' => 1
 
                     );
@@ -151,7 +157,8 @@ class Empleado_controller extends CI_Controller {
         $id_tipo_trabajador = $this->input->post("tipo_trabajador");
         $id_componente = $this->input->post("componente");
 		$nivel = $this->input->post("nivel");
-
+        $correo = $this->input->post("correo");
+        $sindicalizado = $this->input->post("sindicalizado");
         $empleado = array(
             'no_plaza' => $no_plaza, 
             'horas' => $horas,
@@ -169,7 +176,9 @@ class Empleado_controller extends CI_Controller {
             'rfc' => $rfc,                    
             'id_tipo_trabajador' => $id_tipo_trabajador,
             'id_componente' => $id_componente,
-			'nivel' => $nivel
+			'nivel' => $nivel,
+            'correo' => $correo,
+            'sindicalizado' => $sindicalizado,
         );
         $query = $this->Empleado_model->updateEmpleado($id_empleado,$empleado);
         if ($query == 1) {
