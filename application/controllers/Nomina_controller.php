@@ -456,12 +456,24 @@ class Nomina_controller extends CI_Controller {
         echo json_encode($result);
     }
 
-    public function timbrarNomina(){
+    public function verificaExisteTimbre(){
+        $id_empleado = $_GET["id_emp"];
+        $id_nomina = $_GET["id_nom"]; 
+        $queryExisteTimbre = $this->Nomina_model->verificarNominaTimbrada($id_empleado,$id_nomina);
+        if (!$queryExisteTimbre) {
+            $this->timbrarNomina($id_empleado,$id_nomina);
+        }else{
+            var_dump("la nómina ya ha sido timbrada");
+        }
+    }
+
+    public function timbrarNomina($id_emp,$id_nom){
 
         error_reporting(0);
-        $id_empleado = $_GET["id_emp"];
-        $id_nomina = $_GET["id_nom"];        
-        $OrigenRecurso = $_GET["origenRecurso"];
+        $id_empleado = $id_emp;
+        $id_nomina = $id_nom;  
+
+        $OrigenRecurso = "IP";
         $MontoRecursoPropio = $_GET["montoRecursoPropio"];
         $empleado = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
 
@@ -615,9 +627,9 @@ class Nomina_controller extends CI_Controller {
         $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * 60) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
         $datos['factura']['fecha_expedicion'] = $fecha_expedicion;
         $datos['factura']['folio'] = $empleado[0]->no_empleado;
-/*--*/  $datos['factura']['forma_pago'] = '99';
+/*--*/  $datos['factura']['forma_pago'] = '99'; //99 = por definir
         $datos['factura']['LugarExpedicion'] = '77000';
-        $datos['factura']['metodo_pago'] = 'PUE';
+        $datos['factura']['metodo_pago'] = 'PUE'; // Pago en una sola exhibición
         $datos['factura']['moneda'] = 'MXN';
         $datos['factura']['serie'] = $empleado[0]->no_empleado."-".$empleado[0]->periodo_quinquenal; //Es el número de serie que utiliza el contribuyente para control interno de su información. 
         $datos['factura']['subtotal'] = number_format(($totalPer), 2, '.', '');
@@ -629,10 +641,11 @@ class Nomina_controller extends CI_Controller {
         $datos['CfdisRelacionados']['UUID'][0]='A39DA66B-52CA-49E3-879B-5C05185B0EF7';*/
 
         //$datos['factura']['Confirmacion'] = '0234';
-        $datos['factura']['RegimenFiscal'] = '601'; //General de Ley Personas Morales EMISOR
+        $datos['factura']['RegimenFiscal'] = '603'; //Personas Morales con Fines no Lucrativos
 
 
-        $datos['emisor']['rfc'] = 'LAN7008173R5'; //RFC DE PRUEBA
+        //$datos['emisor']['rfc'] = 'IQJ1706288Z7'; //RFC DEL IQJ
+        $datos['emisor']['rfc'] = 'LAN7008173R5';
         $datos['emisor']['nombre'] = 'INSTITUTO QUINTANARROENSE DE LA JUVENTUD';  // EMPRESA DE PRUEBA
         //Se puede registrar la CURP del empleador (emisor) del comprobante de nómina cuando 
         //se trate de una persona física.
@@ -659,7 +672,7 @@ class Nomina_controller extends CI_Controller {
         $datos['nomina12']['FechaPago'] = $empleado[0]->periodo_fin;
         $datos['nomina12']['FechaInicialPago'] = $empleado[0]->periodo_inicio;
         $datos['nomina12']['FechaFinalPago'] = $empleado[0]->periodo_fin;
- /*-*/  $datos['nomina12']['NumDiasPagados'] = $diasPagados;
+        $datos['nomina12']['NumDiasPagados'] = $diasPagados;
 
         // Opcionales
         $datos['nomina12']['TotalPercepciones'] = number_format(($totalPercepciones), 2, '.', '');
@@ -672,14 +685,14 @@ class Nomina_controller extends CI_Controller {
 
         // SUB NODOS OPCIONALES DE NOMINA [Emisor, Percepciones, Deducciones, OtrosPagos, Incapacidades]
         // Nodo Emisor, OPCIONALES
- /*-*/  $datos['nomina12']['Emisor']['RegistroPatronal'] = '5525665412'; //Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+        $datos['nomina12']['Emisor']['RegistroPatronal'] = 'Y5560015453'; //Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
  /*-*/  //$datos['nomina12']['Emisor']['RfcPatronOrigen'] = 'AAA010101AAA'; // VERIFICAR
 //-----------------------------------------------------------------------------------------
         //NODO: EntidadSNCF;
-        $datos['nomina12']['EntidadSNCF']['OrigenRecurso'] = $OrigenRecurso;
+/*-*/   //$datos['nomina12']['Emisor']['EntidadSNCF']['OrigenRecurso'] = $OrigenRecurso;
 
         if ($OrigenRecurso == "IM" ) {
-            $datos['nomina12']['EntidadSNCF']['MontoRecursoPropio'] =number_format(($MontoRecursoPropio), 2, '.', ''); 
+            $datos['nomina12']['Emisor']['EntidadSNCF']['MontoRecursoPropio'] =number_format(($MontoRecursoPropio), 2, '.', ''); 
         }
 //------------------------------------------------------------------------------------------
         // SUB NODOS OBLIGATORIOS DE NOMINA [Receptor]
@@ -689,7 +702,7 @@ class Nomina_controller extends CI_Controller {
         $datos['nomina12']['Receptor']['NumEmpleado'] = $empleado[0]->no_empleado;
         $datos['nomina12']['Receptor']['Departamento'] = $empleado[0]->depto;
         $datos['nomina12']['Receptor']['PeriodicidadPago'] = '04'; //CLAVE 04 = QUINCENAL
- /*-*/  $datos['nomina12']['Receptor']['TipoContrato'] = '01'; // 01 = Contrato de trabajo por tiempo indeterminado
+        $datos['nomina12']['Receptor']['TipoContrato'] = '01'; // 01 = Contrato de trabajo por tiempo indeterminado
         $datos['nomina12']['Receptor']['Sindicalizado'] = $empleado[0]->sindicalizado;
         $datos['nomina12']['Receptor']['TipoRegimen'] = '02'; // 02 = sueldos
         $datos['nomina12']['Receptor']['TipoJornada'] = '01'; // 01 = diurna
@@ -698,14 +711,13 @@ class Nomina_controller extends CI_Controller {
        
         $datos['nomina12']['Receptor']['Antiguedad'] = $this->calcularAntiguedad($empleado[0]->fecha_ingreso,$empleado[0]->periodo_fin); //VERIFICAR ------------- w = semanas Por excepción, este dato no aplica cuando ...
         $datos['nomina12']['Receptor']['Banco'] = '014'; // 014 = SANTANDER VERIFICAR -------------
- /*-*/  $datos['nomina12']['Receptor']['CuentaBancaria'] = $empleado[0]->no_tarjeta; //leer abajo
+        $datos['nomina12']['Receptor']['CuentaBancaria'] = $empleado[0]->no_tarjeta; //leer abajo
         /*Si el valor de este campo contiene una cuenta CLABE (18 posiciones), no debe existir el
         campo Banco, este dato será objeto de validación por el SAT o el proveedor de
         certificación de CFDI, se debe confirmar que el dígito de control es correcto.*/
         $datos['nomina12']['Receptor']['FechaInicioRelLaboral'] = $empleado[0]->fecha_ingreso; // Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         $datos['nomina12']['Receptor']['NumSeguridadSocial'] = $empleado[0]->nss;
         $datos['nomina12']['Receptor']['Puesto'] = $empleado[0]->puesto;
-        //die();
 /*_*/   $datos['nomina12']['Receptor']['RiesgoPuesto'] = '2'; // 2 = clase II  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         //$datos['nomina12']['Receptor']['SalarioBaseCotApor'] = '435.50';
  /*-*/  $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = number_format((round($SalarioDiarioIntegrado, 2)), 2, '.', '');
@@ -713,16 +725,17 @@ class Nomina_controller extends CI_Controller {
         // NODO PERCEPCIONES
         // Totales Obligatorios
         $datos['nomina12']['Percepciones']['TotalGravado'] =  number_format(($totalGravado), 2, '.', ''); 
- /*-*/  $datos['nomina12']['Percepciones']['TotalExento'] =  number_format(($totalPercepciones - $totalGravado), 2, '.', '');
+        $datos['nomina12']['Percepciones']['TotalExento'] =  number_format(($totalPercepciones - $totalGravado), 2, '.', '');
 
         $x = 0;
         $totImpgravado = 0;
         $totImpExento = 0;
         foreach ($percepciones as $percepcion) {
             $clavePer = $percepcion->codigoSat;
+            $codigoPercepcion = $percepcion->indicador;
             // Agregar Percepciones (Todos obligatorios)
             $datos['nomina12']['Percepciones'][$x]['TipoPercepcion'] = $clavePer;
-            $datos['nomina12']['Percepciones'][$x]['Clave'] = $clavePer; //VERIFICAR
+            $datos['nomina12']['Percepciones'][$x]['Clave'] = $codigoPercepcion; //VERIFICAR
             $datos['nomina12']['Percepciones'][$x]['Concepto'] = $percepcion->nombre;
             //SE VERIFICA QUE EL CONCEPTO SEA GRAVADO O EXCENTO
             $importeGravado = $this->verificarSiGravadoOexcento($percepcion->formula);
@@ -748,7 +761,7 @@ class Nomina_controller extends CI_Controller {
         }
         // Totales Opcionales
         if ($existeTotalSueldos) {
- /*-*/      $datos['nomina12']['Percepciones']['TotalSueldos'] = number_format(($totalSueldos), 2, '.', '');
+            $datos['nomina12']['Percepciones']['TotalSueldos'] = number_format(($totalSueldos), 2, '.', '');
         }
         //Nodo:SeparacionIndemnizacion
         if ($existeSeparacion) {
@@ -783,7 +796,7 @@ class Nomina_controller extends CI_Controller {
         $j = 0;
         foreach ($deducciones as $deduccion) {
             $datos['nomina12']['Deducciones'][$j]['TipoDeduccion'] = $deduccion->codigoSat;
-            $datos['nomina12']['Deducciones'][$j]['Clave'] = $deduccion->codigoSat;
+            $datos['nomina12']['Deducciones'][$j]['Clave'] = $deduccion->indicador;
             $datos['nomina12']['Deducciones'][$j]['Concepto'] = $deduccion->nombre;
             $datos['nomina12']['Deducciones'][$j]['Importe'] = number_format(($deduccion->importe), 2, '.', ''); 
             $j++;
@@ -800,7 +813,7 @@ class Nomina_controller extends CI_Controller {
         {
             $valor=htmlentities($valor);
             $valor=str_replace('&lt;br/&gt;','<br/>',$valor);
-            // echo "<b>[$variable]=</b>$valor<hr>";
+            //echo "<b>[$variable]=</b>$valor<hr>";
         }
         //print_r($res);
         $codigoError = $res['codigo_mf_numero'];
@@ -809,7 +822,7 @@ class Nomina_controller extends CI_Controller {
             //SE LEEN LOS DATOS QUE DEVUELVE EL TIMBRADO DEL CFDI Y SE GUARDA EN UNA VARIABLE (ARRAY)
             $dataCFDI = $this->leer($res);
             //SE IMPRIME EL PDF CON LOS DATOS DEL CFDI TIMBRADO
-            $this->pdfCFDI($dataCFDI, $id_empleado, $id_nomina,$nombreArchivoXML);
+            $this->pdfCFDI($dataCFDI, $id_empleado, $id_nomina,$nombreArchivoXML,$fecha_expedicion);
         }else if ($codigoError == 2){
             echo $res['codigo_mf_texto'];
         }else{
@@ -864,7 +877,11 @@ class Nomina_controller extends CI_Controller {
     
           $selloDigitalCFDI = $data['representacion_impresa_sello'];
           $selloDelSAT = $data['representacion_impresa_selloSAT'];
-          $cadenaOriginalComplemtoSAT = $data['representacion_impresa_cadena']; 
+          $cadenaOriginalComplemtoSAT = $data['representacion_impresa_cadena'];
+          $representacion_impresa_certificado_no = $data['representacion_impresa_certificado_no'];
+          $folioFiscalUuid = $data['uuid'];
+          $representacion_impresa_certificadoSAT = $data['representacion_impresa_certificadoSAT'];
+          $representacion_impresa_fecha_timbrado = $data['representacion_impresa_fecha_timbrado'];
     
           // echo "</br> Percepciones: ".$percepciones[0]['Concepto'];
           // echo "</br> Percepciones: ".$percepciones[1]['Concepto'];
@@ -891,12 +908,16 @@ class Nomina_controller extends CI_Controller {
                             'datosNomina' => $datosNomina,
                             'selloDigitalCFDI'=> $selloDigitalCFDI,
                             'selloDelSAT' => $selloDelSAT,
-                            'cadenaOriginalComplemtoSAT' => $cadenaOriginalComplemtoSAT
+                            'cadenaOriginalComplemtoSAT' => $cadenaOriginalComplemtoSAT,
+                            'representacion_impresa_certificado_no' => $representacion_impresa_certificado_no,
+                            'folioFiscalUuid' => $folioFiscalUuid,
+                            'representacion_impresa_certificadoSAT' => $representacion_impresa_certificadoSAT,
+                            'representacion_impresa_fecha_timbrado' => $representacion_impresa_fecha_timbrado
                             );
         return $dataCFDI; 
     }
 
-    public function pdfCFDI($dataCFDI,$id_empleado, $id_nomina,$nombreArchivoXML){
+    public function pdfCFDI($dataCFDI,$id_empleado, $id_nomina,$nombreArchivoXML,$fecha_expedicion){
         ob_start();
         //**********************************************************************************
         //       PDF
@@ -904,7 +925,7 @@ class Nomina_controller extends CI_Controller {
         $this->load->library('m_pdf');
         $mpdf = new \Mpdf\Mpdf([
         'mode' => 'utf-8',
-        'margin_top' => 36
+        'margin_top' => 42
         // 'margin_bottom' => 25,
         // 'margin_header' => 16,
         // 'margin_footer' => 13
@@ -925,6 +946,7 @@ class Nomina_controller extends CI_Controller {
         $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
         $data2['dataCFDI'] = $dataCFDI;
         $data2['nombreArchivoXML'] = $nombreArchivoXML;
+        $data2['fecha_expedicion'] = $fecha_expedicion;
         $html = $this->load->view('admin/nomina/pdf/pdf_cfdi_ordinaria/contenido', $data2, true);
         //**************************************** footer 1 ********************************************************
         $data3['pie_pagina'] = "";
@@ -938,8 +960,8 @@ class Nomina_controller extends CI_Controller {
         $extencion = ".pdf";
         $mpdf->Output('./assets/cfdi/timbrados/pdf/'.$nombreArchivoXML.$extencion, 'F');
 		$mpdf->Output($nombreArchivoXML.pdf, 'I');
-
-		$query = $this->Nomina_model->insertTimbradoFile($id_empleado, $id_nomina, $nombreArchivoXML);
+        $query = $this->Nomina_model->insertTimbradoFile($id_empleado, $id_nomina, $nombreArchivoXML);
+		
 		if ($query) {
 			$result['resultado'] = true;
 		} else {

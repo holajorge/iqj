@@ -399,6 +399,15 @@ class Nomina_model extends CI_Model {
           return false;
       }
   }
+  public function verificarNominaTimbrada($id_empleado,$id_nomina){
+
+    $query = $this->db->query("select cat_empleadosxtimbrados.file_name from cat_empleadosxtimbrados where cat_empleadosxtimbrados.id_empleado = ".$id_empleado." AND cat_empleadosxtimbrados.id_nomina = ".$id_nomina);
+    if ($query->num_rows() > 0) {
+          return $query->result();
+      }else{
+          return false;
+      }
+  }
   public function insertTimbradoFile($id_empleado,  $id_nomina, $nombreArchivoXML){
 
   	$file_name_timbrado = array(

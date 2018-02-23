@@ -20,6 +20,20 @@
     height: 120px;
 }
 
+.txt-center{
+    text-align: center;
+}
+.txt-right{
+    text-align: right;
+    margin-right: 10px;
+}
+.txt-table-info-cfdi{
+    border-width: 1px;
+}
+.txt-table-info-cfdi td{
+    font-size: 10px;
+}
+
 </style>
 <!-- ************************************************************************ -->
 <!-- DATOS DEL INSTITUTO-->
@@ -28,15 +42,20 @@
     <tbody>
        <tr>
             <td width="15%" style="color:#3498DB; font:bold 10px"> Forma de pago: </td> 
-            <td width="35%"> 99 - por definir </td>
+            <td width="35%"> 99 - Por definir </td>
             <td width="15%" style="color:#3498DB; font:bold 10px"> Folio: </td> 
             <td width="35%" class="txt-negrita"> RFC - 95 </td> 
        </tr>
        <tr>
             <td style="color:#3498DB; font:bold 10px"> Método de pago:  </td> 
-            <td> PPD - Pago en parcialidades o diferido </td>
+            <td> PUE - Pago en una sola exhibición </td>
             <td style="color:#3498DB; font:bold 10px"> Fecha: </td> 
-            <td> 11/1/2018 12:04:39 </td> 
+            <td> 
+                <?php 
+                    $porciones = explode("T", $fecha_expedicion);
+                    echo $porciones[0]." ".$porciones[1];
+                ?>
+            </td> 
        </tr>
        <tr>
             <td style="color:#3498DB; font:bold 10px"> Moneda:  </td> 
@@ -50,7 +69,7 @@
 <table class="table" id="id_tab_per" style="margin-top: 2rem; font-size: 10px;">
     <tbody>
         <tr>
-            <th style="color: #3498DB;" COLSPAN="3" class="success">Datos del Cliente</th>
+            <th style="color: #3498DB;" COLSPAN="3" class="success">Datos del Empleado</th>
         </tr>
        <tr>
             <td  width="15%" class="txt-negrita"> No. Plaza: </td> 
@@ -79,7 +98,7 @@
        <tr>
             <td class="txt-negrita"> NIVEL:  </td> 
             <td> <?php echo $header_pdf[0]->nivelEmpleado; ?> </td>
-            <td class="txt-negrita"> HOLAS:  </td> 
+            <td class="txt-negrita"> HORAS:  </td> 
             <td><?php echo $header_pdf[0]->horas; ?> </td>
        </tr>
         <tr>
@@ -113,7 +132,8 @@
                         <tr>
                             <td > <?php echo $dataCFDI['percepciones'][$i]['Clave']; ?> </td>
                             <td > <?php echo $dataCFDI['percepciones'][$i]['Concepto']; ?> </td>
-                            <td class="text-right"> $<?php echo number_format(floatval($dataCFDI['percepciones'][$i]['ImporteGravado']),2); ?> 
+                            <?php $importePercepcion = floatval($dataCFDI['percepciones'][$i]['ImporteGravado']) + floatval($dataCFDI['percepciones'][$i]['ImporteExento']);  ?>
+                            <td class="text-right"> $<?php echo number_format($importePercepcion,2); ?> 
                             </td>
                         </tr>
                     <?php } ?>
@@ -217,7 +237,7 @@
 <!-- ************************************************************************ -->
 <!-- ÁREA DE FIRMAS -->
 <!-- ************************************************************************ -->
-<hr style="width: 200px; margin-bottom: 0; margin-top: 50px;" />
+<hr style="width: 200px; margin-bottom: 0; margin-top: 40px;" />
 <h5 class="text-center" style="margin-top: 0;">
     <?php echo $deducciones[0]->empleado." ".$deducciones[0]->ap_paterno." ".$deducciones[0]->ap_materno; ?>
 </h5>
@@ -230,8 +250,40 @@
 <!-- ************************************************************************ -->
 <!-- CÓDIGO QR -->
 <!-- ************************************************************************ -->
-<div class="img-QR">
-    <img src="<?php echo base_url(); ?>assets/cfdi/timbrados/<?php echo $nombreArchivoXML.'.png'; ?>" alt="">
+<div>
+    <table width="100%">
+        <tr>
+           <td width="30%">
+               <img class="img-QR" src="<?php echo base_url();?>assets/cfdi/timbrados/xml/<?php echo $nombreArchivoXML.'.png'; ?>" alt="">
+           </td> 
+            <td width="70%">
+                <table width="100%" class="tabla-color txt-table-info-cfdi">
+                    <tr> 
+                        <td colspan="3" class="txt-center">
+                          <h6> <p style="font-weight:bold;">Este documento es una representación impresa de un CFDI</p></h6> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="txt-right" width="48%">
+                            Serie del Certificado del Emisor: <br>
+                            Folio Fiscal:<br>
+                            No. de Serie del Certificado del SAT:<br>
+                            Fecha y Hora de Certificación:<br>
+                        </td>
+                        <td width="4%"> </td>
+                        <td width="48%">
+                            <?php echo $dataCFDI['representacion_impresa_certificado_no']; ?><br>
+                            <?php echo $dataCFDI['folioFiscalUuid']; ?><br>
+                            <?php echo $dataCFDI['representacion_impresa_certificadoSAT']; ?><br>
+                            <?php echo $dataCFDI['representacion_impresa_fecha_timbrado']; ?><br>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    
 </div>
 <!-- ************************************************************************ -->
 <!-- CELLO DIGITAL DEL CFDI -->

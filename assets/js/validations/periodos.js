@@ -79,15 +79,11 @@ function serach_periodos(id){
                             html += "<td>";
                             html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
                             html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
-<<<<<<< HEAD
 							if(obj.empleado[l].filename) {
 								html += "<label class='text-success'>Empleado Timbrado</label>";
 							}else{
-								html += "<a style='margin:1px 1px' class='btn btn-success' href='" + baseURL + "Nomina_controller/timbrarNomina?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
+								html += "<a style='margin:1px 1px' class='btn btn-success' href='" + baseURL + "Nomina_controller/verificaExisteTimbre?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
 							}
-=======
-                            html += "<button type='button' style='margin:1px 1px' class='btn btn-success' onclick='timbrarNomina("+obj.empleado[l].id_empleado+"," + obj.empleado[l].id_nomina +")'><span class='fa fa-bullhorn' aria-hidden='true'></span></button>";
->>>>>>> 862ab9f1993c371c62fcfa847a5ccfa3700bb383
                             html += "</td>";
 							html += "<td>";
                             if(obj.empleado[l].filename) {

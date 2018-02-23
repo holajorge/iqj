@@ -29,7 +29,7 @@
         <h4 class="modal-title" id="myModalLabel">TIMBRADO DE NÓMINA</h4>
       </div>
       <div class="modal-body">
-        <form id="formTimbrarNomina" method="GET" action="<?php echo base_url('Nomina_controller/timbrarNomina');?>" target="_blank">
+        <form id="formTimbrarNomina" method="GET" action="<?php echo base_url('Nomina_controller/verificaExisteTimbre');?>" target="_blank">
             <input type="hidden" id="id_emp" name="id_emp">
             <input type="hidden" id="id_nom" name="id_nom">
             <h3>Origen del recurso</h3>
