@@ -36,6 +36,7 @@ class Login_ctrl extends CI_Controller {
 			            'id_usuario'   =>  $fila[0]->id_usuario,
 			            'nombre'   =>  $fila[0]->nombre,
 			            'apellido'   =>  $fila[0]->ap_paterno,
+                        'materno'   =>  $fila[0]->ap_materno,
 			            'logged_in' =>TRUE,
 			            'tipo_usuario'=> $fila[0]->tipo_usuario
 			            );
