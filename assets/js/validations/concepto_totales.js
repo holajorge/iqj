@@ -59,8 +59,8 @@ function serach_periodo(tipo,viewConceptosTotales){
                 	html += "<option value='' selected disabled hidden >Seleccione  el Mes</option>";
 	                for (l in obj.meses) {
 	                    var id = obj.meses[l].id_nomina;
-	                    var mes = obj.meses[l].mes;	
-	                    var periodoQ = obj.meses[l].periodo_quinquenal;
+	                    var mes = obj.meses[l].mes;
+                        var periodoQ = obj.meses[l].periodo_quinquenal;
 					 	html += "<option value='"+ mes +"'>" + mesess[mes-1] +"</option>" ;
 	                    num_fila ++; 
 	                }

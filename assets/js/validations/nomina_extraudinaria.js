@@ -186,9 +186,11 @@ function serach_nominaExtraordinaria(id){
                             html += "<td><label id='rfc"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].rfc + "</label></td>";
                             html += "<td><label id='curp"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].curp + "</label></td>";
                             html += "<td>";
-                            html += "<button type='button' class='btn btn-primary' onclick='editEmpleExtraordinaria("+obj.empleado[l].id_empleado+", "+obj.empleado[l].importe+", "+obj.empleado[l].isr+",  "+obj.empleado[l].subsidio+" , "+obj.empleado[l].id_concepto_extraordinario+", "+obj.empleado[l].id_extraordinario+")'  data-toggle='modal' data-target='#editExtraordinaria' ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
+                                if(obj.usertype == 'root' ) {
+                                    html += "<button type='button' class='btn btn-primary' onclick='editEmpleExtraordinaria("+obj.empleado[l].id_empleado+", "+obj.empleado[l].importe+", "+obj.empleado[l].isr+",  "+obj.empleado[l].subsidio+" , "+obj.empleado[l].id_concepto_extraordinario+", "+obj.empleado[l].id_extraordinario+")'  data-toggle='modal' data-target='#editExtraordinaria' ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
+                                }
                             html += "<button type='button' class='btn btn-success' onclick='printDetalleExtraudinaria("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_concepto_extraordinario +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
-                             html += "</td>";
+                            html += "</td>";
                         html += "</tr>";
                         num_fila ++;
                     }

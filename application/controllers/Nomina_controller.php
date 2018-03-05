@@ -51,9 +51,11 @@ class Nomina_controller extends CI_Controller {
     public function getConceptosExtraordinarios(){
 
        $query = $this->Nomina_model->getAllPeriodosExtraordinario();
+
         if ($query != false) {
             $result['resultado'] = true;
             $result['conseptoExtra'] = $query;
+
         } else {
             $result['resultado'] = false;
         }
@@ -74,12 +76,13 @@ class Nomina_controller extends CI_Controller {
     public function buscar_periodo(){
 
         $id_nomina = $this->input->post("id");
-        // $id_nomina = 5;
-        $query = $this->Nomina_model->buscar_periodo($id_nomina);
 
+        $query = $this->Nomina_model->buscar_periodo($id_nomina);
+        $tipoUsuario =  $this->session->userdata('tipo_usuario');
         if ($query != false) {
             $result['resultado'] = true;
             $result['empleado'] = $query;
+            $result['usertype'] = $tipoUsuario;
         } else {
             $result['resultado'] = false;
         }
@@ -133,9 +136,11 @@ class Nomina_controller extends CI_Controller {
 
         $id_nomina = $this->input->post("id");
         $query = $this->Nomina_model->seach_diaExtraordinario($id_nomina);
+        $tipoUsuario =  $this->session->userdata('tipo_usuario');
         if ($query != false) {
             $result['resultado'] = true;
             $result['empleado'] = $query;
+            $result['usertype'] = $tipoUsuario;
         } else {
             $result['resultado'] = false;
         }

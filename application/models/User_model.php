@@ -8,14 +8,11 @@ class User_model extends CI_Model {
    	}
    	public function getAll(){
    	 	
-	    $query = $this->db->query("SELECT exu.id_empleadoxusuario,  exu.status ,
-										  ce.id_empleado, ce.nombre, ce.ap_paterno, ce.no_empleado, ce.rfc,
-									      u.id_usuario, u.tipo_usuario as 'usuario'
-									FROM cat_usuarios u , cat_empleados ce, empleadosxusuario exu 
-									WHERE 	 u.id_usuario = exu.id_usuario 
-											AND ce.id_empleado = exu.id_empleado AND u.tipo_usuario = 'usuario'  ");	
-											
-											    
+	    $query = $this->db->query("SELECT exu.id_usuarioxsistema, exu.nombre, exu.apellidos, exu.rfc, exu.status , 
+                                     u.id_usuario, u.tipo_usuario as 'usuario'
+                                  FROM cat_usuarios u ,cat_usuarioxsistema exu 
+                                  WHERE u.id_usuario = exu.id_usuario 
+                                        AND u.tipo_usuario = 'admin'  ");
 	    if ($query->num_rows() > 0) {
 	        return $query->result();
 	    } else {
@@ -35,6 +32,7 @@ class User_model extends CI_Model {
 	    }
 
     }
+    /*  NO SE ESTA USANDO */
     public function getAllEmpleado(){
 
     	$query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.no_plaza,cat_empleados.no_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, 
@@ -47,14 +45,15 @@ class User_model extends CI_Model {
 								   		 AND cat_depto.id_depto = cat_empleados.id_depto
 								   		 AND cat_puestos.id_puesto = cat_empleados.id_puesto
 								   		 AND cat_empleados.status = 1 
-								   		 AND cat_empleados.usuario = 0");
-								   
+								   		 AND cat_empleados.password = 0");
 	    if ($query->num_rows() > 0) {
 	        return $query->result();
 	    } else {
 	        return false;
 	    }
     }
+    /* fin ESTE METODO*/
+
 	public function getInfoProfile($id_empleado){
 
 		$query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.no_plaza,cat_empleados.no_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, 
@@ -80,38 +79,53 @@ class User_model extends CI_Model {
 	public function changePAssword($id,$cambio){
 		 $this->db->where('id_empleado', $id);
     return $this->db->update('empleadosxusuario', $cambio);
-	}  
+	}
+    public function changePasswordEmploye($id_empleado,$password){
+	    $datos = array('password' => $password);
+        $this->db->where('id_empleado', $id_empleado);
+        return $this->db->update('cat_empleados', $datos);
+    }
+    public function changePAsswordUserAdmin($id_usuarioxsistema,$cambio){
+        $this->db->where('id_usuarioxsistema', $id_usuarioxsistema);
+        return $this->db->update('cat_usuarioxsistema', $cambio);
+    }
 
-	public function saveUserType($alta, $id_empleado, $usuario){
-				$this->db->where('id_empleado', $id_empleado);
-				$this->db->update('cat_empleados', $usuario);
-		return $this->db->insert('empleadosxusuario', $alta);
+    public function saveUserType($alta){
+		return $this->db->insert('cat_usuarioxsistema', $alta);
 	}
 
-	public function deshabilitarUsuario($id, $id_empleado){
-
-		
-		$usuarioDeshabilitar = array('usuario' => 0);
-
-			$this->db->where('id_empleado', $id_empleado);
-			$this->db->update('cat_empleados', $usuarioDeshabilitar);
+	public function deshabilitarUsuario($id){
 
 		$deshabilitar = array('status' => 0);
-            $this->db->where('id_empleadoxusuario', $id);
+        $this->db->where('id_usuarioxsistema', $id);
    		return $this->db->update('empleadosxusuario', $deshabilitar);
 	}
-	public function habilitarUsuario($id, $id_empleado){
-
-		$usuariohabilitar = array('usuario' => 1);
-
-			$this->db->where('id_empleado', $id_empleado);
-			$this->db->update('cat_empleados', $usuariohabilitar);
+	public function habilitarUsuario($id){
 
 		$habilitar = array('status' => 1);
 
               $this->db->where('id_empleadoxusuario', $id);
       return  $this->db->update('empleadosxusuario', $habilitar);
 	}
+    public function getListEmployeeChangePass(){
+        $this->db->select("cat_empleados.id_empleado, cat_empleados.horas, cat_empleados.nss, cat_empleados.status , cat_empleados.no_empleado, cat_empleados.no_plaza, cat_empleados.nombre AS nombre_emp, 
+                        cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.fecha_nacimiento,  cat_empleados.curp, 
+                        cat_empleados.fecha_ingreso, cat_empleados.rfc, cat_depto.id_depto, cat_depto.nombre AS nombre_depto,
+                        cat_puestos.id_puesto, cat_puestos.nivel, cat_puestos.nombre AS nombre_puesto, cat_tipo_trabajador.id_tipo_trabajador,cat_tipo_trabajador.nombre_tipo_trabajador as trabajador,
+                        cat_componentes.nombre AS componente ");
+        $this->db->from("cat_depto");
+        $this->db->join("cat_empleados","cat_depto.id_depto = cat_empleados.id_depto");
+        $this->db->join("cat_puestos","cat_empleados.id_puesto = cat_puestos.id_puesto");
+        $this->db->join("cat_componentes","cat_componentes.id_componente = cat_empleados.id_componente");
+        $this->db->join("cat_tipo_trabajador","cat_tipo_trabajador.id_tipo_trabajador = cat_empleados.id_tipo_trabajador");
+        $this->db->where("cat_empleados.status", 1);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
 
 }

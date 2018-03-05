@@ -5,24 +5,14 @@ $(document).ready(function() {
     });
 
      $( document ).ajaxStart(function() {
-        //$( "#loading" ).show();
-        console.log("cargando");
         $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
-        // $('#myModalStatusBar').modal('show');
     });
 
      $( document ).ajaxStop(function() {
-      //$( "#loading" ).hide();
-      console.log("fin de carga");
       $('#myModalStatusBar').modal('hide')
     });
-     // $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
      $("#inputRecursoPropioOculto").hide();
 });
-
-function openModal(){
-    $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
-}
 
 function serach_periodos(id){
     $("#showBtnPrint").css('display', 'none');  
@@ -41,22 +31,22 @@ function serach_periodos(id){
                     html += "<table class='table table-bordered table-striped' id='miTabla'>";
                     html += "<thead>";
                     html += "<tr>";                    
-                    html += "<th>NO. PLAZA </th>";
-                    html += "<th>RFC</th>";
-                    html += "<th>NOMBRE</th>";
-                    html += "<th>APELLIDOS</th>";
-                    html += "<th>PERCEPCIONES</th>";
-                    html += "<th>DEDUCCIONES</th>";
-                    html += "<th>APORTACIONES</th>";
-                    html += "<th>LÍQUIDO</th>";
-                    html += "<th>CURP</th>";
-                    html += "<th>PUESTO</th>";
-                    html += "<th>ACCIONES</th>";
-                    html += "<th>DESCARGAR</th>";
+                        html += "<th>NO. PLAZA </th>";
+                        html += "<th>RFC</th>";
+                        html += "<th>ACCIONES</th>";
+                        html += "<th>DESCARGAR</th>";
+                        html += "<th>NOMBRE</th>";
+                        html += "<th>APELLIDOS</th>";
+                        html += "<th>PERCEPCIONES</th>";
+                        html += "<th>DEDUCCIONES</th>";
+                        html += "<th>APORTACIONES</th>";
+                        html += "<th>LÍQUIDO</th>";
+                        html += "<th>CURP</th>";
+                        html += "<th>PUESTO</th>";
 					html += "</tr>";
                     html += "</thead>";
                     html += "<tbody>";
-                    var num_fila = 1;
+                        var num_fila = 1;
                         for (l in obj.empleado) {
                             var sumaPercepciones = parseFloat(obj.empleado[l].totalPercepciones);
                             var sumaDeducciones = parseFloat(obj.empleado[l].totalDeducciones);
@@ -66,34 +56,35 @@ function serach_periodos(id){
                                 liquido += parseFloat(subsidioAlEmpleo);
                             }
                             html += "<tr>";
-                            html += "<td>" + obj.empleado[l].no_plaza + "</td>";
-                            html += "<td>" + obj.empleado[l].rfc +"</td>";
-                            html += "<td>" + obj.empleado[l].nombre_emp +"</td>";
-                            html += "<td>" + obj.empleado[l].ap_paterno + " " + obj.empleado[l].ap_materno+"</td>";
-                            html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalPercepciones), "$") +"</td>";
-                            html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalDeducciones), "$") +"</td>";
-                            html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalAportaciones), "$") +"</td>";
-                            html += "<td class='text-right'>" + fNumber.go(parseFloat(liquido), "$"); +"</td>";
-                            html += "<td>" + obj.empleado[l].curp + "</td>";
-                            html += "<td>" + obj.empleado[l].puesto + "</td>";                        
-                            html += "<td>";
-                            html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
-                            html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
-							if(obj.empleado[l].filename) {
-								html += "<label class='text-success'>Empleado Timbrado</label>";
-							}else{
-								html += "<a style='margin:1px 1px' class='btn btn-success' href='" + baseURL + "Nomina_controller/verificaExisteTimbre?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
-							}
-                            html += "</td>";
-							html += "<td>";
-                            if(obj.empleado[l].filename) {
-								html += "<a style='margin:1px 1px; color: white; ' class='btn btn-primary' href='" + baseURL + "Nomina_controller/timbradopdf?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "'><span class='fa fa-file-pdf-o' aria-hidden='true'></span></a>";
-								html += "<a style='margin:1px 1px;color: white; ' class='btn btn-primary' href='" + baseURL + "Nomina_controller/timbradoxml?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "'><span class='fa fa-file-excel-o' aria-hidden='true'></span></a>";
-							}else{
-                            	html += "<label style='color: #97310e'>primero tiene que Timbrar</label>";
-                            	
-							}
-							html += "</td>";
+                                html += "<td>" + obj.empleado[l].no_plaza + "</td>";
+                                html += "<td>" + obj.empleado[l].rfc +"</td>";
+                                html += "<td class='text-center'>";
+                                    html += "<button style='margin:1px ; text-align: center' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
+                                if(obj.usertype == 'root' ) {
+                                    html += "<a style='margin:1px 1px; text-align: center' class='btn btn-success' href='" + baseURL + "nomina_controller/editar?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
+                                }
+                                if(obj.empleado[l].filename) {
+                                    html += "<label class='text-success'>Empleado Timbrado</label>";
+                                }else{
+                                    html += "<a style='margin:1px 1px' class='btn btn-success' href='" + baseURL + "Nomina_controller/verificaExisteTimbre?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
+                                }
+                                html += "</td>";
+                                html += "<td class='text-center'>";
+                                if(obj.empleado[l].filename) {
+                                    html += "<a style='margin:1px 1px; color: white; text-align: center' class='btn btn-primary' href='" + baseURL + "Nomina_controller/timbradopdf?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "'><span class='fa fa-file-pdf-o' aria-hidden='true'></span></a>";
+                                    html += "<a style='margin:1px 1px;color: white; text-align: center' class='btn btn-primary' href='" + baseURL + "Nomina_controller/timbradoxml?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "'><span class='fa fa-file-excel-o' aria-hidden='true'></span></a>";
+                                }else{
+                                    html += "<label style='color: #97310e; text-align: center'>primero tiene que Timbrar </label>";
+                                }
+                                html += "</td>";
+                                html += "<td>" + obj.empleado[l].nombre_emp +"</td>";
+                                html += "<td>" + obj.empleado[l].ap_paterno + " " + obj.empleado[l].ap_materno+"</td>";
+                                html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalPercepciones), "$") +"</td>";
+                                html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalDeducciones), "$") +"</td>";
+                                html += "<td class='text-right'>" + fNumber.go(parseFloat(obj.empleado[l].totalAportaciones), "$") +"</td>";
+                                html += "<td class='text-right'>" + fNumber.go(parseFloat(liquido), "$"); + "</td>";
+                                html += "<td>" + obj.empleado[l].curp + "</td>";
+                                html += "<td>" + obj.empleado[l].puesto + "</td>";
                             html += "</tr>";
                             num_fila ++;
                         }

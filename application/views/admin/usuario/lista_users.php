@@ -1,5 +1,4 @@
-<?php if ( $this->session->userdata('tipo_usuario') == "admin" ): ?>
-    
+
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
@@ -10,9 +9,8 @@
                             <table class="table table-striped table-bordered table-hover dataTables-example" id="tabla_lista_empleados">
                                 <thead>
                                     <tr>
-                                        <th>No. Empleado</th>  
                                         <th>Nombre</th>
-                                        <th>Apellido</th>                                       
+                                        <th>Apellidos</th>
                                         <th>RFC</th>  
                                         <th class="text-center">Acciones</th>                                                                                    
                                     </tr>
@@ -21,17 +19,17 @@
                                 <?php if ($users != null): ?>
                                     <?php foreach ($users as  $user): ?> 
                                         <tr class="gradeA"> 
-                                            <td><label  id="numero<?php echo $user->id_empleadoxusuario ?>"><?php echo  $user->no_empleado ?></label></td> 
-                                            <td><label  id="nombre<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->nombre?></label></td>
-                                            <td><label  id="ap_paterno<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->ap_paterno?></label></td>                                            
-                                            <td><label  id="rfc<?php echo $user->id_empleadoxusuario ?>"><?php echo $user->rfc?></label></td>
+
+                                            <td><label  id="nombre<?php echo $user->id_usuarioxsistema ?>"><?php echo $user->nombre?></label></td>
+                                            <td><label  id="ap_paterno<?php echo $user->id_usuarioxsistema ?>"><?php echo $user->apellidos?></label></td>
+                                            <td><label  id="rfc<?php echo $user->id_usuarioxsistema ?>"><?php echo $user->rfc?></label></td>
                                              <td class="text-center">
                                                 <?php if ($user->status == 1): ?>
-                                                    <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>', '<?php echo $user->id_empleado ?>')"><span class="fa fa-warning"></span> Deshabilitar</button>                                      
+                                                    <button type="button" class="btn btn-danger btn-rounded" onclick="deshabilitarUser('<?php echo $user->id_usuarioxsistema ?>', '<?php echo $user->nombre ?>')"><span class="fa fa-warning"></span> Deshabilitar</button>
                                                 <?php else: ?>
-                                                    <button type="button" class="btn btn-success btn-rounded" onclick="habilitarUser('<?php echo $user->id_empleadoxusuario ?>', '<?php echo $user->nombre ?>', '<?php echo $user->id_empleado ?>')"><span class="fa fa-heart"></span> Habilitar </button>
+                                                    <button type="button" class="btn btn-success btn-rounded" onclick="habilitarUser('<?php echo $user->id_usuarioxsistema ?>', '<?php echo $user->nombre ?>')"><span class="fa fa-heart"></span> Habilitar </button>
                                                 <?php endif ?>
-                                                    <!-- <button type="button" class="btn btn-info btn-rounded" onclick="editDepto('<?php echo $user->id_empleadoxusuario ?>')" data-toggle="modal" data-target="#editarUser"><span class="glyphicon glyphicon-edit"></span> Editar</button>                                             -->
+                                                 <button type="button" class="btn btn-info btn-rounded" onclick="editarUserSystem('<?php echo $user->id_usuarioxsistema ?>', '<?php echo $user->nombre ?>','<?php echo $user->apellidos ?>','<?php echo $user->rfc ?>')" data-backdrop="static"  data-keyboard="false" data-toggle="modal" data-target="#editarUserSystem"><span class="fa fa-edit"></span> Editar </button>
                                             </td> 
                                         </tr>
                                     <?php endforeach ?>
@@ -45,41 +43,55 @@
             </div>
         </div>
     </div>
-<?php else: ?>
-    <h1>usted mo esta autorizado</h1>
-<?php endif ?>
-
 <!-- Modal -->
-<div class="modal fade" id="editarPuesto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Editar Puesto</h4>        
-      </div>
-      <div class="modal-body">
-        <form role="form" id="formPuestoEditar">
-            <input type="hidden" name="id" id="idEditar" value="">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-4 col-md-4">
-                        <div class="form-group ">
-                            <label for="nivelEditar">Nivel</label>
-                            <input type="text" name="nivel" id="nivelEditar" class="form-control input-lg" tabindex="1">
+<div class="modal fade bs-example-modal-lg"  id="editarUserSystem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-success" id="myModalLabel">Editar Usuario Adminstrador</h4>
+            </div>
+            <form role="form" id="formUserSystemaEditar">
+                <div class="modal-body">
+                        <input type="hidden" name="id" id="idEditar" value="">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                <div class="form-group ">
+                                    <label for="nombreEdit">NOMBRE</label>
+                                    <input  type="text" name="nombre" id="nombreEditar" class="form-control " tabindex="1">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-5">
+                                <div class="form-group ">
+                                    <label for="apellidosEdit">APELLIDOS</label>
+                                    <input  type="text" name="apellidos" id="apellidosEditar" class="form-control " tabindex="2">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-3">
+                                <div class="form-group">
+                                    <label for="nombre">RFC</label>
+                                    <input type="text" name="rfc" id="rfcEditar" class="form-control " tabindex="3" onblur="ValidaRfcSystem(this.value)">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                <div class="form-group">
+                                    <label for="password">PASSWORD</label>
+                                    <input type="password" name="password" id="password" class="form-control " tabindex="5">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                <div class="form-group">
+                                    <label for="cpassword">CONFIRMAR PASSWORD</label>
+                                    <input type="password" name="cpassword" id="cpassword" class="form-control " tabindex="6">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-9">
-                        <div class="form-group">
-                            <label for="nombreEditar">Nombre</label>
-                            <input type="text" name="nombre" id="nombreEditar" class="form-control input-lg" tabindex="2">
-                        </div>
-                    </div>
-                </div>                
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" tabindex="5" onclick="savePuestoEdit()">Guardar Cambios</button>
-      </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelEditUSerAdmin()">Cancelar</button>
+                    <button type="submit" id="ladda_btn_editUserAdmin" class="ladda-button btn btn-primary" data-style="expand-left" tabindex="7" >Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
-</div>
+</div

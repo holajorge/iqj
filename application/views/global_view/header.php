@@ -59,14 +59,15 @@
                           <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> 
                                 <span class="block m-t-xs"> 
-                                   <strong class="font-bold text-center"><?php echo $this->session->userdata('nombre').' '.$this->session->userdata('apellido'); ?></strong>
+                                   <strong class="font-bold text-center"><?php echo $this->session->userdata('nombre').' '.$this->session->userdata('apellidos'); ?></strong>
                                 </span> 
-                                <span class="text-muted text-xs block">Administrador <b class="caret"></b>
+                                <span class="text-muted text-xs block">Administrar Perfil <b class="caret"></b>
                                 </span> 
                             </span> 
                           </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs" >
                             <li><a href="<?php echo base_url('User_ctrl/perfil'); ?>">Perfil</a></li>
+                            <li><a href="<?php echo base_url('User_ctrl/timbres'); ?>">Mis Timbres</a></li>
                             <li class="divider"></li>
                             <li><a href="<?php echo base_url();?>login_ctrl/cerrar_sesion">Logout</a></li>
                         </ul>
@@ -82,14 +83,17 @@
                             <li <?php  if (isset($active1)) {  if ($active1 == "extraordinario") { echo "class='active'"; }}?>>
                                 <a href="<?php echo base_url('Nomina_controller/extraordinario'); ?> ">Extraordinaria</a>
                             </li>
+                            <?php if ( $this->session->userdata('tipo_usuario') == "root" ): ?>
                             <li <?php  if (isset($active1)) {  if ($active1 == "alta_nomina") { echo "class='active'"; }}?>>
                               <a href="<?php echo base_url('Nomina_controller/detalle_nomina'); ?> ">Alta Ordinaria</a>
                             </li>
                             <li <?php  if (isset($active1)) { if ($active1 == "alta_nomina_extradinaria") { echo "class='active'";  }   }    ?>   >                                             
                               <a href="<?php echo base_url('Nomina_controller/create_extraordinaria'); ?> ">Alta Extraodinaria</a>
                             </li>
+                            <?php endif ?>
                         </ul>
                     </li>
+                    <?php if ( $this->session->userdata('tipo_usuario') == "root" ): ?>
                     <li <?php  if (isset($active)) {    if ($active == "periodo") {  echo "class='active'";   }}  ?> > 
                         <a href="#"><i class="fa fa-sort-amount-asc"></i> <span class="nav-label">Periodos</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -174,16 +178,16 @@
                             <li <?php  if (isset($active)) {   if ($active1 == "registro") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('Direcciones_ctrl/create'); ?>">Alta Direcciones</a></li>
                         </ul>
                     </li>
-					<?php if ( $this->session->userdata('tipo_usuario') == "admin" ): ?>
                     <li <?php  if (isset($active)) {     if ($active == "usuarios") {  echo "class='active'";   }}  ?>>
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">Usuarios</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
                             <li <?php  if (isset($active)) {   if ($active1 == "lista_usuarios") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('User_ctrl/lista'); ?>">Lista de Usuarios</a></li>
+                            <li <?php  if (isset($active)) {   if ($active1 == "lista_empleados") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('User_ctrl/list_employee_change_password'); ?>">Lista de Empleados</a></li>
                             <li <?php  if (isset($active)) {   if ($active1 == "registro") {  echo "class='active'";  }  }  ?>><a href="<?php echo base_url('User_ctrl/create'); ?>">Alta Usuario</a></li>
                         </ul>
                     </li>
 					<?php else: ?>
-					<?php endif ?>
+                    <?php endif ?>
                 </ul>
             </div>
         </nav>
