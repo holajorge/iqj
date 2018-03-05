@@ -371,7 +371,7 @@ function validarInput(input) {
     }           
 }
 function ValidaRfc(rfcStr) {
-  console.log("entro en la validacion del rfc");
+
     $.ajax({
         type: "POST",
         url: baseURL +"Empleado_controller/searchRFC",
@@ -409,7 +409,6 @@ function ValidaRfc(rfcStr) {
     }
     var validRfc=new RegExp(valid);
     var matchArray=strCorrecta.match(validRfc);
-    console.log(matchArray);
     if (matchArray==null) {
         sweetAlert("RFC NO VALIDA","VULVA A INTENTAR","error");  
         $("#btn_guardar_empleado").attr("disabled", true);         
@@ -456,14 +455,14 @@ function validarCrpEdit(input) {
         
     if (curpValidaEdit(curp)) { // ⬅️ Acá se comprueba
         valido = "Válido";       
-        console.log("si es validto");
+
          $("#btn_save_edit").attr("disabled", false); 
 
     } else {        
         sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");     
         $("#btn_save_edit").attr("disabled", true); 
         return false;  
-        console.log("no es validto");       
+
     }           
 }
 function ValidaRfcEdit(rfcStr) {

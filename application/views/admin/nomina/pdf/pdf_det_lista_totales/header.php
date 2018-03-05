@@ -23,12 +23,21 @@
         </tr>
         <tr>
             <td class="text-center"> <h5>INSTITUTO QUINTANARROENSE DE LA JUVENTUD</h5> </td>
-            <td></td>
+            <td style="text-align: right">
+                <?php  ini_set('date.timezone','America/Cancun');
+                    echo date("g:i A");
+                ?>
+            </td>
         </tr>
         <tr>
             <td></td>
             <td class="text-center"> <h5>REPORTE LISTA DE EMPLEADOS EN NOMINA ORDINARIA</h5> </td>
-            <td></td>
+            <td class="text-center" style=" text-align: right">
+                <h5><strong>
+                        <?php echo $this->session->userdata('nombre').' '.$this->session->userdata('apellido').' '.$this->session->userdata('materno'); ?>
+                    </strong>
+                </h5>
+            </td>
         </tr>
         <tr>
             <td></td>

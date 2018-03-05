@@ -207,26 +207,47 @@ function serach_nominaExtraordinaria(id){
             data: {id: id},
             success: function(respuesta) {
                 var obj = JSON.parse(respuesta);
-            if (obj.resultado === true) {
-                $("#id-origen-r").css('display','block');                                                                 
-                // **********************************************************************
-                //Creación de la tabla de resultados para seleccionar empleado  con nomina extraordinaria
-                var html = ""; 
-                // html += "<div class='ibox-content'>";  
-                html += "<div class='table-responsive'>";
-                html += "<table class='table table-striped table-bordered table-hover dataTables-example' id='tabla_extraordinario'>";
-                    html += "<thead>";
-                        html += "<tr>";   
-                            html += "<th>NO. PLAZA </th>";
-                            html += "<th>HORAS</th>";
-                            html += "<th>NOMBRE</th>";
-                            html += "<th>APELLIDOS</th>";
-                            html += "<th>FECHA NACIMIENTO</th>";
-                            html += "<th>FECHA INGRESO</th>";                    
-                            html += "<th>RFC</th>";
-                            html += "<th>CURP</th>";
-                            html += "<th>ACCIONES</th>";
-                            html += "<th>DESCARGAR</th>";              
+                    console.log(obj);
+                    if (obj.resultado === true) {                                                                
+                    // **********************************************************************
+                    //Creación de la tabla de resultados para seleccionar empleado  con nomina extraordinaria
+                    var html = ""; 
+                    // html += "<div class='ibox-content'>";  
+                    html += "<div class='table-responsive'>";
+                    html += "<table class='table table-striped table-bordered table-hover dataTables-example' id='tabla_extraordinario'>";
+                        html += "<thead>";
+                            html += "<tr>";                
+                                html += "<th>NO. PLAZA </th>";
+                                html += "<th>HORAS</th>";
+                                html += "<th>NOMBRE</th>";
+                                html += "<th>APELLIDOS</th>";
+                                html += "<th>FECHA NACIMIENTO</th>";
+                                html += "<th>FECHA INGRESO</th>";                    
+                                html += "<th>RFC</th>";
+                                html += "<th>CURP</th>";
+                                html += "<th>ACCIONES</th>";              
+                            html += "</tr>";
+                        html += "</thead>";
+                        html += "<tbody>";
+                    var num_fila = 1;
+                    for (l in obj.empleado) {
+                       console.log(obj.empleado[l].id_concepto_extraordinario);
+                       console.log(obj.empleado[l].id_empleado);
+                        html += "<tr>";
+                            html += "<td><label id='no_plaza"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].no_plaza + "</label></td>";
+                            html += "<td><label id='horas"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].horas +"</label></td>";
+                            html += "<td><label id='nombre"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].nombre_emp +"</label></td>";
+                            html += "<td><label id='ap_paterno"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].ap_paterno + " " + obj.empleado[l].ap_materno+"</label></td>";
+                            html += "<td><label id='fecha_nacimiento"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].fecha_nacimiento +"</label></td>";
+                            html += "<td><label id='fecha_ingreso"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].fecha_ingreso +"</label></td>";                       
+                            html += "<td><label id='rfc"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].rfc + "</label></td>";
+                            html += "<td><label id='curp"+obj.empleado[l].id_empleado+"'>" + obj.empleado[l].curp + "</label></td>";
+                            html += "<td>";
+                                if(obj.usertype == 'root' ) {
+                                    html += "<button type='button' class='btn btn-primary' onclick='editEmpleExtraordinaria("+obj.empleado[l].id_empleado+", "+obj.empleado[l].importe+", "+obj.empleado[l].isr+",  "+obj.empleado[l].subsidio+" , "+obj.empleado[l].id_concepto_extraordinario+", "+obj.empleado[l].id_extraordinario+")'  data-toggle='modal' data-target='#editExtraordinaria' ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
+                                }
+                            html += "<button type='button' class='btn btn-success' onclick='printDetalleExtraudinaria("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_concepto_extraordinario +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
+                            html += "</td>";
                         html += "</tr>";
                     html += "</thead>";
                     html += "<tbody>";

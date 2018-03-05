@@ -2,17 +2,19 @@
     <?php foreach ($info as $infomacion): ?>
     <div class="col-md-6">
         <div class="profile-image">
-            <!-- <img src="img/a4.jpg" class="img-circle circle-border m-b-md" alt="profile"> -->
+
         </div>
         <div class="profile-info">
             <div class="">
                 <div>
-                    <h2 class="no-margins">
-                        <?php echo $infomacion->nombre.' '. $infomacion->ap_paterno?>
+                    <h2 class="no-margins text-success">
+                        <strong>
+                            <?php echo $infomacion->nombre.' '. $infomacion->ap_paterno?>
+                        </strong>
                     </h2>
-                    <h4>Tipo Trabajador: <strong><?php echo $infomacion->trabajador ?></strong></h4>
-                    <h4>Puesto: <strong><?php echo $infomacion->puesto ?></strong></h4>
-                    <h4>Departamento: <strong><?php echo $infomacion->depto ?></strong></h4>                    
+                    <h4>Tipo Trabajador: <strong class=" wy-text-info"><?php echo $infomacion->trabajador ?></strong></h4>
+                    <h4>Puesto: <strong  class=" wy-text-info"><?php echo $infomacion->puesto ?></strong></h4>
+                    <h4>Departamento: <strong  class=" wy-text-info"><?php echo $infomacion->depto ?></strong></h4>
                 </div>
             </div>
         </div>
@@ -22,23 +24,23 @@
             <tbody>
             <tr>
                 <td>
-                   No Plaza: <strong> <?php echo $infomacion->no_plaza; ?></strong>
+                   No Plaza: <strong class=" wy-text-info"> <?php echo $infomacion->no_plaza; ?></strong>
                 </td>
                 <td>
-                    No Empleado:<strong> <?php echo $infomacion->no_empleado; ?></strong>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    RFC: <strong><?php echo $infomacion->rfc; ?></strong>
-                </td>
-                <td>
-                    CURP: <strong><?php echo $infomacion->curp; ?></strong> 
+                    No Empleado:<strong  class=" wy-text-info"> <?php echo $infomacion->no_empleado; ?></strong>
                 </td>
             </tr>
             <tr>
                 <td>
-                   Tipo Usuario: <strong> <?php echo $infomacion->tipo; ?> </strong>
+                    RFC: <strong  class=" wy-text-info"><?php echo $infomacion->rfc; ?></strong>
+                </td>
+                <td>
+                    CURP: <strong  class=" wy-text-info"><?php echo $infomacion->curp; ?></strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   Tipo Usuario: <strong  class=" wy-text-info"> <?php echo $infomacion->tipo; ?> </strong>
                 </td>
                 <td>
                     <button class="btn btn-danger btn-rounded" onclick="showFormChange()"> <span class=" fa fa-edit"></span> Cambiar Contraseña</button>

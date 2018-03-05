@@ -18,18 +18,24 @@
             <td class="text-center">
                 <h5>GOBIERNO DEL ESTADO DE QUINTANA ROO</h5>
             </td>
-            <td style="text-align: right;">
+            <td style="text-align: right; font-size: 11px;">
                 <?php echo $D." ".$mes." ".$Y; ?>
             </td>
         </tr>
         <tr>
             <td class="text-center"> <h5>INSTITUTO QUINTANARROENSE DE LA JUVENTUD</h5> </td>
-            <td></td>
+            <td style="text-align: right; font-size: 11px">
+                <?php  ini_set('date.timezone','America/Cancun');
+                    echo date("g:i A");
+                ?>
+            </td>
         </tr>
         <tr>
             <td></td>
             <td class="text-center"> <h5>REPORTE DE NÓMINA EXTRAORDINARIA</h5> </td>
-            <td></td>
+            <td class="text-center" style=" text-align: right; font-size: 11px">
+                <?php echo $this->session->userdata('nombre').' '.$this->session->userdata('apellido').' '.$this->session->userdata('materno'); ?>
+            </td>
         </tr>
         <tr>
             <td></td>
