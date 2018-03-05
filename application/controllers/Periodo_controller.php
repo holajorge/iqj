@@ -61,6 +61,21 @@ class Periodo_controller extends CI_Controller {
         echo json_encode($result);	
 	}
 
+	/*Nuevo*/
+	//SE ELIMNA LA EL EMPLEADO DE LA NÓMINA
+	public function eliminarNominaDeEmpleado(){
+		$id_empleado = $this->input->post("id_empleado");
+		$id_nomina = $this->input->post("id_nomina");
+		$query = $this->Periodos_model->deletNominaEmpleado($id_empleado,$id_nomina);
+
+		if ($query) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);	
+	}
+
 
 }
 

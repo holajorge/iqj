@@ -5,27 +5,25 @@ $(document).ready(function() {
     });
 
      $( document ).ajaxStart(function() {
-        //$( "#loading" ).show();
-        console.log("cargando");
         $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
-        // $('#myModalStatusBar').modal('show');
     });
 
      $( document ).ajaxStop(function() {
-      //$( "#loading" ).hide();
-      console.log("fin de carga");
       $('#myModalStatusBar').modal('hide')
     });
-     // $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
+
      $("#inputRecursoPropioOculto").hide();
 });
 
-function openModal(){
-    $('#myModalStatusBar').modal({backdrop: 'static', keyboard: false});
-}
-
 function serach_periodos(id){
-    $("#showBtnPrint").css('display', 'none');  
+    var opciones = document.getElementsByName("rb-origen-recurso");
+    for(var i=0; i<opciones.length; i++) {    
+      if(opciones[i].checked) {
+        opciones[i].checked =false;
+      }
+    }
+    $("#showBtnPrint").css('display', 'none');
+    $("#id-origen-r").css('display','none');  
 	$("#resultado_periodo").html("");
 	$.ajax({
             url: baseURL + "Nomina_controller/buscar_periodo",
@@ -34,7 +32,8 @@ function serach_periodos(id){
             success: function(respuesta) {
                 var obj = JSON.parse(respuesta);
                     if (obj.resultado === true) {                                         
-                    $("#showBtnPrint").css('display', 'block');   
+                    $("#showBtnPrint").css('display', 'block');
+                    $("#id-origen-r").css('display','block');    
                     // **********************************************************************
                     //Creación de la tabla de resultados
                     var html = "";
@@ -79,10 +78,11 @@ function serach_periodos(id){
                             html += "<td>";
                             html += "<button style='margin:1px 1px' type='button' class='btn btn-primary' onclick='printDetalle("+ obj.empleado[l].id_empleado +","+ obj.empleado[l].id_nomina +")' ><span class='glyphicon glyphicon-print' aria-hidden='true'></span></button>";
                             html += "<a style='margin:1px 1px' class='btn btn-success' href='"+baseURL +"nomina_controller/editar?id_emp="+ obj.empleado[l].id_empleado +"&id_nom="+obj.empleado[l].id_nomina+"' target='_blank'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
-							if(obj.empleado[l].filename) {
+				   /*nuevo*/html += "<button style='margin:1px 1px' class='btn btn-danger' onclick='confirmDeleteNomO("+obj.empleado[l].id_empleado+","+obj.empleado[l].id_nomina+")'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></button>";
+                            if(obj.empleado[l].filename) {
 								html += "<label class='text-success'>Empleado Timbrado</label>";
 							}else{
-								html += "<a style='margin:1px 1px' class='btn btn-success' href='" + baseURL + "Nomina_controller/verificaExisteTimbre?id_emp=" + obj.empleado[l].id_empleado + "&id_nom=" + obj.empleado[l].id_nomina + "' target='_blank'><span class='fa fa-bullhorn' aria-hidden='true'></span></a>";
+								html += "<button style='margin:1px 1px' class='btn btn-success' onclick='confirmarTimbrado("+obj.empleado[l].id_empleado+","+obj.empleado[l].id_nomina+")'><span class='fa fa-bullhorn' aria-hidden='true'></span></button>";
 							}
                             html += "</td>";
 							html += "<td>";
@@ -150,8 +150,90 @@ function imprimirList(){
     window.open(baseURL + "Nomina_controller/print_list_employee?id="+id);
 
 }
-
-//SE ABRE EL MODAL PARA TIMBRAR LA NÓMINA
+/*nuevo*/
+function confirmDeleteNomO(id_empleado,id_nomina){
+    swal({
+        title: "Confirmar",
+        text: "¿Esta seguro de que desea ELIMINAR esta nómina?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Si, ELIMINAR!",
+        closeOnConfirm: true
+        }, function () {
+            $.ajax({
+                type: "POST",
+                url:baseURL + "Periodo_controller/eliminarNominaDeEmpleado",
+                data: {id_empleado: id_empleado,
+                        id_nomina: id_nomina},
+                success: function(respuesta) {
+                    var obj = JSON.parse(respuesta);
+                    if (obj.resultado === true) {
+                        setTimeout(function() {
+                            toastr.options = {
+                                closeButton: true,
+                                progressBar: true,
+                                showMethod: 'slideDown',
+                                timeOut: 1200
+                            };
+                            toastr.success('La nómina se eliminó correctamente', 'NÓMINA ELIMINADA');
+                            setTimeout(function() {                    
+                                  serach_periodos(id_nomina);
+                                }, 1300);
+                        }, 1300);              
+                    }else{
+                        alert("Error al eliminar nómina");
+                    }
+                } 
+            });
+    });
+}
+function confirmarTimbrado($id_empleado,$id_nomina){
+    var opciones = document.getElementsByName("rb-origen-recurso");
+    var seleccionado = false;
+    var origenRecurso = "";
+    for(var i=0; i<opciones.length; i++) {    
+      if(opciones[i].checked) {
+        origenRecurso = opciones[i].value;
+        seleccionado = true;
+        break;
+      }
+    }
+    
+    //PRIMERO SE VALIDA QUE HAYA INTERNET, DE LO CONTRARIO SE MUESTRA UN MENSAJE
+    if (navigator.onLine) {
+        //SE VERIFICA QUE SE HAYA SELECCIONADO EL ORIGEN DEL RECURSO
+        if(seleccionado) {
+            swal({
+                title: "Confirmar",
+                text: "¿Esta seguro de que desea timbrar esta nómina?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, Timbrar!",
+                closeOnConfirm: true
+                }, function () {
+                    window.open(baseURL+"nomina_controller/verificaExisteTimbre?id_emp="+$id_empleado+"&id_nom="+$id_nomina+"&origenR="+origenRecurso, '_blank');
+            });
+        }else{
+            swal({
+                html:true,
+                title: "",
+                text: "<strong> DEBE SELECCIONAR EL ORIGEN DEL RECURSO PARA EL TIMBRADO DE LA NÓMINA </strong>",
+                type: "warning"
+            });
+        }
+    }else{
+        swal({
+            html:true,
+            title: "ERROR",
+            text: "<strong> NO HAY CONEXIÓN A INTERNET, VERIFIQUE SU CONEXIÓN </strong>",
+            type: "warning"
+        });
+    }
+    
+}
+/*//SE ABRE EL MODAL PARA TIMBRAR LA NÓMINA
 function timbrarNomina(id_empleado,id_nomina){
     $("#inputRecursoPropioOculto").hide();
     $("#formTimbrarNomina")[0].reset();
@@ -172,6 +254,6 @@ function validarOrigenRecurso(origenRecurso){
     }else{
         $("#inputRecursoPropioOculto").hide();
     }
-}
+}*/
 
 	

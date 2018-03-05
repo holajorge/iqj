@@ -25,6 +25,20 @@ class Nomina_controller extends CI_Controller {
         echo json_encode($result);
 	}
 
+    //SE OBTIENE LA LISTA DE NOMINAS EXTRAORDINARIAS POR AÑO SELECCIONADO
+    public function listNomEporAnio(){
+        $anio = $this->input->post("anio_nomina");
+        $query = $this->Nomina_model->getNomEAnioSeleccionado($anio);
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['periodosNomE'] = $query;
+        } else {
+            $result['resultado'] = false;
+        }
+
+        echo json_encode($result);
+    }
+
     public function periodos(){
 
         $dato['active'] = "nomina";
@@ -40,8 +54,8 @@ class Nomina_controller extends CI_Controller {
 
         $dato['active'] = "nomina";
         $dato['active1'] = "extraordinario";
-        $data['extraordinarios'] = $this->Nomina_model->getAllPeriodosExtraordinario();
-        
+        $data['years'] = $this->Nomina_model->gelAllYearsNomE();
+        $data["tipoConceptoExtraordinario"] = $this->Nomina_model->gelAllCextraordinarios();
         $this->load->view('global_view/header',$dato);
         $this->load->view('admin/nomina/extraordinario', $data);
         $this->load->view('global_view/foother');
@@ -65,7 +79,9 @@ class Nomina_controller extends CI_Controller {
             $dato['active'] = "nomina";
             $dato['active1'] = "alta_nomina_extradinaria";      
             $query["empleados"] = $this->Empleado_model->get_lista_empleados();  
-            $query["extraordinarios"] = $this->Nomina_model->gelAllCX();       
+            $query["extraordinarios"] = $this->Nomina_model->gelAllCX();
+            $query["tipoConceptoExtraordinario"] = $this->Nomina_model->gelAllCextraordinarios();
+            $query["yearsNominaE"] = $this->Nomina_model->gelAllYearsNomE();       
             $this->load->view('global_view/header', $dato);
             $this->load->view('admin/nomina/alta_extraudinaria', $query);
             $this->load->view('global_view/alert_procesando');
@@ -174,18 +190,23 @@ class Nomina_controller extends CI_Controller {
         $this->load->view('global_view/foother',$showScript);
     }
 	public function create_conceptoExtra(){
-		
+		$inputFecha = $this->input->post("fecha");
+        $porcionesFecha = explode("-", $inputFecha);
+        $anio = $porcionesFecha[0];
         $concepExtra = array(
             'fecha' => $this->input->post("fecha"), 
             'nombre' => $this->input->post('nombre'),
+            'tipoConcepto' => $this->input->post('tipoConcepto')
         );
 
 		$this->Nomina_model->insertConceptoExtraoridinario($concepExtra);
-        $query = $this->Nomina_model->gelAllCX();   
-
+        $query = $this->Nomina_model->getNomEAnioSeleccionado($anio);   
+        $yearsNominaE = $this->Nomina_model->gelAllYearsNomE();
 		if ($query != false) {
             $result['resultado'] = true;
             $result["extraordinarios"] = $query;
+            $result["yearsNominaE"] = $yearsNominaE;
+            $result["year"] = $anio;
         } else {
             $result['resultado'] = false;
         }
@@ -193,14 +214,41 @@ class Nomina_controller extends CI_Controller {
 
 	}
 
-    public function createNominaExtraordinaria(){
+    public function getNominaExSeleccionadoPorAnio(){
+        $anio = $this->input->post("anio");
+        $query = $this->Nomina_model->getNomEAnioSeleccionado($anio);
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result["extraordinarios"] = $query;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
 
+    public function getDataEditNomE(){
+        $anio = $this->input->post("anio");
+        $query = $this->Nomina_model->getNomEAnioSeleccionado($anio);
+        $queryYear = $this->Nomina_model->gelAllYearsNomE();
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result["extraordinarios"] = $query;
+            $result["yearsNomE"] = $queryYear;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
+
+    public function createNominaExtraordinaria(){
         $nominaExtraordinaria = array(
-            'id_empleado'                 => $this->input->post("id"), 
-            'id_concepto_extraordinario'  => $this->input->post("dia"), 
-            'importe'                     => $this->input->post("importe"), 
-            'isr'                         => $this->input->post("isr"),
-			'subsidio'                         => $this->input->post("subsidio"),
+            'id_empleado'  => $this->input->post("id"), 
+            'id_nomina_e'  => $this->input->post("dia"),
+            'importeExento'      => $this->input->post("importeExento"),
+            'importeGravado'      => $this->input->post("importeGravado"),  
+            'isrSubsidio'  => $this->input->post("isrSubsidio"), 
+            'importeIsrSub'=> $this->input->post("impSubsidioIsr")
+
         );
         
         $query = $this->Nomina_model->insertNominaExtraordinaria($nominaExtraordinaria);
@@ -215,13 +263,14 @@ class Nomina_controller extends CI_Controller {
     public function editNominaExtraordinaria(){
         $id_extraordinario = $this->input->post("idExtra");
         $editNominaExtraordinaria = array(
-            'id_empleado'                 => $this->input->post("id"), 
-            'id_concepto_extraordinario'  => $this->input->post("dia"), 
-            'importe'                     => $this->input->post("importe"), 
-            'isr'                         => $this->input->post("isr"),
-			'subsidio'                    => $this->input->post("subsidio"),
+            'id_empleado'  => $this->input->post("idEmpleado"), 
+            'id_nomina_e'  => $this->input->post("dia"),
+            'importeExento'      => $this->input->post("importeExento"),
+            'importeGravado'      => $this->input->post("importeGravado"),  
+            'isrSubsidio'  => $this->input->post("isrSubsidio"), 
+            'importeIsrSub'=> $this->input->post("impSubsidioIsr")
         );
-        
+         
         $query = $this->Nomina_model->editNominaExtraordinaria($id_extraordinario,$editNominaExtraordinaria);
         if ($query == 1) {
             $result['resultado'] = true;
@@ -443,44 +492,75 @@ class Nomina_controller extends CI_Controller {
     // ****************************************************************************************
     public function validarEmpEnNominaEx(){
         $id_empleado = $this->input->post("id_empleado");
-        $id_concepto_extraordinario = $this->input->post("id_nom_ex");
+        $id_nomina_e = $this->input->post("id_nom_ex");
 
-        $data['empEnNominaEx'] = $this->Nomina_model->datos_empleado_nomina_extraordinaria($id_empleado, $id_concepto_extraordinario);
-
+        $data['empEnNominaEx'] = $this->Nomina_model->validarNoDuplicidadNomE($id_empleado, $id_nomina_e);
+        $query = $this->Nomina_model->getInfoNomE($id_nomina_e);
         if ($data['empEnNominaEx']) {
             $result['resultado'] = true;
         } else {
             $result['resultado'] = false;
+            $result['infoNomE'] = $query;
         }
 
         echo json_encode($result);
     }
 
     public function verificaExisteTimbre(){
-        $id_empleado = $_GET["id_emp"];
-        $id_nomina = $_GET["id_nom"]; 
-        $queryExisteTimbre = $this->Nomina_model->verificarNominaTimbrada($id_empleado,$id_nomina);
-        if (!$queryExisteTimbre) {
-            $this->timbrarNomina($id_empleado,$id_nomina);
+        //SE VALIDA QUE EXISTAN LOS DATOS REQUERIODOS PARA EL TIMBRADO EN LA URL METODO GET
+        if (isset($_GET["id_emp"]) & isset($_GET["id_nom"]) & isset($_GET["origenR"])) {
+            $id_empleado = $_GET["id_emp"];
+            $id_nomina = $_GET["id_nom"];
+            $origen_recurso = $_GET["origenR"];
+            //SE VALIDA QUE LOS DATOS NO ESTEN VACIOS
+            if ( ($id_empleado != "") & ($id_nomina != "") & ($origen_recurso != "") ) {
+                //SE VERIFICA QUE NO SE HAYA TIMBRADO LA NÓMINA PREVIAMENTE
+                $queryExisteTimbre = $this->Nomina_model->verificarNominaTimbrada($id_empleado,$id_nomina);
+                if (($queryExisteTimbre == false)) {
+                    $this->timbrarNomina($id_empleado,$id_nomina,$origen_recurso);
+                }else{
+                    $data['heading'] = "ERROR LA NÓMINA YA HA SIDO TIMBRADA";
+                    $data['message'] = "PARA VER EL ARCHIVO XML Y PDF ENTRE AL MÓDULO nomina->ordinaria Y SELECCIONE EL PERIODO QUINQUENAL CORRESPONDIENTE";
+                    $this->load->view('errors/validation/msj_validation_error', $data);
+                }
+            }else{
+                $data['heading'] = "ERROR EN DATOS";
+                $data['message'] = "LOS DATOS CAPTURADOS NO DEBEN ESTAR VACIOS <br> CIERRE ESTA VENTANA Y VUELVA A REALIZAR EL TIMBRADO DESDE EL INICIO";
+                $this->load->view('errors/validation/msj_validation_error', $data);
+            }
         }else{
-            var_dump("la nómina ya ha sido timbrada");
+            $data['heading'] = "ERROR EN DATOS";
+            $data['message'] = "FALTAN DATOS PARA REALIZAR EL TIMBRADO <br> CIERRE ESTA VENTANA Y VUELVA A REALIZAR EL TIMBRADO DESDE EL INICIO";
+            $this->load->view('errors/validation/msj_validation_error', $data);
         }
+        
     }
 
-    public function timbrarNomina($id_emp,$id_nom){
+    public function timbrarNomina($id_emp,$id_nom,$origen_recurso){
 
         error_reporting(0);
         $id_empleado = $id_emp;
         $id_nomina = $id_nom;  
 
-        $OrigenRecurso = "IP";
-        $MontoRecursoPropio = $_GET["montoRecursoPropio"];
+        $OrigenRecurso = $origen_recurso;
+        //---------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+        //SE REALIZAN LAS CONSULTAS A LA BASE DE DATOS Y SE VERIFICA QUE NO HAYAN ERRORES PARA
+        //CONTINUAR CON EL TIMBRADO
         $empleado = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
-
         $percepciones = $this->Nomina_model->percepciones_nomina($id_empleado, $id_nomina);
         $deducciones = $this->Nomina_model->deducciones_nomina($id_empleado, $id_nomina);
-
         $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
+        //---------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+        //SE CREA LA HORA Y FECHA DE EXPEDICIÓN
+        //SE CREA EL NOMBRE DEL ARCHIVO XML Y PDF
+        $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * (60 * 7)) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
+        $nombreArchivoXML = "cfdi_".$empleado[0]->rfc."_P".$empleado[0]->periodo_quinquenal."_".str_replace(':', '-', $fecha_expedicion);
+        //---------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+        //SE AGREGAN LOS DATOS DE LA NOMINA TIMBRADA A LA BASE DE DATOS
+        $query = $this->Nomina_model->insertTimbradoFile($id_empleado, $id_nomina, $nombreArchivoXML, "");
         //---------------------------------------------------------------------------------------------
         //SE CALCULA EL TOTAL DE PERCEPCIONES
         $totalPer = 0;
@@ -506,10 +586,11 @@ class Nomina_controller extends CI_Controller {
         //Se verifica que si existe compenzación para agregar el nodo de otros pagos
         $compenzacion = false;
         $importeCompenzacion = 0;
+        $impComp = 0;
         foreach ($data2['aportaciones'] as $apor) {
             if ($apor->id_aportacion == 9) {
                 $compenzacion = true; 
-                //$importeCompenzacion = $apor->importe;
+                $impComp = $apor->importe;
                 $importeCompenzacion = 0;
             }
         }
@@ -610,9 +691,6 @@ class Nomina_controller extends CI_Controller {
         $datos['complemento'] = 'nomina12';
 
         $datos['version_cfdi'] = '3.3';
-        $anioExplode = explode("-", $empleado[0]->periodo_inicio);
-        $anio = $anioExplode[0];
-        $nombreArchivoXML = "cfdi_".$empleado[0]->rfc."_".$anio."_".$empleado[0]->periodo_quinquenal;
         $datos['cfdi']='./assets/cfdi/timbrados/xml/'.$nombreArchivoXML.".xml";
         $datos['xml_debug']='./assets/cfdi/timbrados/xml/debug_'.$nombreArchivoXML.".xml";
 
@@ -624,14 +702,19 @@ class Nomina_controller extends CI_Controller {
         $datos['conf']['key'] = './assets/cfdi/certificados/lan7008173r5.key.pem';
         $datos['conf']['pass'] = '12345678a';
         $datos['factura']['Descuento'] = number_format(($totalDed), 2, '.', '');
-        $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * 60) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
         $datos['factura']['fecha_expedicion'] = $fecha_expedicion;
-        $datos['factura']['folio'] = $empleado[0]->no_empleado;
-/*--*/  $datos['factura']['forma_pago'] = '99'; //99 = por definir
+        $folioQuery = $this->Nomina_model->totalTimbresFolio();
+        if ($folioQuery) {
+             $folioN = intval($folioQuery[0]->totalTimbres);
+         }else{
+            $folioN = 1;
+         }
+        $datos['factura']['folio'] = $folioN;
+        $datos['factura']['forma_pago'] = '99'; //99 = por definir
         $datos['factura']['LugarExpedicion'] = '77000';
         $datos['factura']['metodo_pago'] = 'PUE'; // Pago en una sola exhibición
         $datos['factura']['moneda'] = 'MXN';
-        $datos['factura']['serie'] = $empleado[0]->no_empleado."-".$empleado[0]->periodo_quinquenal; //Es el número de serie que utiliza el contribuyente para control interno de su información. 
+        $datos['factura']['serie'] = $empleado[0]->no_empleado."-".$folioN; //Es el número de serie que utiliza el contribuyente para control interno de su información. 
         $datos['factura']['subtotal'] = number_format(($totalPer), 2, '.', '');
         //$datos['factura']['tipocambio'] = '1.0'; //Este campo no debe existir. 
         $datos['factura']['tipocomprobante'] = 'N';
@@ -645,7 +728,7 @@ class Nomina_controller extends CI_Controller {
 
 
         //$datos['emisor']['rfc'] = 'IQJ1706288Z7'; //RFC DEL IQJ
-        $datos['emisor']['rfc'] = 'LAN7008173R5';
+/**/    $datos['emisor']['rfc'] = 'LAN7008173R5';
         $datos['emisor']['nombre'] = 'INSTITUTO QUINTANARROENSE DE LA JUVENTUD';  // EMPRESA DE PRUEBA
         //Se puede registrar la CURP del empleador (emisor) del comprobante de nómina cuando 
         //se trate de una persona física.
@@ -676,10 +759,10 @@ class Nomina_controller extends CI_Controller {
 
         // Opcionales
         $datos['nomina12']['TotalPercepciones'] = number_format(($totalPercepciones), 2, '.', '');
-        $datos['nomina12']['TotalDeducciones'] = number_format(($totalDed), 2, '.', ''); 
+        $datos['nomina12']['TotalDeducciones'] = number_format(($totalDed), 2, '.', '');
         //En caso de existir compenzación debe existir el campo TotalOtrosPagos
         if ($compenzacion) {
- /*-*/      //$datos['nomina12']['TotalOtrosPagos'] = number_format(($importeCompenzacion), 2, '.', ''); 
+ /*-*/      //$datos['nomina12']['TotalOtrosPagos'] = number_format(($impComp), 2, '.', ''); 
         }
 
 
@@ -718,9 +801,9 @@ class Nomina_controller extends CI_Controller {
         $datos['nomina12']['Receptor']['FechaInicioRelLaboral'] = $empleado[0]->fecha_ingreso; // Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         $datos['nomina12']['Receptor']['NumSeguridadSocial'] = $empleado[0]->nss;
         $datos['nomina12']['Receptor']['Puesto'] = $empleado[0]->puesto;
-/*_*/   $datos['nomina12']['Receptor']['RiesgoPuesto'] = '2'; // 2 = clase II  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+        $datos['nomina12']['Receptor']['RiesgoPuesto'] = '1'; // 1 = clase I  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
         //$datos['nomina12']['Receptor']['SalarioBaseCotApor'] = '435.50';
- /*-*/  $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = number_format((round($SalarioDiarioIntegrado, 2)), 2, '.', '');
+        $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = number_format((round($SalarioDiarioIntegrado, 2)), 2, '.', '');
 
         // NODO PERCEPCIONES
         // Totales Obligatorios
@@ -752,10 +835,10 @@ class Nomina_controller extends CI_Controller {
         }
         //NODO OTROS PAGOS
         if ($compenzacion) {
-           $datos['nomina12']['SubsidioAlEmpleo']['SubsidioCausado'] = number_format(($importeCompenzacion), 2, '.', ''); 
+           $datos['nomina12']['SubsidioAlEmpleo']['SubsidioCausado'] = number_format(($impComp), 2, '.', ''); 
            $datos['nomina12']['OtroPago'][0]['Clave'] = "002"; // 002 = Subsidio para el empleo (efectivamente entregado al trabajador).
            $datos['nomina12']['OtroPago'][0]['Concepto'] = "Subsidio Al Empleo";
-           $datos['nomina12']['OtroPago'][0]['Importe'] = number_format(($importeCompenzacion), 2, '.', '');
+           $datos['nomina12']['OtroPago'][0]['Importe'] = number_format(($impComp), 2, '.', '');
            $datos['nomina12']['OtroPago'][0]['TipoOtroPago'] = "002";
 
         }
@@ -792,7 +875,7 @@ class Nomina_controller extends CI_Controller {
         if (!$compenzacion) {
             $datos['nomina12']['Deducciones']['TotalImpuestosRetenidos'] = number_format(($TotalImpuestosReten), 2, '.', ''); // Opcional
         }
-        
+
         $j = 0;
         foreach ($deducciones as $deduccion) {
             $datos['nomina12']['Deducciones'][$j]['TipoDeduccion'] = $deduccion->codigoSat;
@@ -820,22 +903,48 @@ class Nomina_controller extends CI_Controller {
 
         if ($codigoError == 0) {
             //SE LEEN LOS DATOS QUE DEVUELVE EL TIMBRADO DEL CFDI Y SE GUARDA EN UNA VARIABLE (ARRAY)
-            $dataCFDI = $this->leer($res);
+            $timbreOrdinaria = true;
+            $dataCFDI = $this->leer($res,true,"timbrados",null,null,$timbreOrdinaria);
+            //SE AGREGAN LOS DATOS DE LA NOMINA TIMBRADA A LA BASE DE DATOS
+            $query = $this->Nomina_model->updateTimbradoFile($id_empleado, $id_nomina, $dataCFDI['cadenaOriginalComplemtoSAT']);
             //SE IMPRIME EL PDF CON LOS DATOS DEL CFDI TIMBRADO
-            $this->pdfCFDI($dataCFDI, $id_empleado, $id_nomina,$nombreArchivoXML,$fecha_expedicion);
+            $this->pdfCFDI($dataCFDI, $id_empleado, $id_nomina,$nombreArchivoXML, true);
         }else if ($codigoError == 2){
-            echo $res['codigo_mf_texto'];
+            $query = $this->Nomina_model->deleteTimbradoFile($id_empleado, $id_nomina);
+            $data['heading'] = "¡ERROR!";
+            $data['message'] = $res['codigo_mf_texto'];
+            $this->load->view('errors/validation/msj_validation_error', $data);
         }else{
-            echo "ERROR: ".$codigoError." ".$res['codigo_mf_texto'];
+            $query = $this->Nomina_model->deleteTimbradoFile($id_empleado, $id_nomina);
+            $data['heading'] = "¡ERROR!";
+            $data['message'] = $codigoError." ".$res['codigo_mf_texto'];
+            $this->load->view('errors/validation/msj_validation_error', $data);
         }
              
     }
-      
-    public function leer($data){
-        echo "<p><b>Ahora mostrandolo con estilo</b></p>";
-        //$xml        = new SimpleXMLElement ("../../timbrados/ejemplo_cfdi33_nomina12_prueba.xml",null,true);
-        $xmlCFDI = $data['cfdi']; //Este es el xml que devuelve la respuesta del CFDI
-        $xml = new SimpleXMLElement ($xmlCFDI);
+
+    //La fn leer recibe 5 parametos
+    //1 $data Son los datos de la respuesta del timbrado del PAC
+    //O es el nombre del archivo xml que se va a procesar
+    //2 $xmlTimbre es una varible booleana, sirve para saber si se
+    //va a procesar un xml de la respuesta del PAC
+    //o un xml que ya esta guardado en el servidor
+    //3 $nombreFolder es el nombre del folder donde se encuentra el archivo
+    //xml que se va a procesar para diferenciar los xml de la nómina 
+    //ordinaria y extraordinaria
+    public function leer($data,$xmlTimbre,$nombreFolder,$id_empleado,$id_nomina,$timbreOrdinaria){
+        // Si $xmlTimbre = TRUE entonces se va a procesar un archivo xml del PAC
+        if ($xmlTimbre) {
+            $xmlCFDI = $data['cfdi']; //Este es el xml que devuelve la respuesta del CFDI
+            $xml = new SimpleXMLElement ($xmlCFDI);
+        }else{
+            $pathXML = "./assets/cfdi/".$nombreFolder."/xml/".$data;
+            $xml        = new SimpleXMLElement ($pathXML,null,true);
+        }
+        //Se agrega el Namespace del nodo tfd para que se pueda acceder a su información
+        $ns = $xml->getNamespaces(true);
+        $xml->registerXPathNamespace('t', $ns['tfd']);
+
         //Se obtienen todas las precepciones que devuelve el xml del timbrado de la nómina 
           foreach ($xml->xpath('//nomina12:Percepcion') as $percepcion){  // SECCION EMISOR
                $percepciones[] = array('TipoPercepcion' => $percepcion['TipoPercepcion'],
@@ -873,34 +982,67 @@ class Nomina_controller extends CI_Controller {
                                'NumDiasPagados' => $Nomina['NumDiasPagados'],
                                'TotalPercepciones' => $Nomina['TotalPercepciones'],
                                'TotalDeducciones' => $Nomina['TotalDeducciones']); //Se puede registrar el total de las deducciones (descuentos) aplicables al trabajador, sin considerar la clave de tipo deducción 002 (ISR). 
-          } 
-    
-          $selloDigitalCFDI = $data['representacion_impresa_sello'];
-          $selloDelSAT = $data['representacion_impresa_selloSAT'];
-          $cadenaOriginalComplemtoSAT = $data['representacion_impresa_cadena'];
-          $representacion_impresa_certificado_no = $data['representacion_impresa_certificado_no'];
-          $folioFiscalUuid = $data['uuid'];
-          $representacion_impresa_certificadoSAT = $data['representacion_impresa_certificadoSAT'];
-          $representacion_impresa_fecha_timbrado = $data['representacion_impresa_fecha_timbrado'];
-    
-          // echo "</br> Percepciones: ".$percepciones[0]['Concepto'];
-          // echo "</br> Percepciones: ".$percepciones[1]['Concepto'];
-          // echo "</br> Percepciones: ".$percepciones[2]['Concepto'];
-    
-          // echo "</br> deducciones: ".$deducciones[0]['Concepto'];
-          // echo "</br> deducciones: ".$deducciones[1]['Concepto'];
-    
-          // echo "</br> Total Percepciones: ".$datosNomina['TotalPercepciones'];
-          // echo "</br> Total Deducciones: ".$datosNomina['TotalDeducciones'];
-    
-          // echo "</br> TotalImpuestosRetenidos (ISR): ".$totalDeducciones['TotalImpuestosRetenidos'];
-          // echo "</br> TotalOtrasDeducciones: ".$totalDeducciones['TotalOtrasDeducciones'];
-    
-    
-          // echo "</br> Sello digital del CFDI:  ".$selloDigitalCFDI;
-          // echo "</br> Sello del SAT:  ".$selloDelSAT;
-          // echo "</br> Cadena original:  ".$cadenaOriginalComplemtoSAT;
+          }
 
+          //Se obtiene la fecha de expedición 
+          foreach ($xml->xpath('//cfdi:Comprobante') as $Fecha){  // SECCION EMISOR
+               $fecha_expedicion = $Fecha['Fecha']; 
+    
+          }
+          //Se obtiene el FOLIO del cfdi 
+          foreach ($xml->xpath('//cfdi:Comprobante') as $Folio){  // SECCION EMISOR
+               $folioN = $Folio['Folio']; 
+    
+          }
+//--------------------------------------------------------------------------------------------          
+          //Se obtiene el Serie del Certificado del Emisor: 
+          foreach ($xml->xpath('//cfdi:Comprobante') as $NoCertificado){  // SECCION EMISOR
+               $representacion_impresa_certificado_no = $NoCertificado['NoCertificado']; 
+    
+          }
+           //Se obtiene el Folio Fiscal: 
+          foreach ($xml->xpath('//t:TimbreFiscalDigital') as $UUID){  // SECCION EMISOR
+               $folioFiscalUuid = $UUID['UUID']; 
+    
+          }
+          //No. de Serie del Certificado del SAT: 
+          foreach ($xml->xpath('//t:TimbreFiscalDigital') as $NoCertificadoSAT){  // SECCION EMISOR
+               $representacion_impresa_certificadoSAT = $NoCertificadoSAT['NoCertificadoSAT']; 
+    
+          }
+          //Se obtiene la Fecha y Hora de Certificación: 
+          foreach ($xml->xpath('//t:TimbreFiscalDigital') as $FechaTimbrado){  // SECCION EMISOR
+               $representacion_impresa_fecha_timbrado = $FechaTimbrado['FechaTimbrado']; 
+    
+          }
+          //Se obtiene el Sello digital del CFDI 
+          foreach ($xml->xpath('//t:TimbreFiscalDigital') as $SelloCFD){  // SECCION EMISOR
+               $selloDigitalCFDI = $SelloCFD['SelloCFD']; 
+    
+          }
+          //Se obtiene el Sello del SAT
+          foreach ($xml->xpath('//t:TimbreFiscalDigital') as $SelloSAT){  // SECCION EMISOR
+               $selloDelSAT = $SelloSAT['SelloSAT']; 
+    
+          } 
+            
+          //$selloDigitalCFDI = $data['representacion_impresa_sello'];
+          //$selloDelSAT = $data['representacion_impresa_selloSAT'];
+          if ($xmlTimbre) {
+              $cadenaOriginalComplemtoSAT = $data['representacion_impresa_cadena'];
+          }else if ($timbreOrdinaria) {
+              $RepIcadenaSat = $this->Nomina_model->getNameFile($id_nomina,$id_empleado);
+              $cadenaOriginalComplemtoSAT = $RepIcadenaSat[0]->cadenaOriginalComplemtoSAT;
+          }else{
+              $RepIcadenaSat = $this->Nomina_model->getNameFileNomE($id_nomina,$id_empleado);
+              $cadenaOriginalComplemtoSAT = $RepIcadenaSat[0]->cadenaOriginalComplemtoSAT;
+          }
+          
+          //$representacion_impresa_certificado_no = $data['representacion_impresa_certificado_no'];
+          //$folioFiscalUuid = $data['uuid'];
+          //$representacion_impresa_certificadoSAT = $data['representacion_impresa_certificadoSAT'];
+          //$representacion_impresa_fecha_timbrado = $data['representacion_impresa_fecha_timbrado'];
+    
           $dataCFDI = array('percepciones' => $percepciones,
                             'deducciones' => $deducciones,
                             'totalPercepciones' =>$totalPercepciones,
@@ -912,12 +1054,14 @@ class Nomina_controller extends CI_Controller {
                             'representacion_impresa_certificado_no' => $representacion_impresa_certificado_no,
                             'folioFiscalUuid' => $folioFiscalUuid,
                             'representacion_impresa_certificadoSAT' => $representacion_impresa_certificadoSAT,
-                            'representacion_impresa_fecha_timbrado' => $representacion_impresa_fecha_timbrado
+                            'representacion_impresa_fecha_timbrado' => $representacion_impresa_fecha_timbrado,
+                            'fecha_expedicion' => $fecha_expedicion,
+                            'folioN' => $folioN
                             );
         return $dataCFDI; 
     }
 
-    public function pdfCFDI($dataCFDI,$id_empleado, $id_nomina,$nombreArchivoXML,$fecha_expedicion){
+    public function pdfCFDI($dataCFDI,$id_empleado, $id_nomina,$nombreArchivoXML,$outputPdf){
         ob_start();
         //**********************************************************************************
         //       PDF
@@ -936,6 +1080,7 @@ class Nomina_controller extends CI_Controller {
         $mpdf->WriteHTML($stylesheet, 1); 
         /******************************************** head pdf ******************************************************/
         $data['header_pdf'] = $this->Nomina_model->datos_empleado_nomina($id_empleado, $id_nomina);
+        $data['folioN'] = $dataCFDI['folioN'];
         $head               = $this->load->view('admin/nomina/pdf/pdf_cfdi_ordinaria/header', $data, true);
         $mpdf->SetHTMLHeader($head);
         // /***************************************** contenido pdf ****************************************************/
@@ -946,7 +1091,7 @@ class Nomina_controller extends CI_Controller {
         $data2['aportaciones'] = $this->Nomina_model->aportaciones_nomina($id_empleado, $id_nomina);
         $data2['dataCFDI'] = $dataCFDI;
         $data2['nombreArchivoXML'] = $nombreArchivoXML;
-        $data2['fecha_expedicion'] = $fecha_expedicion;
+        $data2['fecha_expedicion'] = $dataCFDI['fecha_expedicion'];
         $html = $this->load->view('admin/nomina/pdf/pdf_cfdi_ordinaria/contenido', $data2, true);
         //**************************************** footer 1 ********************************************************
         $data3['pie_pagina'] = "";
@@ -959,15 +1104,9 @@ class Nomina_controller extends CI_Controller {
         ob_clean();
         $extencion = ".pdf";
         $mpdf->Output('./assets/cfdi/timbrados/pdf/'.$nombreArchivoXML.$extencion, 'F');
-		$mpdf->Output($nombreArchivoXML.pdf, 'I');
-        $query = $this->Nomina_model->insertTimbradoFile($id_empleado, $id_nomina, $nombreArchivoXML);
-		
-		if ($query) {
-			$result['resultado'] = true;
-		} else {
-			$result['resultado'] = false;
-		}
-		echo json_encode($result);
+        if ($outputPdf) {
+            $mpdf->Output($nombreArchivoXML.pdf, 'I');
+        }		
         //**********************************************************************************
         //    FIN   PDF
         //**********************************************************************************
@@ -1050,7 +1189,6 @@ class Nomina_controller extends CI_Controller {
                 }
             }
         }
-
         return $suma_total;
     }
 
@@ -1117,20 +1255,30 @@ class Nomina_controller extends CI_Controller {
 		$query = $this->Nomina_model->getNameFile($id_nomina,$id_empleado);
 		$exte = ".pdf";
 		$filename = $query[0]->file_name;
-		$filePath = './assets/cfdi/timbrados/pdf/'.$query[0]->file_name.$exte;
-		//var_dump($filePath);die();
+		$filePath = './assets/cfdi/timbrados/pdf/'.$filename.$exte;
 		if(file_exists($filePath)){
-			// Define headers
-			header("Cache-Control: public");
-			header("Content-Description: File Transfer");
-			header("Content-Disposition: attachment; filename=$filename.$exte");
-			header("Content-Type: application/zip");
-			header("Content-Transfer-Encoding: binary");
-			// Read the file
-			readfile($filePath);
-			exit;
+			$this->downloadFile($filePath,$filename,$exte);
 		}else{
-			echo 'NO EXISTE EL ARCHIVO PDF TIMBRADO.';
+			$exteXml = ".xml";
+            $filePathXml = './assets/cfdi/timbrados/xml/'.$filename.$exteXml;
+            if(file_exists($filePathXml)){
+            //SE LEEN LOS DATOS QUE DEVUELVE EL TIMBRADO DEL CFDI Y SE GUARDA EN UNA VARIABLE (ARRAY)
+            $timbreOrdinaria = true;
+            $dataCFDI = $this->leer($filename.$exteXml,false,"timbrados",$id_empleado,$id_nomina,$timbreOrdinaria);
+            //SE IMPRIME EL PDF CON LOS DATOS DEL CFDI TIMBRADO
+            //SI EL ULTIMO PARAMENTO ENVIADO ES == FALSE entonces SE ESTÁ RECONSTRUYENDO EL PDF DAÑADO
+            //POR LO TANTO NO SE MOSTRARÁ EL PDF EN LA VENTA
+            //SINO QUE SE GUARDARÁ EN UN DIRECTORIO PARA PODER DESCARGARSE
+            $this->pdfCFDI($dataCFDI, $id_empleado, $id_nomina,$filename,false);
+                if(file_exists($filePath)){
+                    $this->downloadFile($filePath,$filename,$exte);
+                }else{
+                    echo 'HUBO UN ERROR AL RECONSTRUIR EL PDF';
+                }
+            }else{
+                echo 'NO EXISTE EL ARCHIVO XML TIMBRADO.';
+            }
+
 		}
 	}
 	public function timbradoxml(){
@@ -1140,20 +1288,540 @@ class Nomina_controller extends CI_Controller {
 		$exte = ".xml";
 		$filename = $query[0]->file_name;
 		$filePath = './assets/cfdi/timbrados/xml/'.$query[0]->file_name.$exte;
-		//var_dump($filePath);die();
 		if(file_exists($filePath)){
-			// Define headers
-			header("Cache-Control: public");
-			header("Content-Description: File Transfer");
-			header("Content-Disposition: attachment; filename=$filename.$exte");
-			header("Content-Type: application/zip");
-			header("Content-Transfer-Encoding: binary");
-			// Read the file
-			readfile($filePath);
-			exit;
+			$this->downloadFile($filePath,$filename,$exte);
 		}else{
 			echo 'NO EXISTE EL ARCHIVO PDF TIMBRADO.';
 		}
 	}
+
+    public function downloadFile($filePath,$filename,$exte){
+        // Define headers
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=$filename.$exte");
+        header("Content-Type: application/zip");
+        header("Content-Transfer-Encoding: binary");
+        // Read the file
+        readfile($filePath);
+        exit;
+    }
+    //***********************************************************************************************
+    //ÁREA DE TIMBRADO DE NÓMINA EXTRAORDINARIA
+    //***********************************************************************************************
+    public function verificaExisteTimbreNomE(){
+        //SE VALIDA QUE EXISTAN LOS DATOS REQUERIODOS PARA EL TIMBRADO EN LA URL METODO GET
+        if (isset($_GET["id_emp"]) & isset($_GET["id_nom"]) & isset($_GET["origenR"])) {
+            $id_empleado = $_GET["id_emp"];
+            $id_nomina_e = $_GET["id_nom"];
+            $origen_recurso = $_GET["origenR"];
+            //SE VALIDA QUE LOS DATOS NO ESTEN VACIOS
+            if ( ($id_empleado != "") & ($id_nomina_e != "") & ($origen_recurso != "") ) {
+                //SE VERIFICA QUE NO SE HAYA TIMBRADO LA NÓMINA PREVIAMENTE
+                $queryExisteTimbre = $this->Nomina_model->verificarNominaTimbradaNomE($id_empleado,$id_nomina_e);
+                if (($queryExisteTimbre == false)) {
+                    $this->timbrarNominaNomE($id_empleado,$id_nomina_e,$origen_recurso);
+                }else{
+                    $data['heading'] = "ERROR LA NÓMINA YA HA SIDO TIMBRADA";
+                    $data['message'] = "PARA VER EL ARCHIVO XML Y PDF ENTRE AL MÓDULO nomina->extraordinaria Y SELECCIONE LA NÓMINA EXTRAODRINARIA CORRESPONDIENTE";
+                    $this->load->view('errors/validation/msj_validation_error', $data);
+                }
+            }else{
+                $data['heading'] = "ERROR EN DATOS";
+                $data['message'] = "LOS DATOS CAPTURADOS NO DEBEN ESTAR VACIOS <br> CIERRE ESTA VENTANA Y VUELVA A REALIZAR EL TIMBRADO DESDE EL INICIO";
+                $this->load->view('errors/validation/msj_validation_error', $data);
+            }
+        }else{
+            $data['heading'] = "ERROR EN DATOS";
+            $data['message'] = "FALTAN DATOS PARA REALIZAR EL TIMBRADO <br> CIERRE ESTA VENTANA Y VUELVA A REALIZAR EL TIMBRADO DESDE EL INICIO";
+            $this->load->view('errors/validation/msj_validation_error', $data);
+        }
+    }
+
+    public function timbrarNominaNomE($id_emp,$id_nom,$origen_recurso){
+
+        error_reporting(0);
+        $id_empleado = $id_emp;
+        $id_nomina_e = $id_nom;  
+
+        $OrigenRecurso = $origen_recurso;
+        //---------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+        //SE REALIZAN LAS CONSULTAS A LA BASE DE DATOS Y SE VERIFICA QUE NO HAYAN ERRORES PARA
+        //CONTINUAR CON EL TIMBRADO
+        $empleado = $this->Nomina_model->datos_empleado_nomina_extraordinaria($id_empleado, $id_nomina_e);
+        $conceptosNomE = $this->Nomina_model->conpcetos_nomina_ex($id_empleado, $id_nomina_e);
+        //---------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+        //SE OBTIENEN LAS PERCEPCIONES PARA CALCULAR EL SALARIO DIARIO INTEGRADO
+        $mesNomina = $empleado[0]->mesNomina;
+        $yearNomina = $empleado[0]->anioNomina;
+        $diaNomina = 1;
+        //SE OBTIENE LAS PERCEPCIONES DE LA QUINCENA CORRESPONDIENTE AL MES AL QUE PERTENECE LA NOMINA EXTRAORDINARIA
+        $percepciones = $this->Nomina_model->percepcionesNomE($id_empleado,$yearNomina,$mesNomina,$diaNomina);
+        //Si la consulta resulta false entonces se vuelve a realizar otra consulta con el mes anterior
+        if ($percepciones == false) {
+            if (intval($mesNomina) == 1) {
+                $mesNomina = 12;
+                $yearNomina = intval($empleado[0]->anioNomina) - 1;
+            }else{
+                $mesNomina = intval($empleado[0]->mesNomina) - 1;
+            }
+            $percepciones = $this->Nomina_model->percepcionesNomE($id_empleado,$yearNomina,$mesNomina,$diaNomina);
+        }
+        //En caso de que aun no se obtengan resultados se vuelve a realizar otra consulta
+        if ($percepciones == false) {
+            $percepciones = $this->Nomina_model->getUltimaspercepcionesNomE($id_empleado);
+        }
+
+        if ($percepciones == false) {
+            $data['heading'] = "¡ERROR!";
+            $data['message'] = "ERROR AL CALCULAR EL SALARIO DIARIO INTEGRADO";
+            $this->load->view('errors/validation/msj_validation_error', $data);
+        }else{
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //SE CALCULA EL TOTAL DE DÍAS PAGADOS
+            $diasPagados = 15;
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //SE CALCULA EL SalarioDiarioIntegrado
+            $SalarioDiarioIntegrado =  $this->calcularTotalParaFormula($percepciones,5) / $diasPagados;
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //SE CREA LA HORA Y FECHA DE EXPEDICIÓN
+            //SE CREA EL NOMBRE DEL ARCHIVO XML Y PDF
+            $fecha_expedicion = date('Y-m-d\TH:i:s', time() - ((60 * (60 * 7)) + 120) ); //SE CALCULA LA FECHA Y HORA DE CHETUMAL
+            $nombreArchivoXML = "cfdi_ex_".$empleado[0]->rfc."_".str_replace(':', '-', $fecha_expedicion);
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //SE AGREGAN LOS DATOS DE LA NOMINA QUE SE VA A TIMBRAR A LA BASE DE DATOS
+            $query = $this->Nomina_model->insertTimbradoFileNomE($id_empleado, $id_nomina_e, $nombreArchivoXML, "");
+            //---------------------------------------------------------------------------------------------
+            //SE CALCULA EL TOTAL DE PERCEPCIONES
+            $importeGravado = $conceptosNomE[0]->importeGravado;
+            $importeExento = $conceptosNomE[0]->importeExento;
+            $totalPer = floatval($importeGravado) + $importeExento;
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //SE CALCULA EL TOTAL DE LAS DEDUCCIONES
+            $totalDed = 0;
+            $TotalOtrasDed = 0;
+            $TotalImpuestosReten = 0;
+            if (intval($conceptosNomE[0]->isrSubsidio) == 0) {
+                $isr = $conceptosNomE[0]->importeIsrSub;
+                $TotalImpuestosReten = $isr;
+                $totalDed = $isr;
+            }
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //Se verifica que si existe compenzación para agregar el nodo de otros pagos
+            $compenzacion = false;
+            $importeCompenzacion = 0;
+            if (intval($conceptosNomE[0]->isrSubsidio) == 1) {
+                $compenzacion = true;
+                $importeCompenzacion = $conceptosNomE[0]->importeIsrSub;
+            }
+            //---------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------
+            //SE CALCULAN LOS TOTALES DE LAS PERCEPCIONES
+            //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
+            $array = array("022", "023", "025", "039" , "044");
+            $existeTotalSueldos = false;
+            $totalSueldos = 0;
+
+            $arrayPerSeparacion = array("022", "023", "025");
+            $existeSeparacion = false;
+            $TotalSeparacionIndemnizacion = 0;
+
+            $arrayJubilacionPR = array("039", "044");
+            $existeJubilacionPR = false;
+            $totalJubilacionPensionRetiro = 0;
+
+            $arrayTotalUnaExhibicion = array("039");
+            $existeTotalUnaExhibicion = false;
+            $totalUnaExhibicion = 0;
+
+            $arrayTotalUnaExhibicion044 = array("044");
+            $existeTotalUnaExhibicion044 = false;
+            $totalUnaExhibicion044 = 0;
+
+
+            $clavePer = $conceptosNomE[0]->codigoSat;
+            //--------------------------------------------------------------------------------------------
+            //NOM197-TotalSueldos, debe existir. Ya que la clave expresada en TipoPercepcion es distinta de 022, 023, 025, 039 y 044.
+            if (!in_array($clavePer, $array)) {
+                $existeTotalSueldos = true;
+                $totalSueldos += floatval($importeExento) + floatval($importeGravado);
+            }
+            //--------------------------------------------------------------------------------------------
+            /*Si se registraron las claves tipo percepción "022" (Prima por Antigüedad), "023" (Pagos
+            por separación), "025" (Indemnizaciones), debe existir el campo
+            TotalSeparacionIndemnizacion y la información de los datos de
+            SeparacionIndemnizacion.*/
+            if (in_array($clavePer, $arrayPerSeparacion)) {
+                $TotalSeparacionIndemnizacion += $conceptosNomE[0]->importe;
+                $existeSeparacion = true;
+            }
+            //--------------------------------------------------------------------------------------------
+            /*Si se registraron las claves tipo percepción "039" (Jubilaciones, pensiones o haberes de
+            retiro en una exhibición) y "044" (Jubilaciones, pensiones o haberes de retiro en
+            parcialidades), debe existir el campo TotalJubilacionPensionRetiro y la información de
+            los datos de JubilacionPensionRetiro.*/
+            if (in_array($clavePer, $arrayJubilacionPR)) {
+                $totalJubilacionPensionRetiro +=$conceptosNomE[0]->importe;
+                $existeJubilacionPR = true;
+            }
+            //---------------------------------------------------------------------------------------------
+            /*Si se registró la CLAVE TipoPercepcion '039' (Jubilaciones, pensiones o haberes de retiro
+            en una exhibición) debe existir el campo TotalUnaExhibicion y no deben existir los
+            campos TotalParcialidad, MontoDiario*/
+            if (in_array($clavePer, $arrayTotalUnaExhibicion)) {
+                $totalUnaExhibicion += $conceptosNomE[0]->importe;
+                $existeTotalUnaExhibicion = true;
+            }
+            //---------------------------------------------------------------------------------------------
+            /*Si se registró la clave TipoPercepcion "044" (Jubilaciones, pensiones o haberes de retiro
+            en parcialidades) no debe existir el campo TotalUnaExhibicion y deben existir los
+            campos TotalParcialidad, MontoDiario.*/
+            if (in_array($clavePer, $arrayTotalUnaExhibicion044)) {
+                $totalUnaExhibicion044 += $conceptosNomE[0]->importe;
+                $existeTotalUnaExhibicion044 = true;
+            }
+            //---------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------
+            //SE CALCULA EL TOTAL DE LAS PERCEPCIONES
+            $totalPercepciones = $totalSueldos + $TotalSeparacionIndemnizacion + $totalJubilacionPensionRetiro;
+            date_default_timezone_set('America/Cancun');
+
+            require_once('./assets/cfdi/sdk2.php');
+
+                    // Se especifica el modulo para calculos automaticos
+            //$datos['modulos_pre'] = 'calculos_auto';
+
+            $datos['complemento'] = 'nomina12';
+
+            $datos['version_cfdi'] = '3.3';        
+            $datos['cfdi']='./assets/cfdi/timbradosNominaExtraordinaria/xml/'.$nombreArchivoXML.".xml";
+            $datos['xml_debug']='./assets/cfdi/timbradosNominaExtraordinaria/xml/debug_'.$nombreArchivoXML.".xml";
+
+            $datos['PAC']['usuario'] = 'DEMO700101XXX';
+            $datos['PAC']['pass'] = 'DEMO700101XXX';
+            $datos['PAC']['produccion'] = 'NO';
+
+            $datos['conf']['cer'] = './assets/cfdi/certificados/lan7008173r5.cer.pem';
+            $datos['conf']['key'] = './assets/cfdi/certificados/lan7008173r5.key.pem';
+            $datos['conf']['pass'] = '12345678a';
+            if (intval($totalDed) >= 0) {
+    /***/      $datos['factura']['Descuento'] = number_format(($totalDed), 2, '.', '');
+            }        
+    /***/   $datos['factura']['fecha_expedicion'] = $fecha_expedicion;
+            $folioQuery = $this->Nomina_model->totalTimbresFolioNomE();
+            if ($folioQuery) {
+                 $folioN = intval($folioQuery[0]->totalTimbres);
+             }else{
+                $folioN = 1;
+             }
+            $datos['factura']['folio'] = $folioN;
+            //$datos['factura']['folio'] = $folioN;
+            $datos['factura']['forma_pago'] = '99'; //99 = por definir
+            $datos['factura']['LugarExpedicion'] = '77000';
+            $datos['factura']['metodo_pago'] = 'PUE'; // Pago en una sola exhibición
+            $datos['factura']['moneda'] = 'MXN';
+            //$datos['factura']['serie'] = $empleado[0]->no_empleado."-".$empleado[0]->periodo_quinquenal; //Es el número de serie que utiliza el contribuyente para control interno de su información. 
+            $datos['factura']['serie'] = $empleado[0]->no_empleado."-".$folioN;
+            $datos['factura']['subtotal'] = number_format(($totalPer), 2, '.', '');
+            //$datos['factura']['tipocambio'] = '1.0'; //Este campo no debe existir. 
+            $datos['factura']['tipocomprobante'] = 'N';
+            $datos['factura']['total'] = number_format(($totalPer - $totalDed), 2, '.', '');
+
+            /*$datos['CfdisRelacionados']['TipoRelacion'] = '01';
+            $datos['CfdisRelacionados']['UUID'][0]='A39DA66B-52CA-49E3-879B-5C05185B0EF7';*/
+
+            //$datos['factura']['Confirmacion'] = '0234';
+            $datos['factura']['RegimenFiscal'] = '603'; //Personas Morales con Fines no Lucrativos
+
+
+            //$datos['emisor']['rfc'] = 'IQJ1706288Z7'; //RFC DEL IQJ
+            $datos['emisor']['rfc'] = 'LAN7008173R5';
+            $datos['emisor']['nombre'] = 'INSTITUTO QUINTANARROENSE DE LA JUVENTUD';  // EMPRESA DE PRUEBA
+            //Se puede registrar la CURP del empleador (emisor) del comprobante de nómina cuando 
+            //se trate de una persona física.
+            //En el caso de personas morales, éstas no cuentan con CURP, por lo tanto no se debe
+            //registrar información en este campo.
+
+            $datos['receptor']['rfc'] = $empleado[0]->rfc;
+            $datos['receptor']['nombre'] = $empleado[0]->empleado." ".$empleado[0]->ap_paterno." ".$empleado[0]->ap_materno;
+            //$datos['receptor']['ResidenciaFiscal'] = 'MEX';
+            //$datos['receptor']['NumRegIdTrib'] = '1234567890';
+            $datos['receptor']['UsoCFDI'] = 'P01'; //"P01 = POR DEFINIR"
+
+            $datos['conceptos'][0]['cantidad'] = '1';
+            $datos['conceptos'][0]['descripcion'] = "Pago de nómina";
+            $datos['conceptos'][0]['valorunitario'] = number_format(($totalPercepciones), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+            //$datos['conceptos'][0]['importe'] = number_format(($totalPercepciones + $importeCompenzacion), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+            $datos['conceptos'][0]['importe'] = number_format(($totalPercepciones), 2, '.', ''); //Se debe registrar la suma de los campos TotalPercepciones más TotalOtrosPagos del Complemento Nómina
+            $datos['conceptos'][0]['ClaveUnidad'] = 'ACT';
+            $datos['conceptos'][0]['ClaveProdServ'] = '84111505';
+            if (intval($totalDed) >= 0) {
+    /**/       $datos['conceptos'][0]['Descuento'] = number_format(($totalDed), 2, '.', '');
+            }
+            
+
+            // Obligatorios
+            $datos['nomina12']['TipoNomina'] = 'E'; //O = ORDINARIA - E = EXTRAORDINARIA
+            $datos['nomina12']['FechaPago'] = $empleado[0]->fecha;
+            $datos['nomina12']['FechaInicialPago'] = $empleado[0]->fecha;
+            $datos['nomina12']['FechaFinalPago'] = $empleado[0]->fecha;
+    /**/    $datos['nomina12']['NumDiasPagados'] = $diasPagados;
+
+            // Opcionales
+            $datos['nomina12']['TotalPercepciones'] = number_format(($totalPercepciones), 2, '.', '');
+            if (!$compenzacion) {
+                $datos['nomina12']['TotalDeducciones'] = number_format(($totalDed), 2, '.', '');
+            }
+             
+            //En caso de existir compenzación debe existir el campo TotalOtrosPagos
+            if ($compenzacion) {
+     /*-*/      //$datos['nomina12']['TotalOtrosPagos'] = number_format(($importeCompenzacion), 2, '.', ''); 
+            }
+
+
+            // SUB NODOS OPCIONALES DE NOMINA [Emisor, Percepciones, Deducciones, OtrosPagos, Incapacidades]
+            // Nodo Emisor, OPCIONALES
+            $datos['nomina12']['Emisor']['RegistroPatronal'] = 'Y5560015453'; //Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+     /*-*/  //$datos['nomina12']['Emisor']['RfcPatronOrigen'] = 'AAA010101AAA'; // VERIFICAR
+    //-----------------------------------------------------------------------------------------
+            //NODO: EntidadSNCF;
+    /*-*/   //$datos['nomina12']['Emisor']['EntidadSNCF']['OrigenRecurso'] = $OrigenRecurso;
+
+            if ($OrigenRecurso == "IM" ) {
+                $datos['nomina12']['Emisor']['EntidadSNCF']['MontoRecursoPropio'] =number_format(($MontoRecursoPropio), 2, '.', ''); 
+            }
+    //------------------------------------------------------------------------------------------
+            // SUB NODOS OBLIGATORIOS DE NOMINA [Receptor]
+            // Obligatorios de Receptor
+            $datos['nomina12']['Receptor']['ClaveEntFed'] = 'ROO';
+            $datos['nomina12']['Receptor']['Curp'] = $empleado[0]->curp;
+            $datos['nomina12']['Receptor']['NumEmpleado'] = $empleado[0]->no_empleado;
+            $datos['nomina12']['Receptor']['Departamento'] = $empleado[0]->depto;
+            $datos['nomina12']['Receptor']['PeriodicidadPago'] = '99'; //si el tipo de nómina es extraordinaria, se debe registrar la clave 99 (Otra Periodicidad).
+            $datos['nomina12']['Receptor']['TipoContrato'] = '01'; // 01 = Contrato de trabajo por tiempo indeterminado
+            $datos['nomina12']['Receptor']['Sindicalizado'] = $empleado[0]->sindicalizado;
+            $datos['nomina12']['Receptor']['TipoRegimen'] = '02'; // 02 = sueldos
+            $datos['nomina12']['Receptor']['TipoJornada'] = '01'; // 01 = diurna
+
+            // Opcionales de Receptor
+           
+            $datos['nomina12']['Receptor']['Antiguedad'] = $this->calcularAntiguedad($empleado[0]->fecha_ingreso,$empleado[0]->fecha); //VERIFICAR ------------- w = semanas Por excepción, este dato no aplica cuando ...
+            $datos['nomina12']['Receptor']['Banco'] = '014'; // 014 = SANTANDER VERIFICAR -------------
+            $datos['nomina12']['Receptor']['CuentaBancaria'] = $empleado[0]->no_tarjeta; //leer abajo
+            /*Si el valor de este campo contiene una cuenta CLABE (18 posiciones), no debe existir el
+            campo Banco, este dato será objeto de validación por el SAT o el proveedor de
+            certificación de CFDI, se debe confirmar que el dígito de control es correcto.*/
+            $datos['nomina12']['Receptor']['FechaInicioRelLaboral'] = $empleado[0]->fecha_ingreso; // Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+            $datos['nomina12']['Receptor']['NumSeguridadSocial'] = $empleado[0]->nss;
+            $datos['nomina12']['Receptor']['Puesto'] = $empleado[0]->puesto;
+            $datos['nomina12']['Receptor']['RiesgoPuesto'] = '1'; // 1 = clase I  Por excepción, este dato no aplica cuando el empleador realice el pago a contribuyentes asimilados a salarios
+            //$datos['nomina12']['Receptor']['SalarioBaseCotApor'] = '435.50';
+    /***/   $datos['nomina12']['Receptor']['SalarioDiarioIntegrado'] = number_format((round($SalarioDiarioIntegrado, 2)), 2, '.', '');
+
+            // NODO PERCEPCIONES
+            // Totales Obligatorios
+            $datos['nomina12']['Percepciones']['TotalGravado'] =  number_format(($importeGravado), 2, '.', ''); 
+            $datos['nomina12']['Percepciones']['TotalExento'] =  number_format(($importeExento), 2, '.', '');
+
+            $datos['nomina12']['Percepciones'][0]['TipoPercepcion'] = $conceptosNomE[0]->codigoSat;
+            $datos['nomina12']['Percepciones'][0]['Clave'] = $conceptosNomE[0]->indicador; //VERIFICAR
+            $datos['nomina12']['Percepciones'][0]['Concepto'] = $conceptosNomE[0]->nombreNomE;
+            $datos['nomina12']['Percepciones'][0]['ImporteGravado'] =number_format(($importeGravado), 2, '.', ''); 
+            $datos['nomina12']['Percepciones'][0]['ImporteExento'] = number_format(($importeExento), 2, '.', '');
+
+            //NODO OTROS PAGOS
+            if ($compenzacion) {
+               $datos['nomina12']['SubsidioAlEmpleo']['SubsidioCausado'] = number_format(($importeCompenzacion), 2, '.', ''); 
+               $datos['nomina12']['OtroPago'][0]['Clave'] = "002"; // 002 = Subsidio para el empleo (efectivamente entregado al trabajador).
+               $datos['nomina12']['OtroPago'][0]['Concepto'] = "Subsidio Al Empleo";
+               $datos['nomina12']['OtroPago'][0]['Importe'] = number_format(($importeCompenzacion), 2, '.', '');
+               $datos['nomina12']['OtroPago'][0]['TipoOtroPago'] = "002";
+
+            }
+            // Totales Opcionales
+            if ($existeTotalSueldos) {
+                $datos['nomina12']['Percepciones']['TotalSueldos'] = number_format(($totalSueldos), 2, '.', '');
+            }
+            //Nodo:SeparacionIndemnizacion
+            if ($existeSeparacion) {
+                $datos['nomina12']['Percepciones']['TotalSeparacionIndemnizacion'] =number_format(($TotalSeparacionIndemnizacion), 2, '.', ''); 
+            }
+
+            if ($existeJubilacionPR) {
+                $datos['nomina12']['Percepciones']['TotalJubilacionPensionRetiro'] =number_format(($totalJubilacionPensionRetiro), 2, '.', ''); 
+            }
+
+            if ($existeTotalUnaExhibicion) {
+                $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] =number_format(($totalUnaExhibicion), 2, '.', ''); 
+            }
+
+            
+            if ($existeTotalUnaExhibicion044) {
+                $datos['nomina12']['JubilacionPensionRetiro']['TotalUnaExhibicion'] =number_format(($totalUnaExhibicion), 2, '.', ''); 
+            }
+
+            // Acciones o Titulos en Percepciones (Todos obligatorios)
+            //$datos['nomina12']['Percepciones'][3]['AccionesOTitulos']['ValorMercado'] = '1000.00'; //En este nodo se pueden expresar los ingresos por acciones o titulos valor que representen bienes. 
+                                                                                                // Es requerido cuando existan ingresos por sueldos derivados de adquisición de acciones o títulos (Artículo 94, fracción VII LISR)
+            //$datos['nomina12']['Percepciones'][3]['AccionesOTitulos']['PrecioAlOtorgarse'] = '2000.00';
+
+            // NODO DEDUCCIONES
+     /***/  //$datos['nomina12']['Deducciones']['TotalOtrasDeducciones'] = number_format(($TotalOtrasDed), 2, '.', ''); // Opcional
+            //SE VALIDA QUE EL EMPLEADO TENGA ISR
+            if (!$compenzacion) {
+                $datos['nomina12']['Deducciones']['TotalImpuestosRetenidos'] = number_format(($TotalImpuestosReten), 2, '.', ''); // Opcional
+            }
+            
+            if (!$compenzacion) {
+                $datos['nomina12']['Deducciones'][0]['TipoDeduccion'] = "002";
+                $datos['nomina12']['Deducciones'][0]['Clave'] = "0001";
+                $datos['nomina12']['Deducciones'][0]['Concepto'] = "ISR";
+                $datos['nomina12']['Deducciones'][0]['Importe'] = number_format(($TotalImpuestosReten), 2, '.', ''); 
+            }
+            $res = mf_genera_cfdi($datos);
+
+            ///////////    MOSTRAR RESULTADOS DEL ARRAY $res   ///////////
+            //echo "<h1>Respuesta Generar XML y Timbrado</h1>";
+            foreach($res AS $variable=>$valor)
+            {
+                $valor=htmlentities($valor);
+                $valor=str_replace('&lt;br/&gt;','<br/>',$valor);
+                //echo "<b>[$variable]=</b>$valor<hr>";
+            }
+            //print_r($res);
+            $codigoError = $res['codigo_mf_numero'];
+
+            if ($codigoError == 0) {
+                //SE LEEN LOS DATOS QUE DEVUELVE EL TIMBRADO DEL CFDI Y SE GUARDA EN UNA VARIABLE (ARRAY)
+                $timbreOrdinaria = false;
+                $dataCFDI = $this->leer($res,true,"timbradosNominaExtraordinaria",null,null,$timbreOrdinaria);
+                //SE AGREGAN LOS DATOS DE LA NOMINA TIMBRADA A LA BASE DE DATOS
+                $query = $this->Nomina_model->updateTimbradoFileNomE($id_empleado, $id_nomina_e, $dataCFDI['cadenaOriginalComplemtoSAT']);
+                //SE IMPRIME EL PDF CON LOS DATOS DEL CFDI TIMBRADO
+                $this->pdfCFDIextraordinaria($dataCFDI, $id_empleado, $id_nomina_e,$nombreArchivoXML,true);
+            }else if ($codigoError == 2){
+                $query = $this->Nomina_model->deleteTimbradoFileNomE($id_empleado, $id_nomina_e);
+                $data['heading'] = "¡ERROR!";
+                $data['message'] = $res['codigo_mf_texto'];
+                $this->load->view('errors/validation/msj_validation_error', $data);
+            }else{
+                $query = $this->Nomina_model->deleteTimbradoFileNomE($id_empleado, $id_nomina_e);
+                $data['heading'] = "¡ERROR!";
+                $data['message'] = $res['codigo_mf_texto'];
+                $this->load->view('errors/validation/msj_validation_error', $data);
+            }
+        }    
+    }
+
+    public function pdfCFDIextraordinaria($dataCFDI,$id_empleado, $id_nomina_e,$nombreArchivoXML,$outputPdf){
+        ob_start();
+        //**********************************************************************************
+        //       PDF
+        //**********************************************************************************
+        $this->load->library('m_pdf');
+        $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'margin_top' => 44
+        // 'margin_bottom' => 25,
+        // 'margin_header' => 16,
+        // 'margin_footer' => 13
+        ]);
+        /**************************************** Hoja de estilos ****************************************************/
+        //$stylesheet = file_get_contents('assets/css/pdf/pdf.css');
+        $stylesheet = file_get_contents('assets/css/bootstrap.min.css');
+        $mpdf->WriteHTML($stylesheet, 1); 
+        /******************************************** head pdf ******************************************************/
+        $data['header_pdf'] = $this->Nomina_model->datos_empleado_nomina_extraordinaria($id_empleado, $id_nomina_e);
+        $data['folioN'] = $dataCFDI['folioN'];
+        $head               = $this->load->view('admin/nomina/pdf/pdf_cfdi_extraordinaria/header', $data, true);
+        $mpdf->SetHTMLHeader($head);
+        // /***************************************** contenido pdf ****************************************************/
+        $data2['header_pdf'] = $data['header_pdf'];
+        $data2['dataCFDI'] = $dataCFDI;
+        $data2['nombreArchivoXML'] = $nombreArchivoXML;
+        $data2['fecha_expedicion'] = $dataCFDI['fecha_expedicion'];
+        $conceptosNomE = $this->Nomina_model->conpcetos_nomina_ex($id_empleado, $id_nomina_e);
+        $data2['importeCompenzacion'] = $conceptosNomE[0]->importeIsrSub;
+        $html = $this->load->view('admin/nomina/pdf/pdf_cfdi_extraordinaria/contenido', $data2, true);
+        //**************************************** footer 1 ********************************************************
+        $data3['pie_pagina'] = "";
+        $footer = $this->load->view('admin/nomina/pdf/pdf_cfdi_extraordinaria/footer', $data3, true);
+        $mpdf->SetHTMLFooter($footer);
+
+        /****************************************** imprmir pagina ********************************************************/
+        $mpdf->WriteHTML($html);
+        //$mpdf->AddPage();
+        ob_clean();
+        $extencion = ".pdf";
+        $mpdf->Output('./assets/cfdi/timbradosNominaExtraordinaria/pdf/'.$nombreArchivoXML.$extencion, 'F');
+        if ($outputPdf) {
+            $mpdf->Output($nombreArchivoXML.pdf, 'I');
+        }
+        
+        if ($query) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+        //**********************************************************************************
+        //    FIN   PDF
+        //**********************************************************************************
+    }
+
+        public function timbradopdfNomE(){
+        $id_empleado = $_GET["id_emp"];
+        $id_nomina = $_GET["id_nom"];
+        $query = $this->Nomina_model->getNameFileNomE($id_nomina,$id_empleado);
+        $exte = ".pdf";
+        $filename = $query[0]->file_name;
+        $filePath = './assets/cfdi/timbradosNominaExtraordinaria/pdf/'.$filename.$exte;
+        if(file_exists($filePath)){
+            $this->downloadFile($filePath,$filename,$exte);
+        }else{
+            $exteXml = ".xml";
+            $filePathXml = './assets/cfdi/timbradosNominaExtraordinaria/xml/'.$filename.$exteXml;
+            if(file_exists($filePathXml)){
+            //SE LEEN LOS DATOS QUE DEVUELVE EL TIMBRADO DEL CFDI Y SE GUARDA EN UNA VARIABLE (ARRAY)
+            $timbreOrdinaria = false;
+            $dataCFDI = $this->leer($filename.$exteXml,false,"timbradosNominaExtraordinaria",$id_empleado,$id_nomina,$timbreOrdinaria);
+            //SE IMPRIME EL PDF CON LOS DATOS DEL CFDI TIMBRADO
+            //SI EL ULTIMO PARAMENTO ENVIADO ES == FALSE entonces SE ESTÁ RECONSTRUYENDO EL PDF DAÑADO
+            //POR LO TANTO NO SE MOSTRARÁ EL PDF EN LA VENTA
+            //SINO QUE SE GUARDARÁ EN UN DIRECTORIO PARA PODER DESCARGARSE
+            $this->pdfCFDIextraordinaria($dataCFDI, $id_empleado, $id_nomina,$filename,false);
+                if(file_exists($filePath)){
+                    $this->downloadFile($filePath,$filename,$exte);
+                }else{
+                    echo 'HUBO UN ERROR AL RECONSTRUIR EL PDF';
+                }
+            }else{
+                echo 'NO EXISTE EL ARCHIVO XML TIMBRADO.';
+            }
+
+        }
+    }
+
+    public function timbradoxmlNomE(){
+        $id_empleado = $_GET["id_emp"];
+        $id_nomina = $_GET["id_nom"];
+        $query = $this->Nomina_model->getNameFileNomE($id_nomina,$id_empleado);
+        $exte = ".xml";
+        $filename = $query[0]->file_name;
+        $filePath = './assets/cfdi/timbradosNominaExtraordinaria/xml/'.$query[0]->file_name.$exte;
+        if(file_exists($filePath)){
+            $this->downloadFile($filePath,$filename,$exte);
+        }else{
+            echo 'NO EXISTE EL ARCHIVO PDF TIMBRADO.';
+        }
+    }
 
 }

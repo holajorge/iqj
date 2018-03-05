@@ -97,7 +97,7 @@
        </tr>
        <tr>
             <td class="txt-negrita"> NIVEL:  </td> 
-            <td> <?php echo $header_pdf[0]->nivelEmpleado; ?> </td>
+            <td> <?php echo $header_pdf[0]->nivel; ?> </td>
             <td class="txt-negrita"> HORAS:  </td> 
             <td><?php echo $header_pdf[0]->horas; ?> </td>
        </tr>
@@ -107,145 +107,118 @@
        </tr>
     </tbody>
 </table>
-
-
-<table width="100%">
-    <tr>
-        <td width="50%">
-            <!-- ************************************************************************ -->
-            <!-- PERCEPCIONES-->
-            <!-- ************************************************************************ -->
-            <?php  $total_percepciones = floatval($dataCFDI['datosNomina']['TotalPercepciones']); ?>
-            <table class="tabla-color" id="" style="font-size: 10px; float:left;" width="95%">
-                <thead>
-                    <tr>
-                        <th COLSPAN="3" class="text-center success">PERCEPCIONES</th>
-                    </tr>
-                    <tr class="warning">                    
-                        <th width="15%">CÓDIGO</th>
-                        <th width="70%">DESCRIPCIÓN</th>
-                        <th class="text-right" width="15%">IMPORTE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php for ($i=0; $i < count($dataCFDI['percepciones']); $i++) { ?>
-                        <tr>
-                            <td > <?php echo $dataCFDI['percepciones'][$i]['Clave']; ?> </td>
-                            <td > <?php echo $dataCFDI['percepciones'][$i]['Concepto']; ?> </td>
-                            <?php $importePercepcion = floatval($dataCFDI['percepciones'][$i]['ImporteGravado']) + floatval($dataCFDI['percepciones'][$i]['ImporteExento']);  ?>
-                            <td class="text-right"> $<?php echo number_format($importePercepcion,2); ?> 
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                     <th class="text-right" COLSPAN="2">TOTAL</th>
-                     <th class="text-right"> $<?php echo number_format(floatval($dataCFDI['datosNomina']['TotalPercepciones']),2); ?> </th>
-                    </tr>
-                </tfoot>
-            </table>
-        </td>
-        <td width="50%">
-            <!-- ************************************************************************ -->
-            <!-- DEDUCCIONES -->
-            <!-- ************************************************************************ -->
-            <?php $total_deduccion = floatval($dataCFDI['datosNomina']['TotalDeducciones']); ?>
-            <table class="tabla-color" id="" style="font-size: 10px; float:left;" width="100%">
-                <thead>
-                    <tr>
-                        <th COLSPAN="3" class="text-center success">DEDUCCIONES</th>
-                    </tr>
-                    <tr class="warning">                    
-                        <th width="15%">CÓDIGO</th>
-                        <th width="70%">DESCRIPCIÓN</th>
-                        <th class="text-right" width="15%">IMPORTE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php for ($i=0; $i < count($dataCFDI['deducciones']); $i++) { ?>
-                        <tr>
-                            <td > <?php echo $dataCFDI['deducciones'][$i]['Clave']; ?> </td>
-                            <td > <?php echo $dataCFDI['deducciones'][$i]['Concepto']; ?> </td>
-                            <td class="text-right"> $<?php echo number_format(floatval($dataCFDI['deducciones'][$i]['Importe']),2); ?> 
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                     <th class="text-right" COLSPAN="2">TOTAL</th>
-                     <th class="text-right"> $<?php echo number_format(floatval($dataCFDI['datosNomina']['TotalDeducciones']),2); ?> </th>
-                    </tr>
-                </tfoot>
-            </table>
-        </td>
-    </tr>
-</table>
 <!-- ************************************************************************ -->
-<!-- APORTACIONES -->
+<!-- Imprimir datos de nómina extraordinaria -->
 <!-- ************************************************************************ -->
-<?php $subsidioSalario = 0; ?>
-<?php if ( !empty($aportaciones) ) { ?>
-<table class="tabla-color margen-arriba" id="" style="font-size: 10px;" width="100%">
+<?php  $total_percepciones = floatval($dataCFDI['datosNomina']['TotalPercepciones']); ?>
+<table class="tabla-color margen-arriba" id="" style="font-size: 15px; margin-top: 80px" width="100%">
     <thead>
         <tr>
-            <th COLSPAN="3" class="text-center success">APORTACIONES</th>
+            <th COLSPAN="2" class="text-center success" style="font-size: 15px;">NÓMINA EXTRAORDINARIA</th>
         </tr>
         <tr class="warning">                    
-            <th>CÓDIGO</th>
-            <th>DESCRIPCIÓN</th>
-            <th class="text-right">IMPORTE</th>
+            <th style="font-size: 15px;">CONCEPTO</th>            
+            <th class="text-center" style="font-size: 15px;" class="text-right">VALOR</th>
         </tr>
     </thead>
-    <tbody id="">
-            <?php $total_aportaciones = 0; ?>
-            <?php foreach ($aportaciones as $fila){ ?>
-            <tr class="success">
-                <td width="15%"> 
-                    <?php echo $fila->indicador; ?>
-                    <?php if ((int)$fila->id_aportacion == 9): ?>
-                        <?php $subsidioSalario = $fila->importe; ?>
-                    <?php endif ?>
-                </td>
-                <td width="70%"> <?php echo $fila->nombre; ?> </td>
-                <td width="15%" class="text-right"> $<?php echo number_format($fila->importe,2); ?> </td>
-            </tr>
-            <?php $total_aportaciones += $fila->importe; ?>
-            <?php } ?>
-        
+    <tbody>
+        <?php
+            $importeGravado = floatval($dataCFDI['percepciones'][0]['ImporteGravado']);
+            $ImporteExento = floatval($dataCFDI['percepciones'][0]['ImporteExento']);
+            $totalImpuestosRetenidos = floatval($dataCFDI['totalDeducciones']['TotalImpuestosRetenidos']);
+            $totalImporte = $importeGravado + $ImporteExento;
+        ?>           
+        <tr>
+            <td width="50%" > TOTAL IMPORTE </td>
+            <td width="50%" class="text-right"> $<?php echo number_format($totalImporte,2); ?> </td>          
+        </tr>
+        <tr>
+            <td> IMPORTE EXENTO </td>
+            <td class="text-right"> $<?php echo number_format($ImporteExento,2); ?> </td>          
+        </tr>
+        <tr>
+            <td> IMPORTE GRAVABLE </td>
+            <td class="text-right"> $<?php echo number_format($importeGravado,2); ?> </td>          
+        </tr>
+        <tr>
+            <td width="15%" >
+                <?php if ($totalImpuestosRetenidos > 0): ?> 
+                    ISR
+                <?php else: ?>
+                    SUBSIDIO
+                <?php endif ?>
+            </td>
+            <td width="70%" class="text-right">
+                <?php if ($totalImpuestosRetenidos > 0): ?> 
+                    $<?php echo number_format($totalImpuestosRetenidos,2); ?>
+                <?php else: ?>
+                    $<?php echo number_format($importeCompenzacion,2);  ?> 
+                <?php endif ?> 
+            </td>          
+        </tr>      
     </tbody>
     <tfoot>
-        <tr>
-         <th class="text-right" COLSPAN="2">TOTAL</th>
-         <th class="text-right"> $<?php echo number_format($total_aportaciones,2); ?></th>
-        </tr>
     </tfoot>
 </table>
-<?php } ?>
 <!-- ************************************************************************ -->
 <!-- Imprimir Líquido -->
 <!-- ************************************************************************ -->
-<?php $liquido = $total_percepciones - $total_deduccion; ?>
-<h5 class="text-right"> 
-    <strong> Líquido: $<?php echo number_format($liquido,2); ?> </strong> <br>
-    <?php if ($subsidioSalario > 0): ?>
-        Subsidio al salario: $<?php echo number_format($subsidioSalario,2); ?><br>
-        Total: $<?php echo number_format(($subsidioSalario + $liquido),2); ?>
-    <?php endif ?>
-</h5>
+
+<?php 
+    if ($totalImpuestosRetenidos > 0){
+        $liquido = $totalImporte - $totalImpuestosRetenidos;  
+    }else{
+        $liquido = $totalImporte + $importeCompenzacion;
+    }
+?>
+<table width="100%" class="margen-arriba">
+    <tr>
+        <td width="70%"></td>
+        <td width="15%" class="text-left">Total Importe:</td>
+        <td width="15%" class="text-right">$<?php echo number_format($totalImporte,2); ?></td>
+    </tr>
+    <tr>
+        <td width="70%"></td>
+        <td width="15%" class="text-left">
+            <?php if ($totalImpuestosRetenidos > 0): ?>
+                ISR
+            <?php else: ?>
+                Subsidio
+            <?php endif ?>
+        </td>
+        <td width="15%" class="text-right">
+            <?php if ($totalImpuestosRetenidos > 0): ?>
+                - 
+            <?php else: ?>
+                + 
+            <?php endif ?>
+            $<?php echo number_format($importeCompenzacion,2); ?>
+        </td>
+    </tr>
+    <tr>
+        <td width="70%"></td>
+        <td width="15%" class="text-left">Líquido:</td>
+        <td width="15%" class="text-right">$<?php echo number_format($liquido,2); ?></td>
+    </tr>
+</table>
 <!-- ************************************************************************ -->
 <!-- ÁREA DE FIRMAS -->
 <!-- ************************************************************************ -->
-<hr style="width: 200px; margin-bottom: 0; margin-top: 40px;" />
+<hr style="width: 200px; margin-bottom: 0; margin-top: 50px;" />
 <h5 class="text-center" style="margin-top: 0;">
-    <?php echo $header_pdf[0]->empleado." ".$header_pdf[0]->ap_paterno." ".$header_pdf[0]->ap_materno; ?>
+    <?php
+        echo $header_pdf[0]->empleado;
+        echo " ";
+        echo $header_pdf[0]->ap_paterno;
+        echo " ";
+        echo $header_pdf[0]->ap_materno;
+    ?>
 </h5>
 <h5 class="text-center">
     RECIBÍ TRANSFERENCIA
 </h5>
 <h5 class="text-center">
-    $<?php echo number_format(($subsidioSalario + $liquido),2); ?>  
+    $<?php echo number_format($liquido,2); ?>
 </h5>
 <!-- ************************************************************************ -->
 <!-- CÓDIGO QR -->
@@ -254,7 +227,7 @@
     <table width="100%">
         <tr>
            <td width="30%">
-               <img class="img-QR" src="<?php echo base_url();?>assets/cfdi/timbrados/xml/<?php echo $nombreArchivoXML.'.png'; ?>" alt="">
+               <img class="img-QR" src="<?php echo base_url();?>assets/cfdi/timbradosNominaExtraordinaria/xml/<?php echo $nombreArchivoXML.'.png'; ?>" alt="">
            </td> 
             <td width="70%">
                 <table width="100%" class="tabla-color txt-table-info-cfdi">
