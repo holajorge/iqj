@@ -25,6 +25,19 @@ class Periodos_model extends CI_Model {
        $this->db->where('id_nomina', $id);
       return $this->db->update('tab_nomina', $periodo);
    }
+
+   /*Nuevo*/
+   public function deletNominaEmpleado($id_empleado,$id_nomina){
+      $this->db->query("DELETE FROM empleadosxaportaciones
+                        WHERE empleadosxaportaciones.id_empleado = ".$id_empleado." 
+                        AND empleadosxaportaciones.id_nomina = ".$id_nomina);
+      $this->db->query("DELETE FROM empleadosxdeducciones
+                        WHERE empleadosxdeducciones.id_empleado = ".$id_empleado." 
+                        AND empleadosxdeducciones.id_nomina = ".$id_nomina);
+      return $this->db->query("DELETE FROM empleadosxpercepciones
+                        WHERE empleadosxpercepciones.id_empleado = ".$id_empleado." 
+                        AND empleadosxpercepciones.id_nomina = ".$id_nomina);
+   }
 }
 
 /* End of file Periodos_model.php */

@@ -18,10 +18,10 @@
 <table  class="table table-striped txt-header-pdf " style="margin-top: 2rem; font-size: 12px;">
     <tbody id="">
        <tr>
-            <td > No. de plaza: </td> 
-            <td style="font:bold 12px"> <?php echo $header_pdf[0]->no_plaza; ?> </td>
-            <td> No. de empleado: </td> 
-            <td style="font:bold 12px"> <?php echo $header_pdf[0]->no_empleado; ?> </td> 
+            <td width="12%"> No. de plaza: </td> 
+            <td width="33%" style="font:bold 12px"> <?php echo $header_pdf[0]->no_plaza; ?> </td>
+            <td width="15%"> No. de empleado: </td> 
+            <td width="35%" style="font:bold 12px"> <?php echo $header_pdf[0]->no_empleado; ?> </td> 
        </tr>
        <tr>
             <td> Nombre:  </td> 
@@ -59,51 +59,44 @@
 <!-- PERCEPCIONES-->
 <!-- ************************************************************************ -->
 
-<table class="tabla-color margen-arriba" id="" style="font-size: 12px; margin-top: 80px" width="100%">
+<table class="tabla-color margen-arriba" id="" style="font-size: 15px; margin-top: 80px" width="100%">
     <thead>
         <tr>
-            <th COLSPAN="3" class="text-center success" style="font-size: 15px;">NÓMINA EXTRAORDINARIA</th>
+            <th COLSPAN="2" class="text-center success" style="font-size: 15px;">NÓMINA EXTRAORDINARIA</th>
         </tr>
         <tr class="warning">                    
-            <th style="font-size: 15px;">CODIGO</th>            
-            <th class="text-center" style="font-size: 15px;">IMPORTE</th>
-            <th class="text-right" style="font-size: 15px;">
-                <?php if ($detalles[0]->isr > 0): ?>
-                    ISR
-                <?php else: ?>
-                    COMPENSACIÓN
-                <?php endif ?>
-            </th>
+            <th style="font-size: 15px;">CONCEPTO</th>            
+            <th class="text-center" style="font-size: 15px;" class="text-right">VALOR</th>
         </tr>
     </thead>
     <tbody>
-        <?php $total_extraordinaria = 0; ?>
-        <?php $menosIsr = 0; ?>
-        <?php foreach ($detalles as $fila){ ?>            
-            <tr>
-                <td width="15%" > <?php echo $fila->no_plaza; ?> </td>
-                <td width="70%" class="text-right"> $<?php echo number_format($fila->importe,2); ?> </td>
-                <td width="15%" class="text-right">
-                    <?php if ($fila->isr > 0): ?>
-                        $<?php echo number_format($fila->isr,2); ?>
-                    <?php else: ?>
-                        $<?php echo number_format($fila->subsidio,2); ?>
-                    <?php endif ?> 
-                    
-                        
-                </td> 
-                
-            </tr>
-         <?php $menosIsr += $fila->isr; ?>           
-        <?php $total_extraordinaria += $fila->importe;?>        
-        <?php } ?>
+        <?php 
+            $totalImporte = $detalles[0]->importeExento + $detalles[0]->importeGravado;
+        ?>           
+        <tr>
+            <td width="50%" > TOTAL IMPORTE </td>
+            <td width="50%" class="text-right"> $<?php echo number_format($totalImporte,2); ?> </td>          
+        </tr>
+        <tr>
+            <td> IMPORTE EXENTO </td>
+            <td class="text-right"> $<?php echo number_format($detalles[0]->importeExento,2); ?> </td>          
+        </tr>
+        <tr>
+            <td> IMPORTE GRAVABLE </td>
+            <td class="text-right"> $<?php echo number_format($detalles[0]->importeGravado,2); ?> </td>          
+        </tr>
+        <tr>
+            <td width="15%" >
+                <?php if ($detalles[0]->isrSubsidio == 0): ?>
+                    ISR
+                <?php else: ?>
+                    SUBSIDIO
+                <?php endif ?>
+            </td>
+            <td width="70%" class="text-right"> $<?php echo number_format($detalles[0]->importeIsrSub,2); ?> </td>          
+        </tr>      
     </tbody>
     <tfoot>
-        <tr>
-         <th>TOTAL</th>
-         <th class="text-right"> $<?php echo number_format($total_extraordinaria,2); ?> </th>
-        </tr>
-        <th></th>
     </tfoot>
 </table>
 
@@ -112,13 +105,42 @@
 <!-- ************************************************************************ -->
 
 <?php 
-    if ($detalles[0]->isr > 0){
-        $liquido = $total_extraordinaria - $menosIsr;  
+    if ($detalles[0]->isrSubsidio == 0){
+        $liquido = $totalImporte - $detalles[0]->importeIsrSub;  
     }else{
-        $liquido = $total_extraordinaria + $detalles[0]->subsidio;
+        $liquido = $totalImporte + $detalles[0]->importeIsrSub;
     }
 ?>
-<h5 class="text-right"> <strong> Líquido: $<?php echo number_format($liquido,2); ?> </strong></h5>
+<table width="100%" class="margen-arriba">
+    <tr>
+        <td width="70%"></td>
+        <td width="15%" class="text-left">Total Importe:</td>
+        <td width="15%" class="text-right">$<?php echo number_format($totalImporte,2); ?></td>
+    </tr>
+    <tr>
+        <td width="70%"></td>
+        <td width="15%" class="text-left">
+            <?php if ($detalles[0]->isrSubsidio == 0): ?>
+                Isr
+            <?php else: ?>
+                Subsidio
+            <?php endif ?>
+        </td>
+        <td width="15%" class="text-right">
+            <?php if ($detalles[0]->isrSubsidio == 0): ?>
+                - 
+            <?php else: ?>
+                + 
+            <?php endif ?>
+            $<?php echo number_format($detalles[0]->importeIsrSub,2); ?>
+        </td>
+    </tr>
+    <tr>
+        <td width="70%"></td>
+        <td width="15%" class="text-left">Líquido:</td>
+        <td width="15%" class="text-right">$<?php echo number_format($liquido,2); ?></td>
+    </tr>
+</table>
 <!-- ************************************************************************ -->
 <!-- ÁREA DE FIRMAS -->
 <!-- ************************************************************************ -->

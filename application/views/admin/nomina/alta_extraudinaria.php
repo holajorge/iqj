@@ -142,53 +142,87 @@
 					    	<!-- **************************************************** -->
 					    	<!-- VISTA DE NOMINA EXTRAORDINARIA -->
 					    	<!-- **************************************************** -->					    	
-				    		<h3 class="text-center">Nómina Extraodinaria</h3>				    		
+				    		<h3 class="text-center">Nómina Extraodinaria</h3>
+				    		<h2 id="id_mostrar_datos_nomina" class="text-center"> </h2>				    		
 					    	<div class=" m-b-sm border-bottom">
 								<form id="guardaExtraordinario">
 									<input type="hidden" id="idEditar" name="id" >
 					                <div class="row">
-					                    <div class="col-lg-6">
-											<label for="">Seleccione uno o Crea uno Nuevo </label>
+					                	<div class="col-lg-2">
+											<label for="anioNomE">Año</label>
+											<select class="form-control" id="anioNomE" name="anioNomE" onchange="updateConpceptoNomE(value);" tabindex="1" style="width: 70%">
+												<?php if ($yearsNominaE != null ): ?>
+													<?php $x=1; ?>
+													<?php foreach ($yearsNominaE as $anio): ?>
+														<?php if (count($yearsNominaE) == $x): ?>
+															<option selected value="<?php echo $anio->year?>">
+																<?php echo $anio->year ?>
+															</option>
+														<?php else: ?>
+															<option value="<?php echo $anio->year?>">
+																<?php echo $anio->year ?>
+															</option>
+														<?php endif ?>
+													<?php $x++; ?>	
+													<?php endforeach ?>
+												<?php else: ?>
+												<?php endif ?>
+											</select>
+					                    </div>
+					                    <div class="col-lg-4">
+											<label for="">Seleccione uno o Cree uno Nuevo </label>
 											<select class="form-control inline" id="dia" name="dia" onchange="validarNoDuplicidad(value);" tabindex="1" style="width: 70%">
 												<option selected disabled hidden>Seleccione Concepto</option>
 												<?php if ($extraordinarios != null ): ?>
 													<?php foreach ($extraordinarios as $concepto): ?>
-														<option value="<?php echo $concepto->id_concepto_extraordinario?>">
-															<?php echo $concepto->nombre ?>
+														<option value="<?php echo $concepto->id_nomina_e?>">
+															<?php echo $concepto->nombre ?>														
 														</option>
 													<?php endforeach ?>
 												<?php else: ?>
 												<?php endif ?>
 											</select>
-											<a class="btn btn-info  pull-right" data-toggle="modal" data-target="#crearExtraordinario"><span class="glyphicon  glyphicon-plus"></span> Crear Nuevo</a>
+											<a class="btn btn-info  pull-right" data-toggle="modal" data-target="#crearExtraordinario"><span class="glyphicon  glyphicon-plus"></span>Nuevo</a>
 					                    </div>	
-					                    <div class="col-lg-2">
-					                        <div class="form-group" id="reloadExtra">
-					                        	<label for="depto">Importe</label>
-					                            <input type="number" class="form-control" name="importe">
-					                        </div>
-					                    </div>	
-					                    <div class="col-lg-2">
-					                        <div class="form-group" id="reloadExtra">
-					                        	<label for="depto">ISR</label>
-					                            <input type="number" class="form-control" name="isr">
-					                        </div>
-					                    </div>
-										<div class="col-lg-2">
-											<div class="form-group" id="reloadExtra">
-												<label for="depto">COMPENSACIÓN</label>
-												<input type="number" class="form-control " name="subsidio">
-											</div>
-										</div>
 					                </div>
 					                <div class="row">
-					                	<div class="col-sm-4">						                		
+					                	<div class="col-lg-2">
+					                        <div class="form-group" id="reloadExtra">
+					                        	<label for="depto">Total Importe</label>
+					                            <input type="number" class="form-control" name="importe" id="importe" onchange="calcularImporteGravado()" onkeyup="calcularImporteGravado()">
+					                            <label for="depto" style="color: red;" id="msjErrorTotalImp"></label>
+					                        </div>
 					                    </div>
-					                    <div class="col-sm-6">	
-					                		
+					                    <div class="col-lg-2">
+					                        <div class="form-group" id="reloadExtra">
+					                        	<label for="importeExento">Importe Exento</label>
+					                            <input type="number" class="form-control" name="importeExento" id="importeExento" onchange="calcularImporteGravado()" onkeyup="calcularImporteGravado()">
+					                            <label for="depto" style="color: red;" id="msjErrorImpExcento"></label>
+					                        </div>
 					                    </div>
-					                    <div class="col-sm-2">	
-					                		<button type="submit" class="btn btn-primary input-lg pull-right" onclick="insetaNominaExtaordinaria()"><span class="glyphicon glyphicon-floppy-saved" ></span> Guardar</button>			                    	
+					                    <div class="col-lg-2">
+					                        <div class="form-group" id="reloadExtra">
+					                        	<label for="importeGravado">Importe Gravable</label>
+					                            <input type="number" class="form-control" name="importeGravado" id="importeGravado" disabled="true">
+					                        </div>
+					                    </div>
+					                    <div class="col-lg-1">
+					                    	<div class="radio">
+											  	<label><input type="radio" name="isrSubsidio" value="0">ISR</label>
+											</div>
+											<div class="radio">
+											  	<label><input type="radio" name="isrSubsidio" value="1">SUBSIDIO</label>
+											</div>
+					                    </div>	
+										<div class="col-lg-2">
+											<div class="form-group" id="reloadExtra">
+												<label for="impSubsidioIsr"></label>
+												<input type="number" class="form-control " name="impSubsidioIsr" id="impSubsidioIsr" onchange="calcularImporteGravado()" onkeyup="calcularImporteGravado()">
+												<label for="impSubsidioIsr" style="color: red;" id="labelErrorimpSubsidioIsr"></label>
+											</div>
+										</div>
+										<div class="col-sm-2">	
+					                		<button id="btnGuardarNominaExtraordinaria" type="submit" style="display: none;" class="btn btn-primary input-lg pull-right" onclick="insetaNominaExtaordinaria()"><span class="glyphicon glyphicon-floppy-saved" ></span> Guardar</button>			                    	
 					                    </div>
 					                </div>
 								</form>
@@ -213,16 +247,38 @@
             </div>
             <div class="modal-body">                    
                 <div class="row">
-                    <div class="col-xs-12 col-sm-5 col-md-5">
+                    <div class="col-xs-12 col-sm-12 col-md-5">
                         <div class="form-group ">
                             <label for="fecha">FECHA</label>
-                            <input type="date" name="fecha" id="fecha" class="form-control input-lg" tabindex="1">
+                            <input type="date" name="fecha" id="fecha" class="form-control" tabindex="1">
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-9">
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
                             <label for="nombre">NOMBRE</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control input-lg" tabindex="2">
+                            <input type="text" name="nombre" id="nombre" class="form-control" tabindex="2">
+                        </div>
+                    </div>
+                 </div>
+                 <div class="row">   
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <label for="">TIPO DE CONCEPTO </label>
+							<select class="form-control" id="tipoConcepto" name="tipoConcepto" onchange="" tabindex="3">
+								<option selected disabled hidden>Seleccione Concepto</option>
+								<?php if ($tipoConceptoExtraordinario != null ): ?>
+									<?php foreach ($tipoConceptoExtraordinario as $concepto): ?>
+										<option value="<?php echo $concepto->id_concepto_extraordinario?>">
+											Indicador: <?php echo $concepto->indicador ?> -
+											Código del SAT: <?php echo $concepto->codigoSat ?> -
+											<?php echo $concepto->nombre ?>
+										</option>
+									<?php endforeach ?>
+								<?php else: ?>
+								<?php endif ?>
+							</select>
                         </div>
                     </div>                                    
                 </div>                            
