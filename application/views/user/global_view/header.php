@@ -54,12 +54,12 @@
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
                       <div class="dropdown profile-element"> <span>
-                          <img alt="image" width="140" class="img-circle" style="ime-mode: center" src="<?php echo base_url('assets/img/logo/logo.png')?>" />
+                          <img alt="image" width="140" class="img-circle" style="ime-mode: center" src="<?php echo base_url('assets/img/logo/original.png')?>" />
                           </span>
                           <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> 
                                 <span class="block m-t-xs"> 
-                                   <strong class="font-bold text-center"><?php echo  $this->session->userdata('nombre').' '.$this->session->userdata('apellido').' '.$this->session->userdata('materno'); ?></strong>
+                                   <strong class="font-bold text-center"><?php echo  $this->session->userdata('nombre').' '.$this->session->userdata('apellidos'); ?></strong>
                                 </span> 
                                 <span class="text-muted text-xs block"> ADMINISTRAR PERFIL <b class="caret"></b>
                                 </span> 
