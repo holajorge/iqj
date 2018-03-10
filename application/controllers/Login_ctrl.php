@@ -19,61 +19,60 @@ class Login_ctrl extends CI_Controller {
         }
 	}
 
-	public function autentificarUser(){
+    public function autentificarUser(){
 
-		if ($this->input->post()) {
+        if ($this->input->post()) {
 
             $rfc = $this->input->post('rfc');
-            $fila = $this->Login_model->authUserRoot($rfc);
-
-            if($fila){
-                /*PARA QUE LOS USUARIOS CHEQUEN SUS ARCHIVOS */
-                if (empty($fila[0]->tipo_usuario)){
-                    if ($this->bcrypt->check_password($this->input->post('password'), $fila[0]->password)) {
-                        $data = array(
-                            'id_empleado' => $fila[0]->id_empleado,
-                            'nombre' => $fila[0]->nombre,
-                            'apellido' => $fila[0]->ap_paterno,
-                            'materno' => $fila[0]->ap_materno,
-                            'rfc' => $fila[0]->rfc,
-                            'logged_in' => TRUE
-                        );
-                        $this->session->set_userdata($data);
-                        redirect('Files_employee');
-                    }
+            $query1 = $this->Login_model->loginUserEmpleadoXusuario($rfc);
+            $query2 = $this->Login_model->loginUserSistema($rfc);
+            $query3 = $this->Login_model->loginUserTimbres($rfc);
+            if($query1){
+                if ($this->bcrypt->check_password($this->input->post('password'), $query1[0]->password)) {
+                    $data = array(
+                        'id_empleado' => $query1[0]->id_empleado,
+                        'nombre' => $query1[0]->nombre,
+                        'apellidos' => $query1[0]->ap_paterno.' '.$query1[0]->ap_materno,
+                        'rfc' => $query1[0]->rfc,
+                        'tipo_usuario' => $query1[0]->tipo_usuario,
+                        'root' => true,
+                        'logged_in' => TRUE
+                    );
+                    $this->session->set_userdata($data);
+                    redirect('Admin_controller');
+                }else {
+                    $this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');
+                    redirect('Login_ctrl');
                 }
-                if ($fila[0]->tipo_usuario == "root") {
-                    if ($this->bcrypt->check_password($this->input->post('password'), $fila[0]->password)) {
-                        $data = array(
-                            'id_empleado' => $fila[0]->id_empleado,
-                            'id_usuario' => $fila[0]->id_usuario,
-                            'nombre' => $fila[0]->nombre,
-                            'apellidos' => $fila[0]->ap_paterno. ' ' .$fila[0]->ap_materno,
-                            'logged_in' => TRUE,
-                            'tipo_usuario' => $fila[0]->tipo_usuario
-                        );
-                        $this->session->set_userdata($data);
-                        redirect('Admin_controller');
-                    }
+            }else if($query2){
+                if ($this->bcrypt->check_password($this->input->post('password'), $query2[0]->password)) {
+                    $data = array(
+                        'nombre' => $query2[0]->nombre,
+                        'apellidos' => $query2[0]->apellidos,
+                        'rfc' => $query2[0]->rfc,
+                        'tipo_usuario' => $query2[0]->tipo_usuario,
+                        'admin' => true,
+                        'logged_in' => TRUE
+                    );
+                    $this->session->set_userdata($data);
+                    redirect('Admin_controller');
+                }else {
+                    $this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');
+                    redirect('Login_ctrl');
                 }
-                if ($fila[0]->tipo_usuario == "admin") {
-                    if ($this->bcrypt->check_password($this->input->post('password'), $fila[0]->password)) {
-                        $data = array(
-                            'id_usuarioxsistema' => $fila[0]->id_usuarioxsistema,
-                            'nombre' => $fila[0]->nombre,
-                            'apellidos' => $fila[0]->apellidos,
-                            'rfc' => $fila[0]->rfc,
-                            'logged_in' => TRUE,
-                            'tipo_usuario' => $fila[0]->tipo_usuario
-                        );
-                        $this->session->set_userdata($data);
-                        redirect('Admin_controller');
-                    }else {
-                        $this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');
-                        redirect('Login_ctrl');
-                    }
-                }
-                else {
+            }else if ($query3){
+                if ($this->bcrypt->check_password($this->input->post('password'), $query3[0]->password)) {
+                    $data = array(
+                        'id_empleado' => $query3[0]->id_empleado,
+                        'nombre' => $query3[0]->nombre,
+                        'apellidos' => $query3[0]->ap_paterno.' '.$query3[0]->ap_materno,
+                        'rfc' => $query3[0]->rfc,
+                        'verTimbre' => TRUE,
+                        'logged_in' => TRUE
+                    );
+                    $this->session->set_userdata($data);
+                    redirect('Files_employee');
+                }else {
                     $this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');
                     redirect('Login_ctrl');
                 }
@@ -81,15 +80,29 @@ class Login_ctrl extends CI_Controller {
                 $this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');
                 redirect('Login_ctrl');
             }
-
+        }else {
+            $this->session->set_flashdata('error', '<strong style="color: red">Usuario o Contraseña Incorrecto*</strong>');
+            redirect('Login_ctrl');
         }
-	}
+    }
     public function cerrar_sesion() 
 	{
 	   $this->session->sess_destroy();
 	   redirect('Login_ctrl');
 	}
+    public function error(){
 
+        if ($this->session->userdata('tipo_usuario')== "root") {
+            redirect('Admin_controller');
+        }
+        if ($this->session->userdata('tipo_usuario')=="admin") {
+            redirect('Admin_controller');
+        }
+        if ($this->session->userdata('verTimbre')== TRUE) {
+            redirect('Files_employee');
+        }
+
+    }
 }
 
 /* End of file Login_crtl.php */

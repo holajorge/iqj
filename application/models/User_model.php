@@ -12,12 +12,27 @@ class User_model extends CI_Model {
                                      u.id_usuario, u.tipo_usuario as 'usuario'
                                   FROM cat_usuarios u ,cat_usuarioxsistema exu 
                                   WHERE u.id_usuario = exu.id_usuario 
-                                        AND u.tipo_usuario = 'admin'  ");
+                                        ");
 	    if ($query->num_rows() > 0) {
 	        return $query->result();
 	    } else {
 	        return false;
 	    }
+    }
+    public function getAllUsuariosEmpleados(){
+
+        $query = $this->db->query("SELECT empleadosxusuario.id_empleadoxusuario, empleadosxusuario.id_empleado, empleadosxusuario.status,
+                                            cat_empleados.nombre , cat_empleados.ap_paterno, cat_empleados.ap_materno ,  cat_empleados.rfc, cat_empleados.no_plaza,
+                                            cat_usuarios.tipo_usuario as 'usuario' 
+                                    FROM cat_usuarios,empleadosxusuario, cat_empleados
+                                    WHERE cat_usuarios.id_usuario = empleadosxusuario.id_usuario 
+                                            AND cat_empleados.id_empleado = empleadosxusuario.id_empleado                                      
+                                          ORDER BY cat_empleados.no_plaza ");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
     }
     public function getAllTipoUser(){
 
@@ -30,7 +45,6 @@ class User_model extends CI_Model {
 	    } else {
 	        return false;
 	    }
-
     }
     /*  NO SE ESTA USANDO */
     public function getAllEmpleado(){
@@ -53,7 +67,18 @@ class User_model extends CI_Model {
 	    }
     }
     /* fin ESTE METODO*/
-
+    public function getAllEmploye_casiUser(){
+        $query = $this->db->query("select cat_empleados.id_empleado, cat_empleados.no_plaza, cat_empleados.rfc, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno
+                                    from cat_empleados
+                                    left join empleadosxusuario on empleadosxusuario.id_empleado = cat_empleados.id_empleado
+                                    where empleadosxusuario.id_empleado IS NULL
+                                            ORDER BY cat_empleados.no_plaza");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 	public function getInfoProfile($id_empleado){
 
 		$query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.no_plaza,cat_empleados.no_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, 
@@ -89,24 +114,38 @@ class User_model extends CI_Model {
         $this->db->where('id_usuarioxsistema', $id_usuarioxsistema);
         return $this->db->update('cat_usuarioxsistema', $cambio);
     }
-
-    public function saveUserType($alta){
+    public function save_user_no_registrado($alta){
 		return $this->db->insert('cat_usuarioxsistema', $alta);
 	}
-
+    public function guardaUsuarioRegistrado($alta){
+        return $this->db->insert('empleadosxusuario', $alta);
+    }
 	public function deshabilitarUsuario($id){
 
 		$deshabilitar = array('status' => 0);
         $this->db->where('id_usuarioxsistema', $id);
-   		return $this->db->update('empleadosxusuario', $deshabilitar);
+   		return $this->db->update('cat_usuarioxsistema', $deshabilitar);
 	}
+	public function deshabilitarUsuarioEmpleado($id){
+
+        $deshabilitar = array('status' => 0);
+        $this->db->where('id_empleadoxusuario', $id);
+        return $this->db->update('empleadosxusuario', $deshabilitar);
+
+    }
 	public function habilitarUsuario($id){
 
 		$habilitar = array('status' => 1);
-
-              $this->db->where('id_empleadoxusuario', $id);
-      return  $this->db->update('empleadosxusuario', $habilitar);
+              $this->db->where('id_usuarioxsistema', $id);
+      return  $this->db->update('cat_usuarioxsistema', $habilitar);
 	}
+	public function habilitarUsuarioEmpleado($id){
+
+        $habilitar = array('status' => 1);
+
+        $this->db->where('id_empleadoxusuario', $id);
+        return  $this->db->update('empleadosxusuario', $habilitar);
+    }
     public function getListEmployeeChangePass(){
         $this->db->select("cat_empleados.id_empleado, cat_empleados.horas, cat_empleados.nss, cat_empleados.status , cat_empleados.no_empleado, cat_empleados.no_plaza, cat_empleados.nombre AS nombre_emp, 
                         cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.fecha_nacimiento,  cat_empleados.curp, 
@@ -126,8 +165,10 @@ class User_model extends CI_Model {
             return false;
         }
     }
-
-
+    public function editUserEmployeRegister($id_empleadoxusuario, $datos){
+        $this->db->where('id_empleadoxusuario', $id_empleadoxusuario);
+        return $this->db->update('empleadosxusuario', $datos);
+    }
 }
 
 /* End of file User_model.php */

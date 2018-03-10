@@ -149,6 +149,8 @@ function searchConcepto(id_componente) {
 			var obj = JSON.parse(respuesta);
 			if (obj.resultado === true) {
 				document.getElementById('showNameComponente').innerHTML= obj.nombreComponente[0].nombre;
+			}else{
+                document.getElementById('showNameComponente').innerHTML= "TODO";
 			}
 		}
 	});
@@ -279,6 +281,7 @@ function listaEmpleados(indicador) {
 							html +=		"<th>Apellido Paterno</th>";
 							html +=		"<th>Apellido Materno</th>";
 							html +=		"<th>IMPORTE</th>";
+							html +=		"<th class='text-center'>CLAVE COMPONENTE</th>";
 						html +=		"</tr>";
 						html += "</thead>";
 						html += "<tbody>";
@@ -289,6 +292,7 @@ function listaEmpleados(indicador) {
 								html += "<td><label id='ap_paterno'>" + obj.employees[l].ap_paterno +"</label></td>";
 								html += "<td><label id='ap_materno'>" + obj.employees[l].ap_materno +"</label></td>";
 								html += "<td><label id='rfc'>" + obj.employees[l].importe + "</label></td>";
+								html += "<td class='text-center'><label id='clave'>" + obj.employees[l].clave + "</label></td>";
 							html += "</tr>";
 							num_fila ++;
 						}
@@ -329,6 +333,7 @@ function listaEmpleadosDeuccion(indicador) {
 				html +=		"<th>Apellido Paterno</th>";
 				html +=		"<th>Apellido Materno</th>";
 				html +=		"<th>IMPORTE</th>";
+                html +=		"<th class='text-center'>CLAVE COMPONENTE</th>";
 				html +=		"</tr>";
 				html += "</thead>";
 				html += "<tbody>";
@@ -339,6 +344,7 @@ function listaEmpleadosDeuccion(indicador) {
 					html += "<td><label id='ap_paterno'>" + obj.employees[l].ap_paterno +"</label></td>";
 					html += "<td><label id='ap_materno'>" + obj.employees[l].ap_materno +"</label></td>";
 					html += "<td><label id='importe'>" + obj.employees[l].importe + "</label></td>";
+                    html += "<td class='text-center'><label id='clave'>" + obj.employees[l].clave + "</label></td>";
 					html += "</tr>";
 					num_fila ++;
 				}
@@ -365,7 +371,7 @@ function listaEmpleadosAportacion(indicador) {
 	$.ajax({
 		type: "POST",
 		url:baseURL + "Reportes_nomina_ctrl/getAllEmpleadosConsultaAportacionAjax",
-		data: {anio: anio, indicador: indicador,id_nomina:id_nomina, id_componente, id_componente },
+		data: {anio: anio, indicador: indicador,id_nomina:id_nomina, id_componente: id_componente },
 		success: function(respuesta) {
 			var obj = JSON.parse(respuesta);
 			console.log(obj);
@@ -380,6 +386,7 @@ function listaEmpleadosAportacion(indicador) {
 				html +=		"<th>Apellido Paterno</th>";
 				html +=		"<th>Apellido Materno</th>";
 				html +=		"<th>IMPORTE</th>";
+                html +=		"<th class='text-center'>CLAVE COMPONENTE</th>";
 				html +=		"</tr>";
 				html += "</thead>";
 				html += "<tbody>";
@@ -390,6 +397,7 @@ function listaEmpleadosAportacion(indicador) {
 					html += "<td><label id='ap_paterno'>" + obj.employees[l].ap_paterno +"</label></td>";
 					html += "<td><label id='ap_materno'>" + obj.employees[l].ap_materno +"</label></td>";
 					html += "<td><label id='importe'>" + obj.employees[l].importe + "</label></td>";
+                    html += "<td class='text-center'><label id='clave'>" + obj.employees[l].clave + "</label></td>";
 					html += "</tr>";
 					num_fila ++;
 				}

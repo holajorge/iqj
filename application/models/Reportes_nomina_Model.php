@@ -7,8 +7,7 @@ class Reportes_nomina_Model extends CI_Model {
       parent::__construct();
       $this->load->database();
     }
-
-      public function getComponentes(){
+    public function getComponentes(){
       $this->db->select("*");
         $this->db->from("cat_componentes");
         $this->db->order_by("id_componente", "asc");
@@ -19,7 +18,6 @@ class Reportes_nomina_Model extends CI_Model {
           return false;
        }
     }
-
     public function getComponenteIndividual($id){
         $this->db->select("*");
         $this->db->from("cat_componentes");
@@ -32,7 +30,6 @@ class Reportes_nomina_Model extends CI_Model {
           return false;
        }
     }
-
     public function gelAllYear(){
     	
     	$query = $this->db->query("SELECT id_nomina, YEAR(periodo_inicio) as year from tab_nomina group by year");
@@ -75,7 +72,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     //*****************************************************************************************
     //SE CALCULA LA SUMA DE CADA UNO DE LOS CONCEPTOS DE LAS PERCEPCIONES
     //*****************************************************************************************
@@ -120,7 +116,6 @@ class Reportes_nomina_Model extends CI_Model {
      
       return $totales;
     }
-
     //*****************************************************************************************
     //SE CALCULA LA SUMA DE CADA UNO DE LOS CONCEPTOS DE LAS DEDUCCIONES
     //*****************************************************************************************
@@ -480,7 +475,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     //*****************************************************************************************
     //SE OBTIENE LA LISTA DE LAS DEDUCCIONES EXISTENTES EN LA NÓMINA SELECCIONADA
     //*****************************************************************************************
@@ -514,7 +508,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerPercepcionesPorEmpleado($id_nomina, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   cat_percepciones.id_percepcion, cat_percepciones.indicador,cat_percepciones.nombre as 'nombreConcepto',empleadosxpercepciones.importe
@@ -531,7 +524,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerDeduccionesPorEmpleado($id_nomina, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   cat_deducciones.id_deduccion, cat_deducciones.indicador,cat_deducciones.nombre as 'nombreConcepto',empleadosxdeducciones.importe
@@ -548,7 +540,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerAportacionesPorEmpleado($id_nomina, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   cat_aportaciones.id_aportacion, cat_aportaciones.indicador,cat_aportaciones.nombre as 'nombreConcepto',empleadosxaportaciones.importe
@@ -564,7 +555,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public function obtenerEmpleadosEnNominaMensual($mes,$anio){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
@@ -632,7 +622,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerPercepcionesPorEmpleadoMensual($mes,$anio, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   perc.id_percepcion, perc.indicador,perc.nombre as 'nombreConcepto', (SELECT SUM(empleadosxpercepciones.importe) AS total 
@@ -655,7 +644,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerDeduccionesPorEmpleadoMensual($mes,$anio, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   ded.id_deduccion, ded.indicador,ded.nombre as 'nombreConcepto', (SELECT SUM(empleadosxdeducciones.importe) AS total 
@@ -678,7 +666,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerAportacionesPorEmpleadoMensual($mes,$anio, $id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   apor.id_aportacion, apor.indicador,apor.nombre as 'nombreConcepto', (SELECT SUM(empleadosxaportaciones.importe) AS total 
@@ -807,7 +794,7 @@ class Reportes_nomina_Model extends CI_Model {
       }
     }
 
-     public function obtnerAportacionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente,$id_empleado){
+    public function obtnerAportacionesPorEmpleadoQuincenaComponente($id_nomina,$id_componente,$id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   cat_aportaciones.id_aportacion, cat_aportaciones.indicador,cat_aportaciones.nombre as 'nombreConcepto',empleadosxaportaciones.importe
                               FROM cat_empleados
@@ -823,9 +810,7 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-//---------------------------------------------------------------------------------------------------------------------------------
-
-  public function obtenerEmpleadosEnNominaMensualCompoente($mes,$anio,$id_componente){
+    public function obtenerEmpleadosEnNominaMensualCompoente($mes,$anio,$id_componente){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre as 'empleado', cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                 cat_percepciones.indicador,cat_percepciones.nombre,empleadosxpercepciones.importe
                                 FROM cat_empleados
@@ -842,7 +827,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
   }
-
     //*****************************************************************************************
     //SE OBTIENE LA LISTA DE LAS PERCEPCIONES EXISTENTES EN LA NÓMINA SELECCIONADA 
     //"POR MES" Y COMPONENTE
@@ -900,7 +884,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerPercepcionesPorEmpleadoMensualComponente($mes,$anio,$id_componente,$id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   perc.id_percepcion, perc.indicador,perc.nombre as 'nombreConcepto', (SELECT SUM(empleadosxpercepciones.importe) AS total 
@@ -923,7 +906,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerDeduccionesPorEmpleadoMensualComponente($mes,$anio,$id_componente,$id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   ded.id_deduccion, ded.indicador,ded.nombre as 'nombreConcepto', (SELECT SUM(empleadosxdeducciones.importe) AS total 
@@ -946,7 +928,6 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
-
     public function obtnerAportacionesPorEmpleadoMensualComponente($mes,$anio,$id_componente,$id_empleado){
       $query = $this->db->query("SELECT cat_empleados.id_empleado, cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc,
                                   apor.id_aportacion, apor.indicador,apor.nombre as 'nombreConcepto', (SELECT SUM(empleadosxaportaciones.importe) AS total 
@@ -969,28 +950,27 @@ class Reportes_nomina_Model extends CI_Model {
               return false;
       }
     }
+    public function getAllDeducciones(){
+            $query = $this->db->query("SELECT * FROM cat_deducciones");
 
-  public function getAllDeducciones(){
-		$query = $this->db->query("SELECT * FROM cat_deducciones");
+            if ($query->num_rows() > 0) {
+                return $query->result();
+            } else {
+                return false;
+            }
+    }
+    public function getAllAportaciones(){
 
-		if ($query->num_rows() > 0) {
-			return $query->result();
-		} else {
-			return false;
-		}
-	}
-	public function getAllAportaciones(){
+        $query = $this->db->query("SELECT * FROM cat_aportaciones");
 
-		$query = $this->db->query("SELECT * FROM cat_aportaciones");
-
-		if ($query->num_rows() > 0) {
-			return $query->result();
-		} else {
-			return false;
-		}
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 	public function getAllEmployee($fecha,$indicador, $id_nomina, $id_componente){
-		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxpercepciones.importe, cat_percepciones.nombre as percepcion
+		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxpercepciones.importe, cat_percepciones.nombre as percepcion, cat_componentes.clave
 									FROM cat_empleados, 
 											empleadosxpercepciones,
 											cat_percepciones,
@@ -1009,8 +989,30 @@ class Reportes_nomina_Model extends CI_Model {
 			return false;
 		}
 	}
+	public function getAllEmployeePercepcionTodos($fecha,$indicador, $id_nomina){
+        $query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno,
+                                    cat_empleados.rfc, empleadosxpercepciones.importe, cat_percepciones.nombre as percepcion, 
+                                    cat_componentes.clave
+									FROM cat_empleados, 
+											empleadosxpercepciones,
+											cat_percepciones,
+											tab_nomina, cat_componentes
+									WHERE empleadosxpercepciones.id_empleado = cat_empleados.id_empleado
+											AND empleadosxpercepciones.id_percepcion = cat_percepciones.id_percepcion
+											AND empleadosxpercepciones.id_nomina = tab_nomina.id_nomina	
+											AND cat_empleados.id_componente = cat_componentes.id_componente										
+											AND YEAR(tab_nomina.periodo_inicio) = '".$fecha."'
+											AND empleadosxpercepciones.id_percepcion = '".$indicador."'
+											AND empleadosxpercepciones.id_nomina = '".$id_nomina."'
+								");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 	public function getAllEmployeeDeduccion($fecha,$indicador, $id_nomina, $id_componente){
-		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxdeducciones.importe, cat_deducciones.nombre as deduccion
+		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxdeducciones.importe, cat_deducciones.nombre as deduccion, cat_componentes.clave
 									FROM    cat_empleados,
 									 		empleadosxdeducciones,
 											cat_deducciones,
@@ -1029,8 +1031,28 @@ class Reportes_nomina_Model extends CI_Model {
 			return false;
 		}
 	}
+    public function getAllEmployeeDeduccionTodos($fecha,$indicador, $id_nomina){
+        $query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxdeducciones.importe, cat_deducciones.nombre as deduccion, cat_componentes.clave
+									FROM    cat_empleados,
+									 		empleadosxdeducciones,
+											cat_deducciones,
+											tab_nomina, cat_componentes
+									WHERE empleadosxdeducciones.id_empleado = cat_empleados.id_empleado
+											AND empleadosxdeducciones.id_deduccion = cat_deducciones.id_deduccion
+											AND empleadosxdeducciones.id_nomina = tab_nomina.id_nomina
+											AND cat_empleados.id_componente = cat_componentes.id_componente														
+											AND YEAR(tab_nomina.periodo_inicio) = '".$fecha."'
+											AND empleadosxdeducciones.id_deduccion = '".$indicador."'
+											AND empleadosxdeducciones.id_nomina = '".$id_nomina."'
+										   ");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 	public function getAllEmployeeAportacion($fecha,$indicador, $id_nomina, $id_componente){
-		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxaportaciones.importe, cat_aportaciones.nombre as aportacion
+		$query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxaportaciones.importe, cat_aportaciones.nombre as aportacion, cat_componentes.clave
 									FROM cat_empleados, 
 											empleadosxaportaciones,
 											cat_aportaciones,
@@ -1049,6 +1071,26 @@ class Reportes_nomina_Model extends CI_Model {
 			return false;
 		}
 	}
+    public function getAllEmployeeAportacionTodo($fecha,$indicador, $id_nomina){
+        $query = $this->db->query("SELECT cat_empleados.nombre, cat_empleados.ap_paterno, cat_empleados.ap_materno, cat_empleados.rfc, empleadosxaportaciones.importe, cat_aportaciones.nombre as aportacion, cat_componentes.clave
+									FROM cat_empleados, 
+											empleadosxaportaciones,
+											cat_aportaciones,
+											tab_nomina, cat_componentes
+									WHERE empleadosxaportaciones.id_empleado = cat_empleados.id_empleado
+											AND empleadosxaportaciones.id_aportacion = cat_aportaciones.id_aportacion
+											AND empleadosxaportaciones.id_nomina = tab_nomina.id_nomina		
+											AND cat_empleados.id_componente = cat_componentes.id_componente											
+											AND YEAR(tab_nomina.periodo_inicio) = '".$fecha."'
+											AND empleadosxaportaciones.id_aportacion = '".$indicador."'
+											AND empleadosxaportaciones.id_nomina = '".$id_nomina."' 
+										   ");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 	public function getnameComponente($id_componente){
 		$query = $this->db->query("SELECT nombre FROM cat_componentes WHERE id_componente = '".$id_componente."' ");
 		if ($query->num_rows() > 0) {
@@ -1058,6 +1100,5 @@ class Reportes_nomina_Model extends CI_Model {
 		}
 	}
 }
-
 /* End of file Reportes_nomina_Model.php */
 /* Location: ./application/models/Reportes_nomina_Model.php */

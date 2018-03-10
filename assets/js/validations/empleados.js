@@ -232,8 +232,6 @@ function editEmpleado(id, depto, puesto, trabajdor, componente, nivel , sindical
     var curp=document.getElementById("curp"+id).innerHTML;
 	var tarjeta=document.getElementById("tarjeta"+id).innerHTML;
 	var correo=document.getElementById("correo"+id).innerHTML;
-    console.log("hola sindicalizado");
-	console.log(sindicalizado);
 	document.getElementById("idEditar").innerHTML=id+"";
     document.getElementById("idEditar").value=id;              
     document.getElementById("num_plazaEdit").value=no_plaza;
@@ -359,15 +357,13 @@ function validarInput(input) {
         valido = "No válido";
         
     if (curpValida(curp)) { // ⬅️ Acá se comprueba
-        valido = "Válido";       
-        console.log("si es validto");
+        valido = "Válido";
          $("#btn_guardar_empleado").attr("disabled", false); 
 
     } else {        
         sweetAlert("CURP NO VALIDO","VULVA A INTENTAR","error");   
         $("#btn_guardar_empleado").attr("disabled", true); 
-        return false;  
-        console.log("no es validto");       
+        return false;
     }           
 }
 function ValidaRfc(rfcStr) {

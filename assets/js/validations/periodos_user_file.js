@@ -35,12 +35,12 @@ function serach_periodos_user(anio){
                     console.log(quincena1);
                     console.log(quincena2);
                     html += "<tr class='text-center'>";
-                        html += "<td>" +  mesess[mes-1] +"</td>";
+                        html += "<td class='text-success'>" +  mesess[mes-1] +"</td>";
                         html += "<td>";
                             if(quincena1){
                                 html += "<p style='color: darkblue; text-align: center'>ESTA NÓMINA NO SE HA TIMBRADO AUN </p>";
                             }else{
-                                html += "<a style='margin: 1px 1px' class='btn btn-success'  href=' "+baseURL +"Files_employee/download_pdf?file_name="+obj.archivos[l]['primeraQuincena'][0].file_name+"' > <span class='fa fa-file-pdf-o' aria-hidden='true'></span> PDF</a>";
+                                html += "<a style='margin: 1px 1px' class='btn btn-danger'  href=' "+baseURL +"Files_employee/download_pdf?file_name="+obj.archivos[l]['primeraQuincena'][0].file_name+"' > <span class='fa fa-file-pdf-o' aria-hidden='true'></span> PDF</a>";
                                 html += "<a style='margin: 1px 1px' class='btn btn-info'  href=' "+baseURL +"Files_employee/download_xml?file_name="+obj.archivos[l]['primeraQuincena'][0].file_name+"'>  <span class='fa fa-file-excel-o' aria-hidden='true'></span> XML</a>";
                             }
                         html += "</td>";
@@ -48,7 +48,7 @@ function serach_periodos_user(anio){
                             if(quincena2){
                                 html += "<p style='color: darkblue; text-align: center'>ESTA NÓMINA NO SE HA TIMBRADO AUN </p>";
                             }else{
-                                html += "<a style='margin: 1px 1px' class='btn btn-success'  href=' "+baseURL +"Files_employee/download_pdf?file_name="+obj.archivos[l]['segundaQuincena'][0].file_name+"' > <span class='fa fa-file-pdf-o' aria-hidden='true'></span> PDF</a>";
+                                html += "<a style='margin: 1px 1px' class='btn btn-danger'  href=' "+baseURL +"Files_employee/download_pdf?file_name="+obj.archivos[l]['segundaQuincena'][0].file_name+"' > <span class='fa fa-file-pdf-o' aria-hidden='true'></span> PDF</a>";
                                 html += "<a style='margin: 1px 1px' class='btn btn-info'  href=' "+baseURL +"Files_employee/download_xml?file_name="+obj.archivos[l]['segundaQuincena'][0].file_name+"'>  <span class='fa fa-file-excel-o' aria-hidden='true'></span> XML</a>";
                             }
                         html += "</td>";
@@ -93,7 +93,7 @@ function changePassword(){
         submitHandler: function(){
             var pass = $("#pass").val();
             var confirmar = $("#confirmPassword").val();
-            var re = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$/;
+            var re = /^(?=\w*[A-Z])([a-zA-ZÁáÀàÉéÈèÍíÌìÓóÒòÚúÙùÑñüÜ0-9!@#\$%\^&\*\?_~\/]){8,16}$/;
             if (re.test(pass) ) {
                 if (pass == confirmar) {
                     var l = $("#btn_cambiarPassword").ladda();
@@ -107,13 +107,14 @@ function changePassword(){
                             if (obj.resultado === true) {
                                 l.ladda('stop');
                                 $("#formChangePassUser")[0].reset();
+                                $("#showCambioPasswordUser").css('display', 'none');
                                 //Mensaje de operación realizada con éxito
                                 setTimeout(function() {
                                     toastr.options = {
                                         closeButton: true,
                                         progressBar: true,
                                         showMethod: 'slideDown',
-                                        timeOut: 4000
+                                        timeOut: 1200
                                     };
                                     l.ladda('stop');
                                     toastr.success('Su Contraseña fue Cambiada Corectamente', 'DATOS GUARDADOS');
@@ -126,7 +127,7 @@ function changePassword(){
                     swal("Upps..!", "LAS CONTRASEÑAS NO COICIDEN! :( ", "error");
                 }
             }else{
-                swal("Upps..!", "La Contrasela debe tener como minimo 8 caracteres y maximo de 16, una letra Mayúscula, una minúscula y números :( ", "error");
+                swal("Upps..!", "La Contraseña debe tener como minimo 8 caracteres y maximo de 16, minimo una letra Mayúscula, minimo una minúscula y números ", "error");
                 return false;
             }
         }

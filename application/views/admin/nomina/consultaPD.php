@@ -1,6 +1,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">
 	<div class="row">
-		<p style="font-size: large; color: #97310e; text-align: center; margin: 0">CONSULTA DE EMPLEADOS POR CONCEPTO Y COMPLEMENTO </p>
+		<p style="font-size: 16px; color: #97310e; text-align: center; margin: 0">CONSULTA DE EMPLEADOS POR CONCEPTO Y COMPLEMENTO </p>
 		<div class="col-md-2 col-lg-2"  style="width: 11%;">
 			<form id="prueba">
 				<h3 style="font-size: 14px">Año</h3>
@@ -41,6 +41,7 @@
 			<h3 style="font-size: 14px">Componente</h3>
 			<select class="form-control" id="ID_Componente" name="componente" onchange="searchConcepto(value)">
 				<option value="" selected disabled hidden >Componente</option>
+                <option value=""> TODO </option>
 				<?php foreach ($componentes as $componente): ?>
 					<option value="<?php echo $componente->id_componente ?>"> <?php echo $componente->nombre ?></option>
 				<?php endforeach ?>

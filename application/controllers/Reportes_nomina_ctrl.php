@@ -267,13 +267,17 @@ class Reportes_nomina_ctrl extends CI_Controller {
 		}
 		echo json_encode($result);
 	}
+
 	public function getAllEmpleadosConsultaAjax(){
 		$fecha = $this->input->post('anio');
 		$indicador = $this->input->post('indicador');
 		$id_nomina = $this->input->post('id_nomina');
 		$id_componente = $this->input->post('id_componente');
-
-		$query = $this->Reportes_nomina_Model->getAllEmployee($fecha,$indicador, $id_nomina, $id_componente);
+        if ($this->input->post('id_componente')){
+            $query = $this->Reportes_nomina_Model->getAllEmployee($fecha,$indicador, $id_nomina, $id_componente);
+        }else{
+            $query = $this->Reportes_nomina_Model->getAllEmployeePercepcionTodos($fecha,$indicador, $id_nomina);
+        }
 
 		if ($query != false) {
 			$result['resultado'] = true;
@@ -288,9 +292,11 @@ class Reportes_nomina_ctrl extends CI_Controller {
 		$indicador = $this->input->post('indicador');
 		$id_nomina = $this->input->post('id_nomina');
 		$id_componente = $this->input->post('id_componente');
-
-		$query = $this->Reportes_nomina_Model->getAllEmployeeDeduccion($fecha,$indicador, $id_nomina, $id_componente);
-
+        if ($this->input->post('id_componente')){
+		    $query = $this->Reportes_nomina_Model->getAllEmployeeDeduccion($fecha,$indicador, $id_nomina, $id_componente);
+        }else{
+            $query = $this->Reportes_nomina_Model->getAllEmployeeDeduccionTodos($fecha,$indicador, $id_nomina);
+        }
 		if ($query != false) {
 			$result['resultado'] = true;
 			$result['employees'] = $query;
@@ -304,8 +310,11 @@ class Reportes_nomina_ctrl extends CI_Controller {
 		$indicador = $this->input->post('indicador');
 		$id_nomina = $this->input->post('id_nomina');
 		$id_componente = $this->input->post('id_componente');
-		$query = $this->Reportes_nomina_Model->getAllEmployeeAportacion($fecha,$indicador, $id_nomina, $id_componente);
-
+		if ($this->input->post('id_componente')){
+            $query = $this->Reportes_nomina_Model->getAllEmployeeAportacion($fecha,$indicador, $id_nomina, $id_componente);
+        }else{
+            $query = $this->Reportes_nomina_Model->getAllEmployeeAportacionTodo($fecha,$indicador, $id_nomina);
+        }
 		if ($query != false) {
 			$result['resultado'] = true;
 			$result['employees'] = $query;

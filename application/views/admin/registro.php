@@ -25,8 +25,6 @@
                             <label for="nss">NIVEL</label>
                             <input type="number" name="nivel" id="nivelEdit" class="form-control " tabindex="5">
                         </div>
-
-
 						<div class=" col-sm-6 col-md-4">
 								<label for="nombre">Nombre</label>								
 		                        <input type="text" name="nombre" id="nombre" class="form-control" tabindex="6">
@@ -43,8 +41,6 @@
                             <label for="no_empleado">Num. Empleado</label>
                             <input type="number" name="no_empleado" id="no_empleado" class="form-control" tabindex="9">
                         </div>
-
-
 						<div class=" col-sm-6 col-md-4">
 								<label for="curp">CURP</label>
 								<input type="text" onblur="validarInput(this)" name="curp" id="curp" class="form-control" tabindex="10" >
@@ -77,7 +73,6 @@
                                 <?php } ?>
                             </select>
                         </div>
-
                         <div class=" col-sm-6 col-md-4">
                             <label for="puesto">Puesto</label>
                             <select class="form-control " id="puesto" name="id_puesto" tabindex="16">

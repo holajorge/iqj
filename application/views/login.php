@@ -24,7 +24,7 @@
   <div class="middle-box text-center loginscreen animated fadeInDown" >
               
       <div>
-          <img  class="logo-name" src="<?php echo base_url('assets/img/logo/juventud.png'); ?>" width="300" height="110" >
+          <img  class="logo-name" src="<?php echo base_url('assets/img/logo/juventud11.png'); ?>" width="305" height="70" >
       </div>
       <h3>Bienvenido</h3> 
       <p>Iniciar Sesión</p>
@@ -38,7 +38,8 @@
           <button type="submit" class="btn btn-primary block full-width m-b"><span class="glyphicon glyphicon-log-in"></span> Login</button>                                
       </form>
       <p class="error"> <?php echo $error ?> </p>
-      <h4 class="m-t"> SISTEMAS DE NOMINAS IQJ &copy; 2018 </h4>
+      <h4 class="m-t"> SISTEMA DE NÓMINAS IQJ &copy; 2018 </h4>
+
       <a  data-toggle="modal" data-target="#acercade">Acerca de</a>
     
   </div>

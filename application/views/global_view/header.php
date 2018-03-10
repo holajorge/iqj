@@ -54,7 +54,7 @@
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
                       <div class="dropdown profile-element"> <span>
-                          <img alt="image" width="140" class="img-circle" style="ime-mode: center" src="<?php echo base_url('assets/img/logo/logo.png')?>" />
+                          <img alt="image" width="163" class="img-circle img-responsive" style="ime-mode: center" src="<?php echo base_url('assets/img/logo/chido.png')?>" />
                           </span>
                           <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> 
@@ -67,7 +67,9 @@
                           </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs" >
                             <li><a href="<?php echo base_url('User_ctrl/perfil'); ?>">Perfil</a></li>
+                            <?php if ( $this->session->userdata('id_empleado') ): ?>
                             <li><a href="<?php echo base_url('User_ctrl/timbres'); ?>">Mis Timbres</a></li>
+                            <?php endif ?>
                             <li class="divider"></li>
                             <li><a href="<?php echo base_url();?>login_ctrl/cerrar_sesion">Logout</a></li>
                         </ul>

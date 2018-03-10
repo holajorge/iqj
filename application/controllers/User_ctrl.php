@@ -32,27 +32,53 @@ class User_ctrl extends CI_Controller {
 			$this->load->view('global_view/foother');
 
 	}
-	public function createUserType(){
-		
-		$password = $this->input->post("password");
+	public function getInfoEmploye(){
 
-		$alta = array(
-            'nombre'    =>    $this->input->post("nombre"),
-			'apellidos' =>    $this->input->post("apellidos"),
-			'rfc'       =>    $this->input->post("rfc"),
-			'password'  =>    $this->bcrypt->hash_password($password),
-			'status'    =>    1,
-            'id_usuario'       =>    2
-		);
-		$query = $this->User_model->saveUserType($alta);
+	    $query = $this->User_model->getAllEmploye_casiUser();
 
-		if ($query != false) {
-        $result['resultado'] = true;
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['informacionEmpleado'] = $query;
         } else {
             $result['resultado'] = false;
         }
         echo json_encode($result);
+    }
+	public function createUserNoRegistrado(){
+
+            $alta = array(
+                'nombre'    =>    $this->input->post("nombre"),
+                'apellidos' =>    $this->input->post("apellidos"),
+                'rfc'       =>    $this->input->post("rfc"),
+                'password'  =>    $this->bcrypt->hash_password($this->input->post("password")),
+                'status'    =>    1,
+                'id_usuario'  =>   $this->input->post("usuario")
+            );
+            $query = $this->User_model->save_user_no_registrado($alta);
+
+            if ($query != false) {
+                $result['resultado'] = true;
+            } else {
+                $result['resultado'] = false;
+            }
+            echo json_encode($result);
 	}
+	public function createUsuarioRegistrado(){
+
+        $alta = array(
+            'id_empleado'    =>    $this->input->post("id_empleado"),
+            'id_usuario'  =>    $this->input->post("usuario"),
+            'password'  =>    $this->bcrypt->hash_password($this->input->post("password")),
+            'status'    =>    1
+        );
+        $query = $this->User_model->guardaUsuarioRegistrado($alta);
+        if ($query != false) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
 	public function perfil(){
         $id_empleado = $this->session->userdata('id_empleado');
         $data['info'] = $this->User_model->getInfoProfile($id_empleado);
@@ -77,15 +103,15 @@ class User_ctrl extends CI_Controller {
         echo json_encode($result);
 	}
 	public function changePasswordUserSystema(){
-        $id_usuarioxsistema = $this->input->post("id");
-        $nombre = $this->input->post("nombre");
-        $apellidos = $this->input->post("apellidos");
-        $password = $this->input->post("password");
+
+	    $id_usuarioxsistema = $this->input->post("id");
 
         $datos = array(
-            'nombre'     => $nombre,
-            'apellidos'  => $apellidos,
-            'password'   => $this->bcrypt->hash_password($password)
+            'nombre'     => $this->input->post("nombre"),
+            'apellidos'  => $this->input->post("apellidos"),
+            'password'   => $this->bcrypt->hash_password($this->input->post("password")),
+            'rfc'        => $this->input->post("rfc"),
+            'id_usuario' => $this->input->post("usuario")
         );
         $query = $this->User_model->changePAsswordUserAdmin($id_usuarioxsistema , $datos);
         if ($query != false) {
@@ -97,8 +123,8 @@ class User_ctrl extends CI_Controller {
     }
 	public function deshabilitar_user(){
 
-		$id_empleadoxusuario = $this->input->post('id');
-        $query = $this->User_model->deshabilitarUsuario($id_empleadoxusuario);
+        $id_usuarioxsistema = $this->input->post('id');
+        $query = $this->User_model->deshabilitarUsuario($id_usuarioxsistema);
         
         if ($query == 1) {
             $result['resultado'] = true;
@@ -109,8 +135,8 @@ class User_ctrl extends CI_Controller {
 	}
 	public function habilitar_User(){
 
-		$id_empleadoxusuario = $this->input->post('id');
-        $query = $this->User_model->habilitarUsuario($id_empleadoxusuario);
+        $id_usuarioxsistema = $this->input->post('id');
+        $query = $this->User_model->habilitarUsuario($id_usuarioxsistema);
 
         if ($query == 1) {
             $result['resultado'] = true;
@@ -120,6 +146,31 @@ class User_ctrl extends CI_Controller {
         echo json_encode($result);  
 
 	}
+    public function deshabilitar_userEmpleado(){
+
+        $id_empleadoxusuario = $this->input->post('id');
+        $query = $this->User_model->deshabilitarUsuarioEmpleado($id_empleadoxusuario);
+
+        if ($query == 1) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
+    public function habilitar_UserEmpleado(){
+
+        $id_empleadoxusuario = $this->input->post('id');
+        $query = $this->User_model->habilitarUsuarioEmpleado($id_empleadoxusuario);
+
+        if ($query == 1) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+
+    }
     public function list_employee_change_password(){
 
         $dato['active'] = "usuarios";
@@ -148,6 +199,46 @@ class User_ctrl extends CI_Controller {
             $result['resultado'] = false;
         }
         echo json_encode($result);
+    }
+    public function getUsuariosEmpleados(){
+
+        $query = $this->User_model->getAllUsuariosEmpleados();
+
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['infoEmpleadosUsuarios'] = $query;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
+    public function obtirneRolesUsers(){
+
+        $query = $this->User_model->getAllTipoUser();
+
+        if ($query != false) {
+            $result['resultado'] = true;
+            $result['usuarios'] = $query;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
+    public function editar_usuario_empleado(){
+
+        $id_empleadoxusuario =  $this->input->post("id");
+        $datos = array(
+            'password'   => $this->bcrypt->hash_password($this->input->post("password")),
+            'id_usuario' => $this->input->post("usuario"),
+        );
+        $query = $this->User_model->editUserEmployeRegister($id_empleadoxusuario, $datos);
+        if ($query != false) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+
     }
 }
 

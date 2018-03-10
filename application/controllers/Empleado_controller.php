@@ -6,7 +6,7 @@ class Empleado_controller extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        // $this->load->library('bcrypt');
+        $this->load->library('bcrypt');
         $this->load->model('Empleado_model');
     }
 
@@ -104,6 +104,7 @@ class Empleado_controller extends CI_Controller {
         $id_componente = $this->input->post("componente");
         $correo = $this->input->post("correo");
         $sindicalizado = $this->input->post("sindicalizado");
+        $pass = $this->input->post("rfc");
 
         $emplado = array(
                     'no_plaza' => $no_plaza, 
@@ -125,7 +126,8 @@ class Empleado_controller extends CI_Controller {
                     'id_componente' => $id_componente,
                     'correo' => $correo,
                     'sindicalizado' => $sindicalizado,
-                    'status' => 1
+                    'status' => 1,
+                    'password' => $this->bcrypt->hash_password($pass),
 
                     );
         $query = $this->Empleado_model->guardar_empleado($emplado);

@@ -1,4 +1,5 @@
 <div class="row m-b-lg m-t-lg">
+    <?php if ($info != null): ?>
     <?php foreach ($info as $infomacion): ?>
         <div class="col-md-6">
             <div class="profile-image">
@@ -50,6 +51,8 @@
             <div id="sparkline1"></div>
         </div> -->
     <?php endforeach ?>
+    <?php else: ?>
+    <?php endif ?>
 </div>
 
 <div class="container" style="display: none;" id="showCambioPasswordUser">
