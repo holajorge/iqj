@@ -79,28 +79,83 @@ class User_ctrl extends CI_Controller {
         }
         echo json_encode($result);
     }
-	public function perfil(){
-        $id_empleado = $this->session->userdata('id_empleado');
-        $data['info'] = $this->User_model->getInfoProfile($id_empleado);
-        $this->load->view('global_view/header');
-        $this->load->view('admin/usuario/perfil',$data);
-        $this->load->view('global_view/foother');
-	}
-	public function changePasswordUser(){
+	public function createUserType(){
 
-        $password = $this->input->post("password");
-        $id_exu =  $this->session->userdata("id_empleado");
+		$password = $this->input->post("password");
 
-        $cambio = array(
-            'password' => $this->bcrypt->hash_password($password)
-        );
-        $query = $this->User_model->changePAssword($id_exu, $cambio);
-        if ($query != false) {
+		$alta = array(
+            'nombre'    =>    $this->input->post("nombre"),
+			'apellidos' =>    $this->input->post("apellidos"),
+			'rfc'       =>    $this->input->post("rfc"),
+			'password'  =>    $this->bcrypt->hash_password($password),
+			'status'    =>    1,
+            'id_usuario'       =>    2
+		);
+		$query = $this->User_model->saveUserType($alta);
+
+		if ($query != false) {
         $result['resultado'] = true;
         } else {
             $result['resultado'] = false;
         }
         echo json_encode($result);
+	}
+	public function perfil(){
+        if ($this->session->userdata('id_empleado')){
+            $id_empleado = $this->session->userdata('id_empleado');
+            $data['info'] = $this->User_model->getInfoProfile($id_empleado);
+            $this->load->view('global_view/header');
+            $this->load->view('admin/usuario/perfil',$data);
+            $this->load->view('global_view/foother');
+        }
+        else if ($this->session->userdata('id_usuarioxsistema')) {
+            $id_usuarioxsistema = $this->session->userdata('id_usuarioxsistema');
+            $data1['infoNoUSer'] = $this->User_model->getInfoProfileNoEmployee($id_usuarioxsistema);
+            $this->load->view('global_view/header');
+            $this->load->view('admin/usuario/perfil',$data1);
+            $this->load->view('global_view/foother');
+        }
+	}
+	public function resetPasswordUser(){
+
+        $id_empleado = $this->input->post('id_empleado');
+
+        $resetear = array(
+            'password' => $this->bcrypt->hash_password($this->input->post("rfc")),
+        );
+
+        $query = $this->User_model->resetearPaswordEmpleado($id_empleado, $resetear);
+        if ($query != false) {
+            $result['resultado'] = true;
+        } else {
+            $result['resultado'] = false;
+        }
+        echo json_encode($result);
+    }
+	public function changePasswordUser(){
+
+        $cambio = array(
+            'password' => $this->bcrypt->hash_password($this->input->post("password"))
+        );
+        if ($this->session->userdata('id_empleado')) {
+            $id_exu = $this->session->userdata("id_empleado");
+            $query = $this->User_model->changePAssword($id_exu, $cambio);
+            if ($query != false) {
+                $result['resultado'] = true;
+            } else {
+                $result['resultado'] = false;
+            }
+            echo json_encode($result);
+        }else if ($this->session->userdata('id_usuarioxsistema')) {
+            $id_usuarioxsistema = $this->session->userdata('id_usuarioxsistema');
+            $query = $this->User_model->changePAsswordUserNoRegister($id_usuarioxsistema, $cambio);
+            if ($query != false) {
+                $result['resultado'] = true;
+            } else {
+                $result['resultado'] = false;
+            }
+            echo json_encode($result);
+        }
 	}
 	public function changePasswordUserSystema(){
 

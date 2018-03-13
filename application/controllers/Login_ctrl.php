@@ -34,8 +34,10 @@ class Login_ctrl extends CI_Controller {
                         'nombre' => $query1[0]->nombre,
                         'apellidos' => $query1[0]->ap_paterno.' '.$query1[0]->ap_materno,
                         'rfc' => $query1[0]->rfc,
-                        'tipo_usuario' => $query1[0]->tipo_usuario,
                         'root' => true,
+                        'admin' => false,
+                        'verTimbre' => false,
+                        'tipo_usuario' => $query1[0]->tipo_usuario,
                         'logged_in' => TRUE
                     );
                     $this->session->set_userdata($data);
@@ -47,11 +49,14 @@ class Login_ctrl extends CI_Controller {
             }else if($query2){
                 if ($this->bcrypt->check_password($this->input->post('password'), $query2[0]->password)) {
                     $data = array(
+                        'id_usuarioxsistema' => $query2[0]->id_usuarioxsistema,
                         'nombre' => $query2[0]->nombre,
                         'apellidos' => $query2[0]->apellidos,
                         'rfc' => $query2[0]->rfc,
-                        'tipo_usuario' => $query2[0]->tipo_usuario,
+                        'root' => false,
                         'admin' => true,
+                        'verTimbre' => false,
+                        'tipo_usuario' => $query2[0]->tipo_usuario,
                         'logged_in' => TRUE
                     );
                     $this->session->set_userdata($data);
@@ -67,7 +72,9 @@ class Login_ctrl extends CI_Controller {
                         'nombre' => $query3[0]->nombre,
                         'apellidos' => $query3[0]->ap_paterno.' '.$query3[0]->ap_materno,
                         'rfc' => $query3[0]->rfc,
-                        'verTimbre' => TRUE,
+                        'root' => false,
+                        'admin' => false,
+                        'verTimbre' => true,
                         'logged_in' => TRUE
                     );
                     $this->session->set_userdata($data);

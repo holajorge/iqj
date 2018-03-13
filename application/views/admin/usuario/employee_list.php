@@ -7,19 +7,13 @@
                         <table class="table table-striped table-bordered table-hover dataTables-example" id="tabla_lista_empleadosChangePass">
                             <thead>
                             <tr>
-                                <th>NO. PLAZA</th>
+                                <th>PLAZA</th>
                                 <th>NOMBRE</th>
-                                <th>AP. PATERNO</th>
-                                <th>AP. MATERNO</th>
-                                <th>FECHA NACIMIENTO</th>
-                                <th>INGRESO</th>
+                                <th>APELLIDOS</th>
                                 <th>DEPARTAMENTO</th>
                                 <th>PUESTO</th>
                                 <th>RFC</th>
-                                <th>CURP</th>
-                                <th>Nu Empleado</th>
-                                <th>TIPO T</th>
-                                <th>Componente</th>
+                                <th>TRABAJADOR</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                             </thead>
@@ -27,23 +21,16 @@
                             <?php if ($empleados != null ):  ?>
                                 <?php foreach ($empleados as $empleado): ?>
                                     <tr class="gradeX" >
-                                        <td><label  id="no_plaza<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->no_plaza ?></label></td>
+                                        <td class="text-center"><label  id="no_plaza<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->no_plaza ?></label></td>
                                         <td><label  id="nombre_emp<?php echo $empleado->id_empleado ?>"><?php echo $empleado->nombre_emp?></label></td>
-                                        <td><label  id="ap_paterno<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->ap_paterno ?></label></td>
-                                        <td><label  id="ap_materno<?php echo $empleado->id_empleado ?>"><?php echo $empleado->ap_materno?></label></td>
-                                        <td><label  id="fecha_nacimiento<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->fecha_nacimiento ?></label></td>
-                                        <td><label  id="fecha_ingreso<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->fecha_ingreso ?></label></td>
+                                        <td><label  id="ap_paterno<?php echo $empleado->id_empleado ?>"><?php echo  $empleado->ap_paterno.' '.$empleado->ap_materno ?></label></td>
                                         <td><label  id="nombre_depto"> <?php echo $empleado->nombre_depto?> </label></td>
                                         <td><label  id="nombre_puesto"> <?php echo $empleado->nombre_puesto?> </label></td>
                                         <td><label  id="rfc<?php echo $empleado->id_empleado ?>"><?php echo $empleado->rfc?></label></td>
-                                        <td><label  id="curp<?php echo $empleado->id_empleado ?>"><?php echo $empleado->curp?></label></td>
-                                        <td><label  id="no_empleado<?php echo $empleado->id_empleado ?>"><?php echo $empleado->no_empleado?></label></td>
                                         <td><label  id="trabajador"> <?php echo $empleado->trabajador?></label></td>
-                                        <td><label  id="componente"> <?php echo $empleado->componente?></label></td>
                                         <td class="text-center">
-                                            <button  type="button" class="btn btn-info btn-rounded" data-backdrop="static"  data-keyboard="false" onclick="editEmpleadoChangePass('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->no_plaza?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>','<?php echo $empleado->ap_materno?>','<?php echo $empleado->rfc?>')" data-toggle="modal" data-target="#editarEmpleadoChangePassword"><span class="glyphicon glyphicon-edit"></span> Editar</button>
+                                            <button  type="button" class="btn btn-primary btn-rounded" onclick="resetPasswordEmployee('<?php echo $empleado->id_empleado ?>','<?php echo $empleado->nombre_emp?>','<?php echo $empleado->ap_paterno?>','<?php echo $empleado->ap_materno?>','<?php echo $empleado->rfc?>')" ><span class="glyphicon glyphicon-repeat"></span> Resetear</button>
                                         </td>
-
                                     </tr>
                                 <?php endforeach ?>
                             <?php else: ?>

@@ -1,60 +1,93 @@
 <div class="row m-b-lg m-t-lg">
-    <?php foreach ($info as $infomacion): ?>
-    <div class="col-md-6">
-        <div class="profile-image">
-
-        </div>
-        <div class="profile-info">
-            <div class="">
-                <div>
-                    <h2 class="no-margins text-success">
-                        <strong>
-                            <?php echo $infomacion->nombre.' '. $infomacion->ap_paterno?>
-                        </strong>
-                    </h2>
-                    <h4>Tipo Trabajador: <strong class=" wy-text-info"><?php echo $infomacion->trabajador ?></strong></h4>
-                    <h4>Puesto: <strong  class=" wy-text-info"><?php echo $infomacion->puesto ?></strong></h4>
-                    <h4>Departamento: <strong  class=" wy-text-info"><?php echo $infomacion->depto ?></strong></h4>
+    <?php if (isset($info)): ?>
+        <?php foreach ($info as $infomacion): ?>
+            <div class="col-md-6">
+                <div class="profile-image">
+                </div>
+                <div class="profile-info">
+                    <div class="">
+                        <div>
+                            <h2 class="no-margins text-success">
+                                <strong>
+                                    <?php echo $infomacion->nombre.' '. $infomacion->ap_paterno?>
+                                </strong>
+                            </h2>
+                            <h4>Tipo Trabajador: <strong class=" wy-text-info"><?php echo $infomacion->trabajador ?></strong></h4>
+                            <h4>Puesto: <strong  class=" wy-text-info"><?php echo $infomacion->puesto ?></strong></h4>
+                            <h4>Departamento: <strong  class=" wy-text-info"><?php echo $infomacion->depto ?></strong></h4>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-5">
-        <table class="table small m-b-xs">
-            <tbody>
-            <tr>
-                <td>
-                   No Plaza: <strong class=" wy-text-info"> <?php echo $infomacion->no_plaza; ?></strong>
-                </td>
-                <td>
-                    No Empleado:<strong  class=" wy-text-info"> <?php echo $infomacion->no_empleado; ?></strong>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    RFC: <strong  class=" wy-text-info"><?php echo $infomacion->rfc; ?></strong>
-                </td>
-                <td>
-                    CURP: <strong  class=" wy-text-info"><?php echo $infomacion->curp; ?></strong>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                   Tipo Usuario: <strong  class=" wy-text-info"> <?php echo $infomacion->tipo; ?> </strong>
-                </td>
-                <td>
-                    <button class="btn btn-danger btn-rounded" onclick="showFormChange()"> <span class=" fa fa-edit"></span> Cambiar Contraseña</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <!-- <div class="col-md-3">
-        <small>Sales in last 24h</small>
-        <h2 class="no-margins">206 480</h2>
-        <div id="sparkline1"></div>
-    </div> -->
-    <?php endforeach ?>
+            <div class="col-md-5">
+                <table class="table small m-b-xs">
+                    <tbody>
+                    <tr>
+                        <td>
+                           No Plaza: <strong class=" wy-text-info"> <?php echo $infomacion->no_plaza; ?></strong>
+                        </td>
+                        <td>
+                            No Empleado:<strong  class=" wy-text-info"> <?php echo $infomacion->no_empleado; ?></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            RFC: <strong  class=" wy-text-info"><?php echo $infomacion->rfc; ?></strong>
+                        </td>
+                        <td>
+                            CURP: <strong  class=" wy-text-info"><?php echo $infomacion->curp; ?></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           Tipo Usuario: <strong  class=" wy-text-info"> <?php echo $infomacion->tipo; ?> </strong>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-rounded" onclick="showFormChange()"> <span class=" fa fa-edit"></span> Cambiar Contraseña</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        <?php endforeach ?>
+    <?php else: ?>
+        <?php foreach ($infoNoUSer as $infoUser): ?>
+            <div class="col-md-6">
+                <div class="profile-image">
+                </div>
+                <div class="profile-info">
+                    <div class="">
+                        <div>
+                            <h2 class="no-margins text-success">
+                                <strong>
+                                    <?php echo $infoUser->nombre.' '. $infoUser->apellidos?>
+                                </strong>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <table class="table small m-b-xs">
+                    <tbody>
+                    <tr style="font-size: 16px">
+                        <td>
+                            Tipo De Usuario: <strong class=" wy-text-info"> <?php echo $infoUser->tipo_usuario; ?></strong>
+                        </td>
+                        <td>
+                            RFC:<strong  class=" wy-text-info"> <?php echo $infoUser->rfc; ?></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="btn btn-danger btn-rounded" onclick="showFormChange()"> <span class=" fa fa-edit"></span> Cambiar Contraseña</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        <?php endforeach ?>
+    <?php endif ?>
 </div>
 
 <div class="container" style="display: none;" id="showCambioPassword">

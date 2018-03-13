@@ -5,6 +5,7 @@
         border-radius: 12px;
     }
 </style>
+<?php if ( $this->session->userdata('root') |  $this->session->userdata('admin')): ?>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-4">
@@ -16,17 +17,19 @@
                 <?php endforeach ?>
             </select>
         </div>
-        <div class="col-lg-5"> <br><br><br>
-            <div class="class-origen-recurso" id="id-origen-r" style="display: none;">
-                <label style="text-align: justify;">SELECCIONE EL ORIGEN DEL RECURSO PARA EL TIMBRADO DE LA NÓMINA</label> 
-                <label class="radio-inline">
-                  <input type="radio" name="rb-origen-recurso" value="IP">IP - INGRESO PROPIO
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="rb-origen-recurso" value="IF">IF - INGRESO FEDERAL
-                </label>
+        <?php if ( $this->session->userdata('tipo_usuario') == "root" ): ?>
+            <div class="col-lg-5"> <br><br><br>
+                <div class="class-origen-recurso" id="id-origen-r" style="display: none;">
+                    <label style="text-align: justify;">SELECCIONE EL ORIGEN DEL RECURSO PARA EL TIMBRADO DE LA NÓMINA</label>
+                    <label class="radio-inline">
+                      <input type="radio" name="rb-origen-recurso" value="IP">IP - INGRESO PROPIO
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="rb-origen-recurso" value="IF">IF - INGRESO FEDERAL
+                    </label>
+                </div>
             </div>
-        </div>
+        <?php endif ?>
         <div class="col-lg-3" > <br><br><br>
             <button style="display: none;" id="showBtnPrint" class="btn btn-primary btn-lg pull-right"  onclick="imprimirList()"><span class='glyphicon glyphicon-print' aria-hidden='true'></span> IMPRIMIR LISTA</button>
         </div>
@@ -37,7 +40,7 @@
         </div>
     </div>   
 </div>
-
+<?php endif;?>
 <!-- Modal -->
 <div class="modal fade" id="modalTimbrado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">

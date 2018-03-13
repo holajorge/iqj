@@ -57,7 +57,7 @@
 					<label id="showNameComponente"></label>
 				</div>
 				<div class="col-lg-4" id="NombreConceptoShow" style="display: none">
-					<label style="color: mediumblue;">Percepcion Seleccionado: </label>
+					<label style="color: mediumblue;">Concepto Seleccionado: </label>
 					<label id="PerceptionMostrar"></label>
 				</div>
 			</div>

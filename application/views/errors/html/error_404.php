@@ -18,13 +18,6 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-6 col-xs-12 col-sm-offset-3">
-            <div class="text-center">
-                <img src="<?php echo base_url();?>plantillas/img/404.png" class="img-responsive" alt="">
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-sm-6 col-xs-12 col-sm-offset-3" style="margin-top: -70px;">
             <div class="text-center">
                 <h1>Oopss!!</h1>

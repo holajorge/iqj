@@ -101,10 +101,30 @@ class User_model extends CI_Model {
 	        return false;
 	    }
 	}
+	public function getInfoProfileNoEmployee($id_usuarioxsistema){
+        $query = $this->db->query("SELECT cat_usuarioxsistema.id_usuarioxsistema, cat_usuarioxsistema.nombre, cat_usuarioxsistema.apellidos, cat_usuarioxsistema.rfc,
+                                          cat_usuarios.id_usuario, cat_usuarios.tipo_usuario
+                                   FROM cat_usuarioxsistema, cat_usuarios
+                                   WHERE cat_usuarioxsistema.id_usuario = cat_usuarios.id_usuario
+                                        AND cat_usuarioxsistema.id_usuarioxsistema = '".$id_usuarioxsistema."' ");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 	public function changePAssword($id,$cambio){
 		 $this->db->where('id_empleado', $id);
     return $this->db->update('empleadosxusuario', $cambio);
 	}
+    public function changePAsswordUserNoRegister($id,$cambio){
+        $this->db->where('id_usuarioxsistema', $id);
+        return $this->db->update('cat_usuarioxsistema', $cambio);
+    }
+    public function resetearPaswordEmpleado($id_empleado, $resetear){
+        $this->db->where('id_empleado', $id_empleado);
+        return $this->db->update('cat_empleados', $resetear);
+    }
     public function changePasswordEmploye($id_empleado,$password){
 	    $datos = array('password' => $password);
         $this->db->where('id_empleado', $id_empleado);

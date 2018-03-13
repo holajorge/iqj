@@ -399,7 +399,6 @@ function habilitarUserEmpleado(id){
         });
     });
 }
-
 function editarUserSystem(id, nombre, apellidos, rfc, usuario) {
 
     document.getElementById("idEditar").value=id;
@@ -588,7 +587,6 @@ function editarUserEmpleado(id) {
     });
 
 }
-
 function serach_periodos_admin(anio){
     $("#resultado_periodo_admin").html("");
     var mesess = ['Enero','Febrero', 'Marzo','Abril','Mayo', 'Junio','Julio', 'Agosto', 'Septiembre', 'Octubre','Noviembre','Diciembre'];
@@ -659,12 +657,36 @@ function serach_periodos_admin(anio){
         }
     });
 }
-function editEmpleadoChangePass(id_empleado, numero, nombre, paterno, materno, rfc){
-    document.getElementById("idEditarEmpleado").value=id_empleado;
-    document.getElementById("num_plazaEditEmpleado").value=numero;
-    document.getElementById("nombreEditEmpleado").value=nombre;
-    document.getElementById("apellidosEditEmpleado").value=paterno + ' ' + materno;
-    document.getElementById("rfcEditEmpleado").value=rfc;
+function resetPasswordEmployee(id_empleado, nombre, paterno, materno, rfc){
+
+    var text = "<h3>¿SEGURO DE RESTABLECER LA CONTRASEÑA DEL EMPLEADO <strong>" + nombre +" "+ paterno +" "+ materno +"</strong>?</h3>";
+    swal({
+        title: text,
+        type: "warning",
+        showCancelButton: true,
+        html: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "SI, RESTABLECER AHORA!",
+        closeOnConfirm: false
+    }, function (isConfirm) {
+        if (!isConfirm) return;
+        $.ajax({
+            url: baseURL + "User_ctrl/resetPasswordUser",
+            type: "POST",
+            data: {id_empleado: id_empleado, rfc: rfc},
+            dataType: "html",
+            success: function () {
+                swal("Hecho!", "LA CONTRASEÑA FUE CORRECTAMENTE RESTABLECIDA!", "success");
+                setTimeout(function() {
+                    window.location.href = baseURL+"User_ctrl/list_employee_change_password";
+                }, 2000);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal("Error detectado!", "Porfavor intente de nuevo", "error");
+            }
+        });
+    });
+
 }
 function saveChangePasswordEmploye() {
     var id_employe = $("#idEditarEmpleado").val();
